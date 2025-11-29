@@ -1,0 +1,39 @@
+name,description,price,image,category,sub_category,is_special,stock_quantity
+Pepperoni Classic,A delicious serving of Pepperoni Classic,2.29,"https://images.pexels.com/photos/825661/pexels-photo-825661.jpeg?auto=compress&cs=tinysrgb&w=600",pizza,american,false,15
+BBQ Chicken,A delicious serving of BBQ Chicken,2.59,"https://images.pexels.com/photos/2619967/pexels-photo-2619967.jpeg?auto=compress&cs=tinysrgb&w=600",pizza,american,false,12
+Margherita,A delicious serving of Margherita,2.19,"https://images.pexels.com/photos/905847/pexels-photo-905847.jpeg?auto=compress&cs=tinysrgb&w=600",pizza,italian,false,20
+Quattro Stagioni,A delicious serving of Quattro Stagioni,2.79,"https://images.pexels.com/photos/825662/pexels-photo-825662.jpeg?auto=compress&cs=tinysrgb&w=600",pizza,italian,false,8
+Vegetarian,A delicious serving of Vegetarian,2.49,"https://images.pexels.com/photos/2147491/pexels-photo-2147491.jpeg?auto=compress&cs=tinysrgb&w=600",pizza,italian,false,10
+Classic Beef Burger,A delicious serving of Classic Beef Burger,3.99,"https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=600",sandwich,burger,false,10
+Cheese Burger,A delicious serving of Cheese Burger,3.49,"https://images.pexels.com/photos/1251198/pexels-photo-1251198.jpeg?auto=compress&cs=tinysrgb&w=600",sandwich,burger,false,12
+Hot Dog,A delicious serving of Hot Dog,2.99,"https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg?auto=compress&cs=tinysrgb&w=600",sandwich,hot-dog,false,15
+Chicken Sandwich,A delicious serving of Chicken Sandwich,3.19,"https://images.pexels.com/photos/1109197/pexels-photo-1109197.jpeg?auto=compress&cs=tinysrgb&w=600",sandwich,chicken,false,12
+Club Sandwich,A delicious serving of Club Sandwich,3.79,"https://images.pexels.com/photos/1059907/pexels-photo-1059907.jpeg?auto=compress&cs=tinysrgb&w=600",sandwich,chicken,false,9
+Crispy Strips,A delicious serving of Crispy Strips,2.49,"https://images.pexels.com/photos/2983099/pexels-photo-2983099.jpeg?auto=compress&cs=tinysrgb&w=600",fried-chicken,strips,false,20
+Hot Wings,A delicious serving of Hot Wings,2.79,"https://images.pexels.com/photos/1565982/pexels-photo-1565982.jpeg?auto=compress&cs=tinysrgb&w=600",fried-chicken,wings,false,25
+Popcorn Chicken,A delicious serving of Popcorn Chicken,2.29,"https://images.pexels.com/photos/5946081/pexels-photo-5946081.jpeg?auto=compress&cs=tinysrgb&w=600",fried-chicken,popcorn,false,18
+BBQ Ribs,A delicious serving of BBQ Ribs,4.99,"https://images.pexels.com/photos/1109198/pexels-photo-1109198.jpeg?auto=compress&cs=tinysrgb&w=600",fried-chicken,ribs,false,7
+Family Bucket,A delicious serving of Family Bucket,8.99,"https://images.pexels.com/photos/2619966/pexels-photo-2619966.jpeg?auto=compress&cs=tinysrgb&w=600",fried-chicken,bucket,false,5
+Spaghetti Bolognese,A delicious serving of Spaghetti Bolognese,3.49,"https://images.pexels.com/photos/1487511/pexels-photo-1487511.jpeg?auto=compress&cs=tinysrgb&w=600",pasta,italian,false,14
+Alfredo Fettuccine,A delicious serving of Alfredo Fettuccine,3.79,"https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?auto=compress&cs=tinysrgb&w=600",pasta,italian,false,11
+Pesto Pasta,A delicious serving of Pesto Pasta,3.99,"https://images.pexels.com/photos/1581388/pexels-photo-1581388.jpeg?auto=compress&cs=tinysrgb&w=600",pasta,italian,false,9
+Spicy Arrabbiata,A delicious serving of Spicy Arrabbiata,3.29,"https://images.pexels.com/photos/1438692/pexels-photo-1438692.jpeg?auto=compress&cs=tinysrgb&w=600",pasta,italian,false,13
+Seafood Pasta,A delicious serving of Seafood Pasta,4.99,"https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=600",pasta,seafood,false,6
+Pancakes & Syrup,A delicious serving of Pancakes & Syrup,2.99,"https://images.pexels.com/photos/3738730/pexels-photo-3738730.jpeg?auto=compress&cs=tinysrgb&w=600",breakfast,sweet,false,10
+French Toast,A delicious serving of French Toast,2.79,"https://images.pexels.com/photos/376464/pexels-photo-376464.jpeg?auto=compress&cs=tinysrgb&w=600",breakfast,sweet,false,8
+Omelette,A delicious serving of Omelette,2.49,"https://images.pexels.com/photos/708567/pexels-photo-708567.jpeg?auto=compress&cs=tinysrgb&w=600",breakfast,savory,false,15
+Scrambled Eggs,A delicious serving of Scrambled Eggs,2.29,"https://images.pexels.com/photos/725991/pexels-photo-725991.jpeg?auto=compress&cs=tinysrgb&w=600",breakfast,savory,false,12
+Breakfast Burrito,A delicious serving of Breakfast Burrito,3.49,"https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg?auto=compress&cs=tinysrgb&w=600",breakfast,savory,false,9
+Mini Burger,A delicious serving of Mini Burger,2.99,"https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=600",kids-menu,main,false,10
+Chicken Nuggets,A delicious serving of Chicken Nuggets,2.49,"https://images.pexels.com/photos/5946081/pexels-photo-5946081.jpeg?auto=compress&cs=tinysrgb&w=600",kids-menu,main,false,15
+Mac & Cheese,A delicious serving of Mac & Cheese,2.79,"https://images.pexels.com/photos/13814644/pexels-photo-13814644.jpeg?auto=compress&cs=tinysrgb&w=600",kids-menu,main,false,12
+Fruit Juice,A delicious serving of Fruit Juice,1.49,"https://images.pexels.com/photos/4065145/pexels-photo-4065145.jpeg?auto=compress&cs=tinysrgb&w=600",kids-menu,drink,false,20
+Ice Cream,A delicious serving of Ice Cream,1.99,"https://images.pexels.com/photos/1352278/pexels-photo-1352278.jpeg?auto=compress&cs=tinysrgb&w=600",kids-menu,dessert,false,18
+"Chef's Steak","A delicious serving of Chef's Steak",9.99,"https://images.pexels.com/photos/1351239/pexels-photo-1351239.jpeg?auto=compress&cs=tinysrgb&w=600",specials,main,true,4
+Grilled Salmon,A delicious serving of Grilled Salmon,8.49,"https://images.pexels.com/photos/2294475/pexels-photo-2294475.jpeg?auto=compress&cs=tinysrgb&w=600",specials,main,true,6
+Lobster Roll,A delicious serving of Lobster Roll,12.99,"https://images.pexels.com/photos/1435904/pexels-photo-1435904.jpeg?auto=compress&cs=tinysrgb&w=600",specials,main,true,3
+Chocolate Lava Cake,A delicious serving of Chocolate Lava Cake,3.99,"https://images.pexels.com/photos/291528/pexels-photo-291528.jpeg?auto=compress&cs=tinysrgb&w=600",specials,dessert,true,8
+Tiramisu,A delicious serving of Tiramisu,3.49,"https://images.pexels.com/photos/1021876/pexels-photo-1021876.jpeg?auto=compress&cs=tinysrgb&w=600",specials,dessert,true,10
+Fresh Orange Juice,A delicious serving of Fresh Orange Juice,1.99,"https://images.pexels.com/photos/67468/orange-juice-splash-pexels-photo.jpg?auto=compress&cs=tinysrgb&w=600",drinks,juice,false,30
+Iced Latte,A delicious serving of Iced Latte,2.49,"https://images.pexels.com/photos/982612/pexels-photo-982612.jpeg?auto=compress&cs=tinysrgb&w=600",drinks,coffee,false,25
+Mojito,A delicious serving of Mojito,3.99,"https://images.pexels.com/photos/1653559/pexels-photo-1653559.jpeg?auto=compress&cs=tinysrgb&w=600",drinks,cocktail,false,15

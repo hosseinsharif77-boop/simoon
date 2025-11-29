@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<!-- ================================= HEAD SECTION ================================= -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simoon - Delicious Cafe</title>
+    
+    <!-- --- External Resources --- -->
+    <!-- Google Fonts: Inter for English -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<!-- ============================== END OF HEAD SECTION ============================== -->
+
+
+<!-- ================================= BODY SECTION ================================= -->
+<body>
+
+    <!-- ======================= GLOBAL ELEMENTS (Outside Main Content) ======================= -->
+    
+    <!-- Flying Image Container (for cart animation) -->
+    <div id="flying-image-container"></div>
+    <!-- ======================= END OF GLOBAL ELEMENTS ======================= -->
+
+
+    <!-- ======================= HEADER & NAVIGATION ======================= -->
+    <!-- Fixed Header Container -->
+    <div id="header-container" class="header-container">
+        <!-- Top Header -->
+        <header class="header-top">
+            <div class="container mx-auto px-4 py-4 flex justify-between items-center main-header">
+                <!-- Hamburger Menu Button (for mobile) -->
+                <button id="hamburger-menu-btn" class="text-gray-300 hover:text-amber-500 transition-colors">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                
+                <!-- Brand Logo/Name -->
+                <div class="brand-center">
+                    <h1 class="text-xl md:text-2xl font-bold">Simoon</h1>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <nav class="desktop-nav hidden md:flex items-center space-x-2">
+                    <a href="#" class="nav-link active" data-page="home">Home</a>
+                    <a href="#" class="nav-link" data-page="menu">Menu</a>
+                    <a href="#" class="nav-link" data-page="catering">Catering & Events</a>
+                </nav>
+                
+                <!-- Empty div for spacing on mobile -->
+                <div class="w-8 md:hidden"></div>
+            </div>
+        </header>
+    </div>
+
+    <!-- Bottom Mobile Navigation -->
+    <nav class="mobile-bottom-nav">
+        <a href="#" class="mobile-bottom-nav-item active" data-page="home">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="mobile-bottom-nav-item" data-page="menu">
+            <i class="fas fa-utensils"></i>
+            <span>Menu</span>
+        </a>
+        <a href="#" class="mobile-bottom-nav-item" data-page="catering">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Events</span>
+        </a>
+    </nav>
+    <!-- ======================= END OF HEADER & NAVIGATION ======================= -->
+
+
+    <!-- ======================= MAIN CONTENT AREA ======================= -->
+    <main>
+        
+        <!-- -------------------------- PAGE 1: HOME -------------------------- -->
+        <section id="home-page" class="page-section active">
+            
+            <!-- --- Welcome Section --- -->
+            <section class="welcome-section">
+                <div class="welcome-content container mx-auto px-4">
+                    <h2 class="serif-font text-4xl md:text-6xl font-bold mb-4 text-white fade-in">Welcome to Simoon</h2>
+                    <p class="text-lg md:text-xl text-gray-200 mb-8 fade-in">Delicious food, refreshing drinks, and unforgettable moments</p>
+                    <button class="mt-8 px-8 py-3 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-lg transition-colors fade-in" data-page="menu">
+                        View Our Menu
+                    </button>
+                </div>
+            </section>
+            
+            <!-- --- Feature Section 1: Fresh Ingredients --- -->
+            <section class="feature-section">
+                <div class="container mx-auto px-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div class="fade-in">
+                            <div class="text-amber-500 text-sm font-semibold mb-2">OUR SPECIALTIES</div>
+                            <h2 class="text-3xl font-bold mb-4">Fresh Ingredients, Exceptional Taste</h2>
+                            <p class="text-gray-300 mb-6">We source finest ingredients and prepare each dish with care and precision. Our chefs combine traditional techniques with innovative flavors to create an unforgettable dining experience.</p>
+                            
+                            <!-- دکمه دسکتاپ -->
+                            <button class="px-6 py-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-lg transition-colors hidden md:block" data-page="menu">
+                                Explore Menu
+                            </button>
+                        </div>
+                        <div class="relative h-96 fade-in">
+                            <video class="w-full h-full object-cover rounded-lg" autoplay muted loop playsinline>
+                                <source src="wel.webp" type="video/webm; codecs=vp9" media="(min-width: 769px)">
+                                <source src="wel.webp" type="video/webm; codecs=vp9" media="(max-width: 768px)">
+                                <source src="grok-video-08b4dde5-0867-4438-8c54-156c616432fd (1).mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                            <div class="parallax-element floating">
+                                <i class="fas fa-pepper-hot text-4xl text-amber-500 opacity-70"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- دکمه موبایل (اینجا اضافه شده) -->
+                        <button class="px-6 py-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-lg transition-colors md:hidden" data-page="menu">
+                            Explore Menu
+                        </button>
+                    </div>
+                </div>
+            </section>
+                        
+            <!-- --- Feature Section 2: Atmosphere --- -->
+            <section class="feature-section bg-gray-800">
+                <div class="container mx-auto px-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 items-center">
+                        <!-- 1. ستون تصویر/ویدیو -->
+                        <div class="relative h-96 order-2 md:order-1 fade-in pb">
+                            <img src="loc3.png" alt="Restaurant atmosphere" class="w-full h-full object-cover rounded-lg">
+                            <div class="parallax-element floating">
+                                <i class="fas fa-utensils text-4xl text-amber-500 opacity-70"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- 2. ستون متن -->
+                        <div class="order-1 md:order-2 fade-in">
+                            <div class="text-amber-500 text-sm font-semibold mb-2">OUR ATMOSPHERE</div>
+                            <h2 class="text-3xl font-bold mb-4">Relaxing Ambiance, Perfect for Any Occasion</h2>
+                            <p class="text-gray-300 mb-6">Whether you're looking for a casual lunch spot or an elegant dinner venue, Simoon offers perfect setting. Our comfortable seating, warm lighting, and attentive staff create an atmosphere where memories are made.</p>
+                            
+                            <!-- دکمه مخصوص دسکتاپ (درون ستون متن) -->
+                            <button class="px-6 py-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-lg transition-colors hidden md:block" data-page="catering">
+                                Book an Event
+                            </button>
+                        </div>
+                        
+                        <!-- 3. دکمه مخصوص موبایل (بیرون از ستون‌ها) -->
+                        <button class="px-6 py-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-lg transition-colors md:hidden order-3" data-page="catering">
+                            Book an Event
+                        </button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- -------------------------- How to Order Section -------------------------- -->
+            <section class="how-to-order-section">
+                <div class="container mx-auto px-4 py-16">
+                    <div class="text-center mb-12">
+                        <h2 class="text-3xl font-bold mb-4">How to Order?</h2>
+                        <p class="text-lg text-gray-300">Ordering your favorite food is as easy as 1-2-3-4!</p>
+                    </div>
+
+                    <div class="order-steps-container">
+                        <!-- گام ۱: منو -->
+                        <div class="order-step fade-in">
+                            <div class="order-step-icon">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <h3 class="order-step-title">1. Browse Menu</h3>
+                            <p class="order-step-description">Explore our delicious menu and find your favorites.</p>
+                        </div>
+
+                        <!-- گام ۲: سبد خرید -->
+                        <div class="order-step fade-in">
+                            <div class="order-step-icon">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <h3 class="order-step-title">2. Add to Cart</h3>
+                            <p class="order-step-description">Add items to your cart and customize your order.</p>
+                        </div>
+
+                        <!-- گام ۳: پرداخت -->
+                        <div class="order-step fade-in">
+                            <div class="order-step-icon">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <h3 class="order-step-title">3. Checkout</h3>
+                            <p class="order-step-description">Review your order and choose your payment method.</p>
+                        </div>
+
+                        <!-- گام ۴: لذت ببرید -->
+                        <div class="order-step fade-in">
+                            <div class="order-step-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <h3 class="order-step-title">4. Enjoy!</h3>
+                            <p class="order-step-description">Sit back and relax. Your order is on its way!</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- ========================== END OF HOW TO ORDER SECTION ========================== -->
+            <!-- ========================== END OF HOW TO ORDER SECTION ========================== -->
+
+            <!-- --- Restaurant Environment Carousel --- -->
+            <!-- --- Restaurant Gallery --- -->
+            <section class="container mx-auto px-4 py-16">
+                <div class="max-w-6xl mx-auto">
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-bold mb-4">Restaurant Gallery</h2>
+                        <p class="text-lg text-gray-300">Take a visual tour of our beautiful space and delicious dishes.</p>
+                    </div>
+                    
+                    <div class="carousel-container">
+                        <div class="carousel-track" id="restaurant-carousel">
+                            <div class="carousel-slide carousel-slide-wide">
+                                <img src="loc6.png" alt="Restaurant Interior">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="loc5.png" alt="Dining Area">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="simoonat.png" alt="Outdoor Seating">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="loc1.png" alt="Bar Area">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="loc4.png" alt="Food Presentation">
+                            </div>
+                        </div>
+                        <button class="carousel-nav carousel-prev" id="carousel-prev">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="carousel-nav carousel-next" id="carousel-next">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <!-- نشانگر‌ها (نقاط) به صورت خودکار توسط جاوا اسکریپت اضافه می‌شوند -->
+                    </div>
+                </div>
+            </section>
+            
+            <!-- --- About Section --- -->
+            <section class="container mx-auto px-4 py-12">
+                <div class="max-w-4xl mx-auto text-center">
+                    <h2 class="text-3xl font-bold mb-6">About Simoon Cafe</h2>
+                    <p class="text-lg text-gray-300 mb-8">
+                        At Simoon Cafe, we believe in creating exceptional dining experiences. Our chefs use only the freshest ingredients to craft delicious meals that will delight your taste buds. Whether you're looking for a quick bite or a full meal, we have something for everyone.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+                        <div class="bg-gray-800 p-6 rounded-lg">
+                            <i class="fas fa-utensils text-amber-500 text-3xl mb-4"></i>
+                            <h3 class="text-xl font-semibold mb-2">Quality Food</h3>
+                            <p class="text-gray-400">Fresh ingredients and expert preparation</p>
+                        </div>
+                        <div class="bg-gray-800 p-6 rounded-lg">
+                            <i class="fas fa-users text-amber-500 text-3xl mb-4"></i>
+                            <h3 class="text-xl font-semibold mb-2">Friendly Service</h3>
+                            <p class="text-gray-400">Our staff is dedicated to making your visit enjoyable</p>
+                        </div>
+                        <div class="bg-gray-800 p-6 rounded-lg">
+                            <i class="fas fa-clock text-amber-500 text-3xl mb-4"></i>
+                            <h3 class="text-xl font-semibold mb-2">Quick Service</h3>
+                            <p class="text-gray-400">Get your food fast without compromising on quality</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </section>
+        <!-- ========================== END OF PAGE 1: HOME ========================== -->
+
+
+        <!-- -------------------------- PAGE 2: MENU --------------------------- -->
+        <section id="menu-page" class="page-section">
+            <!-- --- Sticky Navigation Wrapper --- -->
+            <div class="navigation-wrapper">
+                <!-- Main Category Navigation -->
+                <section id="menu-nav" class="category-nav">
+                    <nav class="container mx-auto px-4 flex justify-center flex-wrap gap-6 md:gap-10 text-lg font-medium">
+                        <button data-main-category="specials" class="category-btn" data-category-image="https://images.pexels.com/photos/1351239/pexels-photo-1351239.jpeg?auto=compress&cs=tinysrgb&w=600">Specials</button>                        
+                        <button data-main-category="pizza" class="category-btn active" data-category-image="pizza.jpg">Pizza</button>
+                        <button data-main-category="sandwich" class="category-btn" data-category-image="sandwich.png">Sandwich</button>
+                        <button data-main-category="fried-chicken" class="category-btn" data-category-image="chike.png">Fried Chicken</button>
+                        <button data-main-category="pasta" class="category-btn" data-category-image="gemini.png">Pasta</button>
+                        <button data-main-category="breakfast" class="category-btn" data-category-image="https://images.pexels.com/photos/3738730/pexels-photo-3738730.jpeg?auto=compress&cs=tinysrgb&w=600">Breakfast</button>
+                        <button data-main-category="kids-menu" class="category-btn" data-category-image="https://images.pexels.com/photos/5946081/pexels-photo-5946081.jpeg?auto=compress&cs=tinysrgb&w=600">Kids Menu</button>
+                        <button data-main-category="drinks" class="category-btn" data-category-image="https://images.pexels.com/photos/67468/orange-juice-splash-pexels-photo.jpg?auto=compress&cs=tinysrgb&w=600">Drinks</button>
+                    </nav>
+                </section>
+                
+                <!-- Sub-Category Navigation -->
+                <section id="subcategory-nav" class="subcategory-nav hidden">
+                    <nav class="container mx-auto px-4 flex justify-center flex-wrap gap-3 md:gap-6 text-base">
+                        <!-- Sub-category buttons will be dynamically inserted here by JavaScript -->
+                    </nav>
+                </section>
+            </div>
+
+            <!-- --- Category Display Section --- -->
+            <section class="category-display-section">
+                <div class="container custom-padding mx-auto">
+                    <!-- کانتینر اصلی حالت ستونی (flex-col) دارد -->
+                    <div id="category-display-wrapper" class="flex flex-col gap-8 w-full">
+                        <!-- ردیف اول: عنوان که تمام عرض را می‌گیرد -->
+                        <div class="category-image-container w-full relative">
+                            <img id="category-image" src="https://images.pexels.com/photos/825661/pexels-photo-825661.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Pizza" class="category-image">
+                            
+                            <!-- باکس مات برای توضیحات در سمت چپ و با عرض یک سوم -->
+                            <div class="category-info-overlay absolute inset-y-0 left-0 w-full md:left-0 md:right-auto md:w-1/3 flex flex-col justify-center p-6 md:p-8">
+                                <p id="category-description" class="category-description">Choose from our delicious selection of pizzas, made with fresh ingredients and baked to perfection.</p>
+                            </div>
+                            
+                            <div id="category-smoke-container" class="smoke-container"></div>
+                        </div>
+                        <h2 id="category-title" class="category-title text-center md:text-right w-full">Pizza American</h2>
+                    </div>
+                </div>
+            </section>
+            <!-- --- NEW: Category Prompt Text --- -->
+            <div id="category-prompt-text" class="container mx-auto px-4 text-center py-4 cc"></div>
+
+            <!-- --- Menu Grid Section --- -->
+            <section class="container mx-auto px-4 py-12">
+                <div id="menu-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                    <!-- Products will be dynamically inserted here by JavaScript -->
+                </div>
+            </section>
+        </section>
+        <!-- ========================== END OF PAGE 2: MENU ========================== -->
+
+        <!-- -------------------------- PAGE 3: CATERING & EVENTS -------------------------- -->
+        <section id="catering-page" class="page-section">
+            <div class="container mx-auto px-4 py-12">
+                <div class="max-w-4xl mx-auto">
+                    <!-- --- Catering Introduction --- -->
+                    <h2 class="text-3xl font-bold mb-6">Catering & Events</h2>
+                    <p class="text-lg text-gray-300 mb-8">
+                        Let Simoon Cafe make your next event unforgettable. We offer a wide range of catering options for corporate events, parties, weddings, and more. Our team will work with you to create a custom menu that fits your needs and budget.
+                    </p>
+                    
+                    <!-- --- Catering Options Grid --- -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+                        <div class="bg-gray-800 p-6 rounded-lg">
+                            <h3 class="text-xl font-semibold mb-4">Corporate Catering</h3>
+                            <p class="text-gray-400 mb-4">Impress your clients and colleagues with our professional catering services.</p>
+                            <ul class="text-gray-400 space-y-2">
+                                <li><i class="fas fa-check text-amber-500 mr-2"></i> Breakfast meetings</li>
+                                <li><i class="fas fa-check text-amber-500 mr-2"></i> Lunch deliveries</li>
+                                <li><i class="fas fa-check text-amber-500 mr-2"></i> Corporate events</li>
+                            </ul>
+                        </div>
+                        <div class="bg-gray-800 p-6 rounded-lg">
+                            <h3 class="text-xl font-semibold mb-4">Private Events</h3>
+                            <p class="text-gray-400 mb-4">Celebrate your special occasions with our delicious food and excellent service.</p>
+                            <ul class="text-gray-400 space-y-2">
+                                <li><i class="fas fa-check text-amber-500 mr-2"></i> Birthday parties</li>
+                                <li><i class="fas fa-check text-amber-500 mr-2"></i> Anniversaries</li>
+                                <li><i class="fas fa-check text-amber-500 mr-2"></i> Family gatherings</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- --- Contact Information --- -->
+                    <div class="mt-12 bg-gray-800 p-8 rounded-lg">
+                        <h3 class="text-2xl font-semibold mb-4">Contact Us for Catering</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <p class="text-gray-400 mb-2"><i class="fas fa-phone text-amber-500 mr-2"></i> Phone: (123) 456-7890</p>
+                                <p class="text-gray-400 mb-2"><i class="fas fa-envelope text-amber-500 mr-2"></i> Email: catering@simooncafe.com</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-400 mb-2"><i class="fas fa-clock text-amber-500 mr-2"></i> Mon-Fri: 9am-6pm</p>
+                                <p class="text-gray-400 mb-2"><i class="fas fa-clock text-amber-500 mr-2"></i> Sat-Sun: 10am-4pm</p>
+                            </div>
+                        </div>
+                        <button class="mt-6 px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-lg transition-colors">
+                            Request a Quote
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- ========================== END OF PAGE 3: CATERING & EVENTS ========================== -->
+
+    </main>
+    <!-- ======================= END OF MAIN CONTENT AREA ======================= -->
+
+
+    <!-- ======================= FOOTER ======================= -->
+    <footer class="footer-section">
+        <div class="container mx-auto px-4">
+            <div class="text-center">
+                <p class="text-gray-400 mb-4">© 2023 Simoon Cafe. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link" aria-label="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="social-link" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="social-link" aria-label="Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="social-link" aria-label="WhatsApp">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- ======================= END OF FOOTER ======================= -->
+
+
+    <!-- ======================= SIDEBARS ======================= -->
+    
+    <!-- User Panel Sidebar (Right) -->
+    <aside id="user-panel-sidebar" class="user-panel-sidebar">
+        <div class="p-4 border-b border-gray-800 flex justify-between items-center">
+            <h3 class="text-xl font-bold">User Panel</h3>
+            <button id="close-user-panel-btn" class="text-gray-400 hover:text-white">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+        </div>
+        <div class="flex-grow overflow-y-auto custom-scrollbar p-4 space-y-6">
+            <!-- Order Type Selection -->
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <h4 class="text-lg font-semibold mb-3">Order Type</h4>
+                <div class="order-type-options">
+                    <div class="order-type-option">
+                        <input type="radio" id="dine-in" name="order-type" value="dine-in" checked>
+                        <label for="dine-in">Dine In</label>
+                    </div>
+                    <div class="order-type-option">
+                        <input type="radio" id="delivery" name="order-type" value="delivery">
+                        <label for="delivery">Delivery</label>
+                    </div>
+                    <div class="order-type-option">
+                        <input type="radio" id="pickup" name="order-type" value="pickup">
+                        <label for="pickup">Pickup</label>
+                    </div>
+                </div>
+                
+                <!-- Table Number Input (shown only for dine-in) -->
+                <div id="table-info-container" class="mt-4">
+                    <h4 class="text-lg font-semibold mb-3">Table Information</h4>
+                    <input type="number" id="table-number" placeholder="Table #" class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 backdrop-blur">
+                </div>
+                
+                <!-- Delivery Address Input (shown only for delivery) -->
+                <div id="delivery-address-container" class="delivery-address-input">
+                    <h4 class="text-lg font-semibold mb-3">Delivery Address</h4>
+                    <input type="text" id="delivery-address" placeholder="Enter your delivery address" class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 backdrop-blur">
+                </div>
+            </div>
+            
+            <!-- Navigation Links for Mobile -->
+            <div class="md:hidden">
+                <h4 class="text-lg font-semibold mb-3">Navigation</h4>
+                <div class="space-y-2">
+                    <a href="#" class="block py-2 text-gray-300 hover:text-amber-500 transition-colors" data-page="home">Home</a>
+                    <a href="#" class="block py-2 text-gray-300 hover:text-amber-500 transition-colors" data-page="menu">Menu</a>
+                    <a href="#" class="block py-2 text-gray-300 hover:text-amber-500 transition-colors" data-page="catering">Catering & Events</a>
+                </div>
+            </div>
+            
+            <!-- Favorites Section -->
+            <div>
+                <h4 class="text-lg font-semibold mb-3 flex items-center gap-2">
+                    <i class="fas fa-heart text-red-500"></i>
+                    <span>My Favorites</span>
+                </h4>
+                <div id="favorites-container" class="grid grid-cols-2 gap-3">
+                    <p class="col-span-2 text-center text-gray-500 text-sm">No favorites yet.</p>
+                </div>
+            </div>
+            
+            <!-- Order History Section -->
+            <div>
+                <h4 class="text-lg font-semibold mb-3 flex items-center gap-2">
+                    <i class="fas fa-history text-amber-500"></i>
+                    <span>Order History</span>
+                </h4>
+                <div class="space-y-2">
+                    <p class="text-center text-gray-500 text-sm">No past orders.</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- در index.html، کل تگ <aside id="order-sidebar"> را با این کد جایگزین کنید -->
+    <aside id="order-sidebar" class="order-sidebar">
+        <div class="p-4 border-b border-gray-800 flex justify-between items-center">
+            <h3 class="text-xl font-bold">Your Order</h3>
+            <button id="close-order-btn" class="text-gray-400 hover:text-white">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+        </div>
+
+        <!-- بخش ۱: بررسی سفارش (مرحله اول) -->
+        <div id="order-review-container" class="order-step-container flex flex-col h-full">
+            <div class="flex-grow overflow-y-auto custom-scrollbar p-4">
+                <div id="order-items">
+                    <p class="text-center text-gray-500 mt-10">You haven't ordered anything yet.</p>
+                </div>
+            </div>
+            
+            <!-- بخش خلاصه سفارش (مجموع) -->
+            <div class="order-summary-container">
+                <div class="flex justify-between items-center">
+                    <span class="text-lg font-semibold">Total:</span>
+                    <span id="order-total-review" class="text-xl font-bold text-amber-500">$0.00</span>
+                </div>
+            </div>
+
+            <div class="pp1 border-t border-gray-800">
+                <button id="submit-order-btn" class="w-full bg-amber-600 hover:bg-amber-700 text-white py-3 submit-order-btn font-semibold transition-colors">Proceed to Payment</button>
+            </div>
+        </div>
+
+        <!-- بخش ۲: انتخاب روش پرداخت (مرحله دوم) - به طور پیش‌فرض مخفی -->
+        <div id="payment-form-container" class="order-step-container hidden flex flex-col h-full">
+            <div class="p-4 border-b border-gray-800 flex-shrink-0">
+                <h3 class="text-xl font-bold mb-4">Payment Method</h3>
+                <!-- Radio buttons را مخفی می‌کنیم اما برای منطق فرم نگهشان می‌داریم -->
+                <div style="display: none;">
+                    <input type="radio" id="credit-card" name="payment-method" value="credit-card">
+                    <input type="radio" id="paypal" name="payment-method" value="paypal">
+                    <input type="radio" id="crypto" name="payment-method" value="crypto">
+                    <input type="radio" id="cash" name="payment-method" value="cash">
+                </div>
+
+                <!-- گرید باکس‌های روش پرداخت -->
+                <div class="payment-methods-grid">
+                    <div class="payment-method-box" data-payment-method="credit-card">
+                        <i class="fas fa-credit-card"></i>
+                        <span>Credit Card</span>
+                    </div>
+                    <div class="payment-method-box" data-payment-method="paypal">
+                        <i class="fab fa-paypal"></i>
+                        <span>PayPal</span>
+                    </div>
+                    <div class="payment-method-box" data-payment-method="crypto">
+                        <i class="fab fa-bitcoin"></i>
+                        <span>Crypto</span>
+                    </div>
+                    <div class="payment-method-box" data-payment-method="cash">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>Cash</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- کانتینر برای نمایش جزئیات هر روش پرداخت -->
+            <div id="payment-details-container" class="flex-grow overflow-y-auto custom-scrollbar">
+                <!-- جزئیات کارت اعتباری -->
+                <div id="credit-card-details" class="payment-details p-4">
+                    <div class="bg-white/10 p-4 rounded-lg space-y-3">
+                        <input type="text" placeholder="Cardholder Name" class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        <input type="text" placeholder="Card Number" class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        <div class="flex gap-3">
+                            <input type="text" placeholder="MM/YY" class="flex-1 bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            <input type="text" placeholder="CVV" class="w-24 bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        </div>
+                    </div>
+                </div>
+                <!-- جزئیات پی‌پل -->
+                <div id="paypal-details" class="payment-details p-4">
+                    <div class="bg-white/10 p-4 rounded-lg text-center">
+                        <i class="fab fa-paypal text-6xl text-blue-500 mb-4"></i>
+                        <p class="text-gray-300">You will be redirected to PayPal to complete your purchase.</p>
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=PayPal" alt="PayPal QR Code" class="mx-auto mt-4">
+                    </div>
+                </div>
+                <!-- جزئیات ارز دیجیتال -->
+                <div id="crypto-details" class="payment-details p-4">
+                    <div class="bg-white/10 p-4 rounded-lg text-center">
+                        <i class="fab fa-bitcoin text-6xl text-orange-500 mb-4"></i>
+                        <p class="text-gray-300">Scan the QR code with your crypto wallet.</p>
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=CryptoWalletAddress" alt="Crypto QR Code" class="mx-auto mt-4">
+                    </div>
+                </div>
+                <!-- جزئیات پرداخت نقدی -->
+                <div id="cash-details" class="payment-details p-4">
+                    <div class="bg-white/10 p-4 rounded-lg text-center">
+                        <i class="fas fa-money-bill-wave text-6xl text-green-500 mb-4"></i>
+                        <p class="text-gray-300">Please pay the total amount to our staff upon delivery or pickup.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- بخش خلاصه سفارش (مجموع) -->
+            <div class="order-summary-container">
+                <div class="flex justify-between items-center">
+                    <span class="text-lg font-semibold">Total:</span>
+                    <span id="order-total" class="text-xl font-bold text-amber-500">$0.00</span>
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-gray-800 flex gap-3 flex-shrink-0">
+                <button id="cancel-payment-btn" class="cancel-payment-btn flex-1  py-3 font-semibold transition-colors">Cancel</button>
+                <button id="confirm-payment-btn" class="flex-1 confirm-payment-btn text-white py-3 font-semibold transition-colors">Confirm Payment</button>
+            </div>
+        </div>
+    </aside>
+    <!-- ======================= END OF SIDEBARS ======================= -->
+
+
+    <!-- ======================= OVERLAYS & FLOATING ELEMENTS ======================= -->
+    
+    <!-- Overlay for Sidebars (dark background) -->
+    <div id="order-overlay" class="overlay fixed inset-0 bg-black bg-opacity-60 z-40 hidden"></div>
+    <div id="user-panel-overlay" class="overlay fixed inset-0 bg-black bg-opacity-60 z-40 hidden"></div>
+
+    <!-- Menu Page Order Button (Floating Cart) -->
+    <button id="menu-order-btn" class="menu-order-btn hidden">
+        <i class="fas fa-shopping-cart fa-flip-horizontal text-xl text-gray-900"></i>
+        <span id="menu-order-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold hidden">0</span>
+    </button>
+    <!-- ======================= END OF OVERLAYS & FLOATING ELEMENTS ======================= -->
+    <!-- --- NEW: Scroll to Next Category Icon --- -->
+
+    <div id="scroll-to-next-category" class="hidden">
+        <i class="fas fa-chevron-down"></i>
+    </div>
+
+    <!-- ======================= SCRIPTS ======================= -->
+    <!-- Custom JavaScript -->
+    <script type="module" src="js/app.js"></script>
+    <script type="module" src="js/api.js"></script> <!-- <-- این خط را اضافه کنید -->
+
+    <!-- ======================= END OF SCRIPTS ======================= -->
+
+</body>
+<!-- ============================== END OF BODY SECTION ============================== -->
+
+</html>
