@@ -4,108 +4,82 @@
 // Author: [Your Name]
 // Last Modified: [Date]
 // ============================== END OF FILE HEADER ==============================
+import { config } from './config.js';
+import { 
+    apiLogger, 
+    validateMenuData, 
+    checkImagesExist, 
+    createPerformanceMonitor // <--- این خط حتماً باید وجود داشته باشد
+} from './logger.js';
+import { setBackgroundImage } from './utils.js';
 
-// Base URL for the API
-const API_BASE_URL = 'http://localhost:5000/api';
-
-// متغیری برای نگهداری آخرین داده‌های دریافت شده جهت مقایسه
 let lastMenuDataHash = null;
-
+const welcomeSection = document.querySelector('.welcome-section');
+setBackgroundImage(welcomeSection, 'locwel.png');
 /**
  * Fetches all menu items and custom categories from the server
  * @returns {Promise<Array<Object>>} Array of menu items
  */
 export const fetchMenuItems = async () => {
-    console.log('\n\n===== 📡 [API] شروع دریافت آیتم‌های منو و دسته‌بندی‌ها از سرور =====');
+    const monitor = createPerformanceMonitor('fetchMenuItems');
+    
     try {
-        // ۱. دریافت محصولات از سرور
-        const menuResponse = await fetch(`${API_BASE_URL}/menu`);
-        if (!menuResponse.ok) {
-            throw new Error(`HTTP error! status: ${menuResponse.status}`);
-        }
-        let menuData = await menuResponse.json();
-        console.log('📊 داده‌های خام محصولات دریافت شده از سرور:', menuData);
-        console.log('📊 تعداد کل محصولات دریافت شده:', menuData.length);
-
-        // ۲. دریافت دسته‌بندی‌های سفارشی از سرور
-        let allCategories = new Set();
-        let allSubcategories = new Set();
-
-        try {
-            const categoriesResponse = await fetch(`${API_BASE_URL}/admin/custom-categories`);
-            if (categoriesResponse.ok) {
-                const categoriesData = await categoriesResponse.json();
-                console.log('✅ دسته‌بندی‌های سفارشی دریافت شد:', categoriesData);
-
-                // استخراج دسته‌های اصلی و زیرمجموعه‌ها
-                categoriesData.forEach(item => {
-                    if (item.type === 'category') {
-                        allCategories.add(item.name);
-                    } else if (item.type === 'subcategory') {
-                        allSubcategories.add(item.name);
-                    }
-                });
-            } else {
-                console.warn('خطا در دریافت دسته‌بندی‌های سفارشی، فقط از محصولات استفاده می‌شود.');
-            }
-        } catch (categoriesError) {
-            console.error('خطا در دریافت دسته‌بندی‌های سفارشی:', categoriesError);
-        }
-
-        // ۳. استخراج دسته‌ها و زیرمجموعه‌ها از محصولات
-        menuData.forEach(item => {
-            if (item.category) allCategories.add(item.category);
-            if (item.sub_category) allSubcategories.add(item.sub_category);
-        });
-
-        // ۴. افزودن دسته‌های سفارشی به لیست (اگر محصولی با آن دسته وجود ندارد)
-        const finalCategories = Array.from(allCategories);
-        finalCategories.forEach(cat => {
-            if (!menuData.some(item => item.category === cat)) {
-                // یک محصول ساختگی برای نمایش دسته اضافه می‌کنیم
-                menuData.push({
-                    id: `custom-cat-${cat}`,
-                    name: `محصولی برای ${cat} یافت نشد`,
-                    category: cat,
-                    sub_category: null,
-                    price: 0,
-                    stock_quantity: 0,
-                    is_special: false,
-                    image: '',
-                    description: ''
-                });
-            }
-        });
-
-        // ۵. تبدیل داده‌ها به فرمت مورد نیاز فرانت‌اند
-        const transformedData = menuData.map(item => ({
-            id: item.id,
-            name: item.name,
-            description: item.description,
-            price: parseFloat(item.price),
-            mainCategory: item.category, // Map 'category' to 'mainCategory'
-            subCategory: item.sub_category, // Map 'sub_category' to 'subCategory'
-            image: item.image,
-            available: item.stock_quantity, // Map 'stock_quantity' to 'available'
-            isSpecial: item.is_special // Map 'is_special' to 'isSpecial'
-        }));
-
-        // ذخیره داده‌های تمام دسته‌ها و زیرمجموعه‌ها برای استفاده در بخش UI
-        window.allCategories = finalCategories.sort();
-        window.allSubcategories = Array.from(allSubcategories).sort();
-
-        console.log('🔄 داده‌های تبدیل شده برای فرانت:', transformedData);
-        console.log('✅ [API] دریافت و تبدیل داده‌ها با موفقیت انجام شد.');
-        console.log('===== 📡 [API] پایان دریافت آیتم‌های منو از سرور =====\n\n');
-        window.allMenuItems = transformedData;
+        apiLogger.section('Fetch Menu Items');
         
-        // محاسبه یک "هش" ساده از داده‌ها برای مقایسه سریع
-        lastMenuDataHash = JSON.stringify(transformedData.sort((a, b) => a.id - b.id));
+        // دریافت محصولات از سرور
+        const productsResponse = await fetch(`${config.API_BASE_URL}/api/menu`);
+        
+        if (!productsResponse.ok) {
+            throw new Error(`Server responded with ${productsResponse.status}: ${productsResponse.statusText}`);
+        }
+        
+        const productsData = await productsResponse.json();
+        apiLogger.debug('Products data received from server', productsData);
+        
+        // دریافت دسته‌بندی‌های سفارشی از سرور
+        const categoriesResponse = await fetch(`${config.API_BASE_URL}/api/admin/custom-categories`);
+        const categoriesData = categoriesResponse.ok ? await categoriesResponse.json() : [];
+        apiLogger.debug('Custom categories received from server', categoriesData);
+        
+        // تبدیل داده‌های محصولات به ساختار مورد انتظار فرانت
+        const transformedData = productsData.map(item => ({
+            ...item,
+            mainCategory: item.category,       // تبدیل category به mainCategory
+            subCategory: item.sub_category,     // تبدیل sub_category به subCategory
+            // Keep the ingredients array as is, it will be processed in menu.js
+            ingredients: item.ingredients || []
+        }));
+        
+        // Validate the transformed data
+        const validation = validateMenuData(transformedData);
+        apiLogger.logDataValidation('Menu Items', transformedData, validation.isValid, validation.issues);
+        
+        // Check if images exist
+        if (validation.isValid) {
+            apiLogger.info('Checking if menu item images exist...');
+            checkImagesExist(transformedData).then(results => {
+                const missingImages = results.filter(result => !result.exists);
+                if (missingImages.length > 0) {
+                    apiLogger.warn(`Found ${missingImages.length} missing images`, missingImages);
+                } else {
+                    apiLogger.info('All menu item images loaded successfully');
+                }
+            });
+        }
+        
+        apiLogger.logApiCall('GET', `${config.API_BASE_URL}/api/menu`, null, transformedData);
+        console.log('DEBUG: Fetching from URL:', config.API_BASE_URL);
+
+        const duration = monitor.end({ itemCount: transformedData.length });
+        apiLogger.endSection();
         
         return transformedData;
     } catch (error) {
-        console.error('❌ [API] خطا در دریافت آیتم‌های منو:', error);
-        return [];
+        apiLogger.logApiCall('GET', `${config.API_BASE_URL}/api/menu`, null, null, error);
+            console.log('DEBUG: Fetching from URL:', config.API_BASE_URL);
+
+        apiLogger.endSection();
+        throw error;
     }
 };
 
@@ -114,44 +88,52 @@ export const fetchMenuItems = async () => {
  * @returns {Promise<boolean>} True if data has changed, false otherwise.
  */
 export const checkForMenuUpdates = async () => {
-    console.log('\n\n===== 🔍 [API] شروع بررسی به‌روزرسانی‌های منو =====');
+    const monitor = createPerformanceMonitor('checkForMenuUpdates');
+    
+    apiLogger.section('Check for Menu Updates');
+    
     try {
-        const response = await fetch(`${API_BASE_URL}/menu`);
+        const response = await fetch(`${config.API_BASE_URL}/api/menu`);
         if (!response.ok) {
-            console.warn('⚠️ [API] نمی‌توان به‌روزرسانی‌ها را بررسی کرد، سرور ممکن است در دسترس نباشد.');
+            apiLogger.warn('Could not check for updates, server might be unavailable');
+            apiLogger.endSection();
             return false;
         }
+        
         const data = await response.json();
         
         const transformedData = data.map(item => ({
             id: item.id,
             name: item.name,
-            description: item.description,
             price: parseFloat(item.price),
             mainCategory: item.category,
             subCategory: item.sub_category,
             image: item.image,
             available: item.stock_quantity,
-            isSpecial: item.is_special
+            isSpecial: item.is_special,
+            ingredients: item.ingredients || []
         }));
         
         const newDataHash = JSON.stringify(transformedData.sort((a, b) => a.id - b.id));
-        console.log('🔢 [API] هش داده‌های جدید:', newDataHash.substring(0, 50) + '...');
-        console.log('🔢 [API] هش داده‌های قبلی:', lastMenuDataHash ? lastMenuDataHash.substring(0, 50) + '...' : 'N/A');
-
+        
         if (newDataHash !== lastMenuDataHash) {
+            apiLogger.info('Menu data has changed, update required');
             lastMenuDataHash = newDataHash;
             window.allMenuItems = transformedData;
-            console.log('🔄 [API] داده‌های منو تغییر کرده است! به‌روزرسانی UI لازم است.');
-            console.log('===== 🔍 [API] پایان بررسی به‌روزرسانی‌های منو (تغییر یافت) =====\n\n');
-            return true; // تغییر کرده است
+            
+            const duration = monitor.end({ hasChanges: true });
+            apiLogger.endSection();
+            return true;
         } else {
-            console.log('✅ [API] داده‌های منو تغییری نکرده است.');
-            console.log('===== 🔍 [API] پایان بررسی به‌روزرسانی‌های منو (بدون تغییر) =====\n\n');
-            return false; // تغییری نکرده است
+            apiLogger.info('Menu data has not changed');
+            
+            const duration = monitor.end({ hasChanges: false });
+            apiLogger.endSection();
+            return false;
         }
     } catch (error) {
-        console.error('❌ [API] خطا در بررسی به‌روزرسانی‌های منو:', error);
+        apiLogger.error('Error checking for menu updates', error);
+        apiLogger.endSection();
         return false;
     }
 };

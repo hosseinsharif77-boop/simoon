@@ -89,7 +89,7 @@
         <section id="home-page" class="page-section active">
             
             <!-- --- Welcome Section --- -->
-            <section class="welcome-section">
+            <section class="welcome-section" data-bg-image="locwel.png">
                 <div class="welcome-content container mx-auto px-4">
                     <h2 class="serif-font text-4xl md:text-6xl font-bold mb-4 text-white fade-in">Welcome to Simoon</h2>
                     <p class="text-lg md:text-xl text-gray-200 mb-8 fade-in">Delicious food, refreshing drinks, and unforgettable moments</p>
@@ -115,9 +115,9 @@
                         </div>
                         <div class="relative h-96 fade-in">
                             <video class="w-full h-full object-cover rounded-lg" autoplay muted loop playsinline>
-                                <source src="wel.webp" type="video/webm; codecs=vp9" media="(min-width: 769px)">
-                                <source src="wel.webp" type="video/webm; codecs=vp9" media="(max-width: 768px)">
-                                <source src="grok-video-08b4dde5-0867-4438-8c54-156c616432fd (1).mp4" type="video/mp4">
+                                <source data-src="wel.webp" type="video/webm; codecs=vp9" media="(min-width: 769px)">
+                                <source data-src="wel.webp" type="video/webm; codecs=vp9" media="(max-width: 768px)">
+                                <source data-src="grok-video-08b4dde5-0867-4438-8c54-156c616432fd (1).mp4" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
                             <div class="parallax-element floating">
@@ -139,7 +139,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 items-center">
                         <!-- 1. ستون تصویر/ویدیو -->
                         <div class="relative h-96 order-2 md:order-1 fade-in pb">
-                            <img src="loc3.png" alt="Restaurant atmosphere" class="w-full h-full object-cover rounded-lg">
+                            <img data-src="loc3.png" alt="Restaurant atmosphere" class="w-full h-full object-cover rounded-lg">
                             <div class="parallax-element floating">
                                 <i class="fas fa-utensils text-4xl text-amber-500 opacity-70"></i>
                             </div>
@@ -227,19 +227,19 @@
                     <div class="carousel-container">
                         <div class="carousel-track" id="restaurant-carousel">
                             <div class="carousel-slide carousel-slide-wide">
-                                <img src="loc6.png" alt="Restaurant Interior">
+                                <img data-src="loc6.png" alt="Restaurant Interior">
                             </div>
                             <div class="carousel-slide">
-                                <img src="loc5.png" alt="Dining Area">
+                                <img data-src="loc5.png" alt="Dining Area">
                             </div>
                             <div class="carousel-slide">
-                                <img src="simoonat.png" alt="Outdoor Seating">
+                                <img data-src="simoonat.png" alt="Outdoor Seating">
                             </div>
                             <div class="carousel-slide">
-                                <img src="loc1.png" alt="Bar Area">
+                                <img data-src="loc1.png" alt="Bar Area">
                             </div>
                             <div class="carousel-slide">
-                                <img src="loc4.png" alt="Food Presentation">
+                                <img data-src="loc4.png" alt="Food Presentation">
                             </div>
                         </div>
                         <button class="carousel-nav carousel-prev" id="carousel-prev">
@@ -290,14 +290,15 @@
                 <!-- Main Category Navigation -->
                 <section id="menu-nav" class="category-nav">
                     <nav class="container mx-auto px-4 flex justify-center flex-wrap gap-6 md:gap-10 text-lg font-medium">
-                        <button data-main-category="specials" class="category-btn" data-category-image="https://images.pexels.com/photos/1351239/pexels-photo-1351239.jpeg?auto=compress&cs=tinysrgb&w=600">Specials</button>                        
-                        <button data-main-category="pizza" class="category-btn active" data-category-image="pizza.jpg">Pizza</button>
-                        <button data-main-category="sandwich" class="category-btn" data-category-image="sandwich.png">Sandwich</button>
-                        <button data-main-category="fried-chicken" class="category-btn" data-category-image="chike.png">Fried Chicken</button>
-                        <button data-main-category="pasta" class="category-btn" data-category-image="gemini.png">Pasta</button>
-                        <button data-main-category="breakfast" class="category-btn" data-category-image="https://images.pexels.com/photos/3738730/pexels-photo-3738730.jpeg?auto=compress&cs=tinysrgb&w=600">Breakfast</button>
-                        <button data-main-category="kids-menu" class="category-btn" data-category-image="https://images.pexels.com/photos/5946081/pexels-photo-5946081.jpeg?auto=compress&cs=tinysrgb&w=600">Kids Menu</button>
-                        <button data-main-category="drinks" class="category-btn" data-category-image="https://images.pexels.com/photos/67468/orange-juice-splash-pexels-photo.jpg?auto=compress&cs=tinysrgb&w=600">Drinks</button>
+                        <button data-main-category="specials" class="category-btn" data-category-image-name="https://images.pexels.com/photos/1351239/pexels-photo-1351239.jpeg?auto=compress&cs=tinysrgb&w=600">Specials</button>                        
+                        <button data-main-category="pizza" class="category-btn active" data-category-image-name="pizza.jpg">Pizza</button>
+                        <button data-main-category="sandwich" class="category-btn" data-category-image-name="sandwich.png">Sandwich</button>
+                        <button data-main-category="fried-chicken" class="category-btn" data-category-image-name="chike.png">Fried Chicken</button>
+                        <button data-main-category="pasta" class="category-btn" data-category-image-name="gemini.png">Pasta</button>
+                        <button data-main-category="breakfast" class="category-btn" data-category-image-name="https://images.pexels.com/photos/3738730/pexels-photo-3738730.jpeg?auto=compress&cs=tinysrgb&w=600">Breakfast</button>
+                        <button data-main-category="kids-menu" class="category-btn" data-category-image-name="https://images.pexels.com/photos/5946081/pexels-photo-5946081.jpeg?auto=compress&cs=tinysrgb&w=600">Kids Menu</button>
+                        <button data-main-category="drinks" class="category-btn" data-category-image-name="https://images.pexels.com/photos/67468/orange-juice-splash-pexels-photo.jpg?auto=compress&cs=tinysrgb&w=600">Drinks</button>
+                        <!-- دسته‌بندی‌های سفارشی از طریق جاوا اسکریپت اضافه می‌شوند -->
                     </nav>
                 </section>
                 
@@ -316,7 +317,7 @@
                     <div id="category-display-wrapper" class="flex flex-col gap-8 w-full">
                         <!-- ردیف اول: عنوان که تمام عرض را می‌گیرد -->
                         <div class="category-image-container w-full relative">
-                            <img id="category-image" src="https://images.pexels.com/photos/825661/pexels-photo-825661.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Pizza" class="category-image">
+                            <img id="category-image" data-src="https://images.pexels.com/photos/825661/pexels-photo-825661.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Pizza" class="category-image">
                             
                             <!-- باکس مات برای توضیحات در سمت چپ و با عرض یک سوم -->
                             <div class="category-info-overlay absolute inset-y-0 left-0 w-full md:left-0 md:right-auto md:w-1/3 flex flex-col justify-center p-6 md:p-8">
@@ -329,17 +330,29 @@
                     </div>
                 </div>
             </section>
+            
+            <!-- --- NEW: Specials Carousel Section --- -->
+            <section id="specials-carousel-section" class="container mx-auto px-4 py-8 hidden">
+                <div class="specials-carousel-container">
+                    <div class="specials-carousel-track">
+                        <!-- Carousel slides will be dynamically inserted here by JavaScript -->
+                    </div>
+                    <!-- Carousel indicators will be dynamically inserted here by JavaScript -->
+                </div>
+            </section>
+            
             <!-- --- NEW: Category Prompt Text --- -->
             <div id="category-prompt-text" class="container mx-auto px-4 text-center py-4 cc"></div>
 
             <!-- --- Menu Grid Section --- -->
             <section class="container mx-auto px-4 py-12">
-                <div id="menu-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                <div id="menu-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 menu-grid">
                     <!-- Products will be dynamically inserted here by JavaScript -->
                 </div>
             </section>
         </section>
-        <!-- ========================== END OF PAGE 2: MENU ========================== -->
+        <!-- -------------------------- PAGE 2: end --------------------------- -->
+
 
         <!-- -------------------------- PAGE 3: CATERING & EVENTS -------------------------- -->
         <section id="catering-page" class="page-section">
@@ -638,8 +651,9 @@
 
     <!-- ======================= SCRIPTS ======================= -->
     <!-- Custom JavaScript -->
+    <script type="module" src="js/logger.js"></script>
+
     <script type="module" src="js/app.js"></script>
-    <script type="module" src="js/api.js"></script> <!-- <-- این خط را اضافه کنید -->
 
     <!-- ======================= END OF SCRIPTS ======================= -->
 

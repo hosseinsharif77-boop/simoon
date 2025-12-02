@@ -185,7 +185,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-image: url('../locwel.png');
+    /* background-image: url('../images/locwel.png'); */
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -338,6 +338,8 @@ body {
     background-color: #1a1a1a; /* رنگ اصلی و پیش‌فرض */
     border-bottom: 1px solid #374151;
     /* transition: background-color 0.3s ease; */ /* این خط را حذف کنید تا تداخلی پیش نیاید */
+    /* transition: opacity 0.3s ease, transform 0.3s ease; */
+
 }
 
 /* این کلاس فقط در موبایل اضافه می‌شود و بک‌گراند را تغییر می‌دهد */
@@ -630,10 +632,7 @@ body {
 }
 
 /* --- Product Cards --- */
-.product-card-wrapper {
-    position: relative;
-    padding-top: 40px;
-}
+/* استایل‌های اصلی کارت محصول */
 .product-card {
     position: relative;
     background-color: #1f2937;
@@ -646,13 +645,15 @@ body {
     flex-direction: column;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+
 .product-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
+
 .product-image-container {
     position: absolute;
-    top: -20px;
+    top: -70px;
     left: 50%;
     transform: translateX(-50%);
     width: 100px;
@@ -663,11 +664,13 @@ body {
     box-shadow: 0 4px 15px rgba(0,0,0,0.4);
     z-index: 10;
 }
+
 .product-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
+
 .card-content {
     text-align: center;
     flex-grow: 1;
@@ -675,6 +678,166 @@ body {
     flex-direction: column;
     justify-content: space-between;
 }
+
+.menu-item-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #f9fafb;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+}
+
+.menu-item-details {
+    /* margin-bottom: 1rem; */
+    text-align: left;
+}
+
+.ingredients-section {
+    margin-bottom: 0.75rem;
+}
+
+.ingredients-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #d1d5db;
+    margin-bottom: 0.25rem;
+}
+
+.menu-item-description {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    line-height: 1.3;
+}
+
+.ingredient-item {
+    display: inline-block;
+    margin-right: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.ingredient-quantity {
+    font-weight: 600;
+    color: #fbbf24;
+}
+
+.menu-item-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: auto;
+}
+
+.price-row {
+    display: flex;
+    justify-content: center;
+}
+
+.stock-row {
+    display: flex;
+    justify-content: center;
+}
+
+.menu-item-price {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fbbf24;
+}
+
+.menu-item-stock {
+    font-size: 0.75rem;
+}
+
+.favorite-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(31, 41, 55, 0.8);
+    color: #ef4444;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    z-index: 11;
+}
+
+.favorite-btn:hover { 
+    background: rgba(31, 41, 55, 1); 
+    transform: scale(1.1); 
+}
+
+.favorite-btn.active { 
+    color: #fbbf24; 
+}
+
+
+.add-to-order-controls {
+    display: flex;
+    justify-content: center;
+    /* margin-top: 0.75rem; */
+}
+
+/* Responsive برای موبایل */
+@media (max-width: 640px) {
+    .product-card {
+        padding: 12px;
+        padding-top: 40px;
+    }
+    
+    /* .product-image-container {
+        width: 60px;
+        height: 60px;
+        top: -15px;
+    } */
+    
+    .menu-item-name {
+        font-size: 0.95rem;
+    }
+    
+    .ingredients-title {
+        font-size: 0.8rem;
+    }
+    
+    .menu-item-description {
+        font-size: 0.7rem;
+    }
+    
+    .menu-item-price {
+        font-size: 0.9rem;
+    }
+    
+    .menu-item-stock {
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    #menu-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    .product-card {
+        padding: 10px;
+        padding-top: 35px;
+    }
+    
+    /* .product-image-container {
+        width: 50px;
+        height: 50px;
+    } */
+    
+    .menu-item-name {
+        font-size: 0.85rem;
+    }
+    
+    .menu-item-description {
+        font-size: 0.65rem;
+    }
+}
+
 .favorite-btn {
     position: absolute;
     top: 10px;
@@ -1529,7 +1692,9 @@ body.menu-page-active .footer-section {
         padding-bottom: 60px !important; /* Space for bottom nav */
     }
 }
-
+.menu-grid{
+    gap: 5rem 1rem; 
+}
 @media (max-width: 640px) {
     .category-nav nav {
         gap: 0.5rem;
@@ -1541,8 +1706,25 @@ body.menu-page-active .footer-section {
     }
     #menu-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 2rem;
+        gap: 5rem 1rem;
     }
+}
+/* .menu-grid.loading {
+    opacity: 0;
+} */
+.menu-item {
+    /* opacity: 0; */
+    transform: translateY(20px);
+    /* animation: fadeInUp 0.5s ease forwards; */
+    animation-delay: calc(var(--item-index) * 0.05s);
+}
+
+/* خطوط جداکننده بین اجزای کارت محصول */
+.separator-line {
+    height: 1px;
+    background: linear-gradient(to right, transparent, #374151, transparent);
+    margin: 0.5rem 0;
+    width: 100%;
 }
 
 @media (max-width: 480px) {

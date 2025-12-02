@@ -37,6 +37,9 @@ export const state = {
 };
 // ========================== END OF STATE MANAGEMENT ==========================
 
+// مسیر پایه برای تصاویر Supabase
+// این مقدار را با شناسه پروژه Supabase خود جایگزین کنید
+export const IMAGE_BASE_PATH = 'https://kgareesfljwsclqljqvr.supabase.co/storage/v1/object/public/images/';
 
 // ================================= DOM ELEMENTS =================================
 /**
@@ -95,13 +98,27 @@ export const elements = {
 };
 // ========================== END OF DOM ELEMENTS ==========================
 
-
 // ================================= APPLICATION CONFIGURATION =================================
 /**
  * @description Application-wide configuration constants.
  * Add any global settings, timeouts, or API endpoints here.
  */
+
+// --- تشخیص خودکار محیط و تنظیم آدرس API ---
+let API_BASE_URL;
+
+if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+    // محیط توسعه (Development)
+    API_BASE_URL = 'http://localhost:5000';
+} else {
+    // محیط تولید (Production) - آدرس سرور خود را اینجا قرار دهید
+    API_BASE_URL = 'https://simoon.onrender.com'; // <--- این آدرس را با آدرس بک‌اند خود در Render جایگزین کنید
+}
+
 export const config = {
+    /** @type {string} The base URL for the backend API. */
+    API_BASE_URL: API_BASE_URL, // استفاده از مقدار تعیین شده بالا
+    
     /** @type {number} Interval in milliseconds for the main carousel auto-play. */
     mainCarouselInterval: 5000,
     /** @type {number} Interval in milliseconds for the specials carousel auto-play. */

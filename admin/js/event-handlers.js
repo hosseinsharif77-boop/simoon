@@ -1,0 +1,115 @@
+/**
+ * Simoon Cafe Admin Panel - Event Handlers (نسخه اصلاح شده و نهایی)
+ */
+(function(admin) {
+    'use strict';
+
+    /**
+     * تمام رویدادهای مورد نیاز برای پنل ادمین را تنظیم می‌کند.
+     */
+    admin.setupEventListeners = function() {
+        console.log('EVENT-HANDLERS: Setting up event listeners...');
+        
+        // --- رویدادهای ناوبری (Navigation) ---
+        if (admin.dom.previewBtn) {
+            admin.dom.previewBtn.addEventListener('click', admin.toggleView);
+        }
+        
+        if (admin.dom.logoutBtn) {
+            admin.dom.logoutBtn.addEventListener('click', admin.logout);
+        }
+        
+        // --- رویدادهای مربوط به دکمه‌های ذخیره و حذف در مودال‌ها ---
+        if (admin.dom.saveProductBtn) {
+            admin.dom.saveProductBtn.addEventListener('click', admin.saveProduct);
+        }
+        
+        if (admin.dom.saveCategoryBtn) {
+            admin.dom.saveCategoryBtn.addEventListener('click', admin.saveCategory);
+        }
+        
+        if (admin.dom.deleteProductBtn) {
+            admin.dom.deleteProductBtn.addEventListener('click', () => {
+                if (admin.state.currentEditingId) {
+                    admin.confirmDeleteProduct(admin.state.currentEditingId);
+                }
+            });
+        }
+        
+        if (admin.dom.deleteCategoryBtn) {
+            admin.dom.deleteCategoryBtn.addEventListener('click', () => {
+                if (admin.state.currentEditingId) {
+                    if (admin.state.currentEditingType === 'category') {
+                        admin.confirmDeleteCategory(admin.state.currentEditingId);
+                    } else {
+                        admin.confirmDeleteSubcategory(admin.dom.parentCategory.value, admin.state.currentEditingId);
+                    }
+                }
+            });
+        }
+        
+        // --- رویدادهای مربوط به فرم محصول ---
+        if (admin.dom.addIngredientBtn) {
+            admin.dom.addIngredientBtn.addEventListener('click', () => {
+                admin.addIngredientRow();
+            });
+        }
+        
+                // --- NEW EVENT LISTENERS FOR IMAGE UPLOAD ---
+        if (admin.dom.uploadImageBtn) {
+            admin.dom.uploadImageBtn.addEventListener('click', () => {
+                admin.dom.categoryImageUpload.click();
+            });
+        }
+
+        if (admin.dom.categoryImageUpload) {
+            admin.dom.categoryImageUpload.addEventListener('change', admin.handleImageUpload);
+        }
+
+        // --- رویدادهای غیرفعال (Passive) برای بهبود عملکرد در دستگاه‌های لمسی ---
+        document.addEventListener('touchstart', function() {}, { passive: true });
+        document.addEventListener('touchmove', function() {}, { passive: true });
+        
+        // --- رویدادهای ابزار دیباگ ---
+        const logLayoutBtn = document.getElementById('log-layout-btn');
+        if (logLayoutBtn) {
+            logLayoutBtn.addEventListener('click', admin.logLayoutStructure);
+        }
+        
+        // --- مدیریت رویدادهای مودال (بسیار مهم برای رفع خطای دسترسی) ---
+        // این رویدادها باید پس از بارگذاری کامل DOM تنظیم شوند.
+        // از آنجایی که این تابع (setupEventListeners) معمولاً از app.js پس از لود DOM فراخوانی می‌شود،
+        // نیازی به تودرتو کردن در addEventListener('DOMContentLoaded') نیست.
+
+        const categoryModalEl = document.getElementById('categoryModal');
+        const productModalEl = document.getElementById('productModal');
+
+        // مدیریت رویداد 'hide.bs.modal' برای مودال دسته‌بندی
+        // این رویداد دقیقاً قبل از اینکه مودال مخفی شود اجرا می‌شود
+        if (categoryModalEl) {
+            categoryModalEl.addEventListener('hide.bs.modal', function () {
+                console.log('EVENT-HANDLERS: Category modal is about to hide. Removing focus from its children.');
+                const activeElement = document.activeElement;
+                // اگر المان فعال داخل مودال دسته‌بندی است، فوکوس آن را بردار تا خطای دسترسی رخ ندهد
+                if (activeElement && categoryModalEl.contains(activeElement)) {
+                    activeElement.blur();
+                }
+            });
+        }
+
+        // مدیریت رویداد 'hide.bs.modal' برای مودال محصول
+        if (productModalEl) {
+            productModalEl.addEventListener('hide.bs.modal', function () {
+                console.log('EVENT-HANDLERS: Product modal is about to hide. Removing focus from its children.');
+                const activeElement = document.activeElement;
+                // اگر المان فعال داخل مودال محصول است، فوکوس آن را بردار
+                if (activeElement && productModalEl.contains(activeElement)) {
+                    activeElement.blur();
+                }
+            });
+        }
+        
+        console.log('EVENT-HANDLERS: Event listeners setup complete.');
+    };
+
+})(window.SimoonAdmin);
