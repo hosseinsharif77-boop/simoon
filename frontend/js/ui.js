@@ -18,6 +18,7 @@ import {
     createPerformanceMonitor,
     menuLogger
 } from './logger.js';
+
 // ========================== END OF IMPORTS ==========================
 
 // ================================= STATE MANAGEMENT =================================

@@ -424,43 +424,57 @@ app.put('/api/admin/subcategories/:name', async (req, res) => {
     }
 });
 
-// API to delete a category or subcategory
+// API to delete a category or subcategory (with full cascade delete)
 app.delete('/api/admin/categories/:name', async (req, res) => {
+    const client = await db.connect();
     try {
-        // دیکد کردن نام از URL برای پشتیبانی از حروف فارسی
-        const name = decodeURIComponent(req.params.name);
+        await client.query('BEGIN');
         
-        console.log(`--- Deleting category "${name}" ---`);
+        const name = decodeURIComponent(req.params.name);
+        console.log(`--- Attempting to delete category "${name}" and all its data ---`);
 
-        // ابتدا بررسی می‌کنیم که آیا زیردسته‌هایی برای این دسته‌بندی اصلی وجود دارد یا نه
-        const { rows: subcategories } = await db.query(
-            'SELECT * FROM custom_categories WHERE parent_category = $1',
+        // 1. حذف تمام زیرشاخه‌های این دسته‌بندی اصلی
+        const deleteSubcategoriesResult = await client.query(
+            'DELETE FROM custom_categories WHERE parent_category = $1 RETURNING *',
             [name]
         );
+        console.log(`--- Found and deleted ${deleteSubcategoriesResult.rows.length} subcategories for "${name}". ---`);
 
-        if (subcategories.length > 0) {
-            return res.status(400).json({ 
-                message: `Cannot delete category "${name}" because it has subcategories. Please delete subcategories first.` 
-            });
-        }
-
-        // حذف دسته‌بندی
-        const { rows } = await db.query('DELETE FROM custom_categories WHERE name = $1 RETURNING *', [name]);
+        // 2. حذف تمام محصولات متعلق به این دسته‌بندی اصلی
+        const deleteProductsResult = await client.query(
+            'DELETE FROM menu_items WHERE category = $1 RETURNING *',
+            [name]
+        );
+        console.log(`--- Found and deleted ${deleteProductsResult.rows.length} products for category "${name}". ---`);
+        
+        // 3. حذف دسته‌بندی اصلی
+        const { rows } = await client.query(
+            'DELETE FROM custom_categories WHERE name = $1 AND parent_category IS NULL RETURNING *', 
+            [name]
+        );
         
         if (rows.length === 0) {
-            return res.status(404).json({ message: 'Category not found for deletion' });
+            await client.query('ROLLBACK');
+            return res.status(404).json({ message: 'Main category not found for deletion' });
         }
+
+        await client.query('COMMIT');
+        console.log(`✅ Category "${name}", its subcategories, and all its products deleted successfully.`);
 
         // ارسال اطلاع‌رسانی به کلاینت‌های متصل به SSE
         sseClients.forEach(client => {
             client.res.write(`data: ${JSON.stringify({ action: 'refresh' })}\n\n`);
         });
-        console.log(`✅ Category "${name}" deleted and notification sent.`);
 
-        res.json({ message: 'Category deleted successfully' });
+        res.json({ 
+            message: `Category "${name}", ${deleteSubcategoriesResult.rows.length} subcategories, and ${deleteProductsResult.rows.length} products deleted successfully.` 
+        });
     } catch (err) {
+        await client.query('ROLLBACK');
         console.error(`Error deleting category ${req.params.name}:`, err.message);
         res.status(500).json({ message: 'Server error while deleting category' });
+    } finally {
+        client.release();
     }
 });
 

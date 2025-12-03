@@ -24,6 +24,7 @@
     admin.dom.mainCategoryFields = document.getElementById('mainCategoryFields');
     admin.dom.uploadImageBtn = document.getElementById('uploadImageBtn');
     admin.dom.categoryImageUpload = document.getElementById('categoryImageUpload');
+    admin.dom.productImageUpload = document.getElementById('imageUpload');
 
     // Category Modal Elements
     admin.dom.categoryModalLabel = document.getElementById('categoryModalLabel');
@@ -50,6 +51,9 @@
     admin.dom.imageUpload = document.getElementById('imageUpload');
     admin.dom.image = document.getElementById('image');
 
+    // در بخش Product Modal Elements اضافه کنید:
+    admin.dom.productUploadImageBtn = document.getElementById('productUploadImageBtn');
+
     // Inventory Tab
     admin.dom.category = document.getElementById('category');
     admin.dom.sub_category = document.getElementById('sub_category');
@@ -70,5 +74,7 @@
     admin.dom.logoutBtn = document.getElementById('logoutBtn');
     admin.dom.navLinks = document.querySelectorAll('.nav-link');
     admin.dom.mobileNavItems = document.querySelectorAll('.mobile-bottom-nav-item');
+
+
 
 })(window.SimoonAdmin);

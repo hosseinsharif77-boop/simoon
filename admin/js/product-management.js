@@ -25,7 +25,7 @@
             console.log('===== 🛒 [ADMIN] Product fetching complete =====\n\n');
         } catch (err) {
             console.error('!!! ERROR in fetchProducts !!!', err.message);
-            alert('Error fetching product information!');
+            admin.showNotification('Error fetching product information!', 'error');
         }
     };
 
@@ -55,14 +55,14 @@
         if (admin.dom.ingredientsContainer.children.length > 1) {
             row.remove();
         } else {
-            alert('At least one ingredient row must exist.');
+            admin.showNotification('At least one ingredient row must exist.', 'error');
         }
     };
 
     // --- Modal Management Functions ---
 
     admin.openAddProductModal = function(category, subcategory) {
-        console.log(`PRODUCT-MANAGEMENT: Opening addProductModal for category: ${category}`);
+        console.log(`PRODUCT-MANAGEMENT: Opening addProductModal for category: ${category}, subcategory: ${subcategory}`);
         const existingModal = bootstrap.Modal.getInstance(admin.dom.productModal);
         if (existingModal) existingModal.dispose();
 
@@ -70,14 +70,30 @@
         admin.dom.productModalLabel.innerText = 'New Product';
         admin.dom.productForm.reset();
         
+        // Reset all tabs to ensure only the first one is active
+        const allTabs = document.querySelectorAll('#productTab button');
+        const allTabPanes = document.querySelectorAll('#productTabContent .tab-pane');
+        
+        allTabs.forEach(tab => tab.classList.remove('active'));
+        allTabPanes.forEach(pane => pane.classList.remove('active', 'show'));
+        
+        // Activate the first tab
         const firstTab = document.querySelector('#productTab button:first-child');
         const firstTabPane = document.querySelector('#basic');
         if (firstTab) firstTab.classList.add('active');
         if (firstTabPane) firstTabPane.classList.add('active', 'show');
 
+        // Set the category and subcategory correctly
         admin.dom.category.value = category;
         admin.updateSubcategoryDropdown(category);
-        if (subcategory) admin.dom.sub_category.value = subcategory;
+        
+        // Set subcategory if provided
+        if (subcategory) {
+            // Wait a bit for the dropdown to be populated
+            setTimeout(() => {
+                admin.dom.sub_category.value = subcategory;
+            }, 100);
+        }
         
         admin.dom.ingredientsContainer.innerHTML = '';
         admin.addIngredientRow();
@@ -100,6 +116,15 @@
             const product = await response.json();
 
             admin.dom.productForm.reset();
+            
+            // Reset all tabs to ensure only the first one is active
+            const allTabs = document.querySelectorAll('#productTab button');
+            const allTabPanes = document.querySelectorAll('#productTabContent .tab-pane');
+            
+            allTabs.forEach(tab => tab.classList.remove('active'));
+            allTabPanes.forEach(pane => pane.classList.remove('active', 'show'));
+            
+            // Activate the first tab
             const firstTab = document.querySelector('#productTab button:first-child');
             const firstTabPane = document.querySelector('#basic');
             if (firstTab) firstTab.classList.add('active');
@@ -107,15 +132,21 @@
 
             admin.dom.name.value = product.name;
             admin.dom.price.value = product.price;
-            admin.dom.description.value = product.description || '';
             admin.dom.image.value = product.image || '';
             admin.dom.category.value = product.category;
             
             if (!admin.state.subcategoriesByCategory[product.category]) {
                 await admin.fetchCategoriesAndSubcategories();
             }
+            
+            // Update subcategory dropdown first
             admin.updateSubcategoryDropdown(product.category);
-            admin.dom.sub_category.value = product.sub_category;
+            
+            // Then set the subcategory value after a short delay
+            setTimeout(() => {
+                admin.dom.sub_category.value = product.sub_category;
+            }, 100);
+            
             admin.dom.stock_quantity.value = product.stock_quantity;
             admin.dom.is_special.checked = product.is_special;
 
@@ -134,7 +165,7 @@
             modal.show();
         } catch (error) {
             console.error('Error opening edit modal:', error.message);
-            alert('Error fetching product data for editing!');
+            admin.showNotification('Error fetching product data for editing!', 'error');
         }
     };
 
@@ -170,7 +201,6 @@
         const productData = {
             name: admin.dom.name.value,
             price: parseFloat(admin.dom.price.value),
-            description: admin.dom.description.value,
             category: admin.dom.category.value,
             sub_category: admin.dom.sub_category.value,
             stock_quantity: parseInt(admin.dom.stock_quantity.value),
@@ -184,7 +214,7 @@
 
         if (!productData.name || !productData.category || !productData.price) {
             console.warn('⚠️ Validation failed: required fields are empty.');
-            alert('Please fill in name, category, and price fields.');
+            admin.showNotification('Please fill in name, category, and price fields.', 'error');
             return;
         }
 
@@ -212,7 +242,7 @@
                     }, { once: true });
                 }
                 
-                alert(admin.state.currentEditingId ? 'Product successfully updated!' : 'Product successfully added!');
+                admin.showNotification(admin.state.currentEditingId ? 'Product successfully updated!' : 'Product successfully added!', 'success');
                 
                 await admin.fetchProducts();
                 await admin.fetchCategoriesAndSubcategories();
@@ -221,19 +251,25 @@
             } else {
                 const errorData = await response.json();
                 console.error('!!! ERROR saving product !!!', response.status, errorData);
-                alert(`Error: ${errorData.message || 'Unknown error occurred'}`);
+                admin.showNotification(`Error: ${errorData.message || 'Unknown error occurred'}`, 'error');
             }
         } catch (error) {
             console.error('!!! ERROR in saveProduct !!!', error.message);
-            alert('Error saving product!');
+            admin.showNotification('Error saving product!', 'error');
         }
         console.log('===== 💾 [ADMIN] Product saving process complete =====\n\n');
     };
 
     admin.confirmDeleteProduct = function(id) {
-        if (confirm('Are you sure you want to delete this product?')) {
-            admin.deleteProduct(id);
-        }
+        admin.showConfirmDialog(
+            'Are you sure you want to delete this product?',
+            () => admin.deleteProduct(id),
+            {
+                title: 'Delete Product',
+                okText: 'Delete',
+                okClass: 'btn-danger'
+            }
+        );
     };
 
     admin.deleteProduct = async function(id) {
@@ -247,7 +283,17 @@
 
             if (response.ok) {
                 console.log('✅ Product successfully deleted from server.');
-                alert('Product successfully deleted!');
+                admin.showNotification('Product successfully deleted!', 'success');
+                
+                // Close the modal after successful deletion
+                const modal = bootstrap.Modal.getInstance(admin.dom.productModal);
+                if (modal) {
+                    modal.hide();
+                    admin.dom.productModal.addEventListener('hidden.bs.modal', function () {
+                        console.log('PRODUCT-MANAGEMENT: Product modal is now fully hidden after deletion. Disposing instance.');
+                        modal.dispose();
+                    }, { once: true });
+                }
                 
                 console.log('🔄 Starting to update lists in admin panel...');
                 await admin.fetchProducts();
@@ -258,13 +304,22 @@
             } else {
                 const errorData = await response.json();
                 console.error('!!! ERROR deleting product !!!', response.status, errorData);
-                alert('Error deleting product! See console for details.');
+                admin.showNotification('Error deleting product! See console for details.', 'error');
             }
         } catch (error) {
             console.error('!!! ERROR in deleteProduct !!!', error.message);
-            alert('Error deleting product!');
+            admin.showNotification('Error deleting product!', 'error');
         }
         console.log('===== 🗑️ [ADMIN] Product deletion process complete =====\n\n');
     };
+
+    // --- Event Listeners for Product Modal ---
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add event listener for category dropdown to update subcategories
+        admin.dom.category.addEventListener('change', function() {
+            const selectedCategory = this.value;
+            admin.updateSubcategoryDropdown(selectedCategory);
+        });
+    });
 
 })(window.SimoonAdmin);

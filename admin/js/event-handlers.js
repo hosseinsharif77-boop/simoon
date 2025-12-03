@@ -55,8 +55,8 @@
             });
         }
         
-                // --- NEW EVENT LISTENERS FOR IMAGE UPLOAD ---
-        if (admin.dom.uploadImageBtn) {
+        // --- NEW EVENT LISTENERS FOR IMAGE UPLOAD ---
+        if (admin.dom.uploadImageBtn && admin.dom.categoryImageUpload) {
             admin.dom.uploadImageBtn.addEventListener('click', () => {
                 admin.dom.categoryImageUpload.click();
             });
@@ -105,6 +105,69 @@
                 // اگر المان فعال داخل مودال محصول است، فوکوس آن را بردار
                 if (activeElement && productModalEl.contains(activeElement)) {
                     activeElement.blur();
+                }
+            });
+        }
+
+        // --- Event Listeners for Product Modal ---
+        // Add event listener for category dropdown to update subcategories
+        if (admin.dom.category) {
+            admin.dom.category.addEventListener('change', function() {
+                const selectedCategory = this.value;
+                admin.updateSubcategoryDropdown(selectedCategory);
+            });
+        }
+        
+        // Add event listener for image upload button
+        const productUploadImageBtn = document.getElementById('productUploadImageBtn');
+        const productImageUpload = document.getElementById('imageUpload');
+        const productImageInput = document.getElementById('image');
+
+        if (productUploadImageBtn && productImageUpload) {
+            productUploadImageBtn.addEventListener('click', function() {
+                productImageUpload.click();
+            });
+            
+            productImageUpload.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // Here you would typically upload the file to a server
+                    // For now, we'll just show the file name
+                    const fileName = file.name;
+                    productImageInput.value = `File: ${fileName}`;
+                    
+                    // If you want to preview the image, you can create a temporary URL
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        // You could display a preview here if needed
+                        console.log('Product image selected:', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Add event listener for image upload button
+        if (admin.dom.productUploadImageBtn && admin.dom.imageUpload) {
+            admin.dom.productUploadImageBtn.addEventListener('click', function() {
+                admin.dom.imageUpload.click();
+            });
+            
+            admin.dom.imageUpload.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // Here you would typically upload the file to a server
+                    // For now, we'll just show the file name
+                    const fileName = file.name;
+                    admin.dom.image.value = `File: ${fileName}`;
+                    
+                    // If you want to preview the image, you can create a temporary URL
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        // You could display a preview here if needed
+                        console.log('Product image selected:', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
                 }
             });
         }

@@ -6,7 +6,7 @@ body {
     min-height: 100vh;
 }
 
-/* ================================= HEADER & NAVIGATION (Unified with Shop) ================================= */
+/* ================================= HEADER & NAVIGATION ================================= */
 .admin-header {
     position: fixed;
     top: 0;
@@ -29,12 +29,12 @@ body {
 }
 
 .admin-main {
-    padding-top: 120px; /* Space from top for navigation bar */
-    padding-bottom: 80px; /* Space from bottom for mobile bottom nav */
+    padding-top: 120px;
+    padding-bottom: 80px;
 }
 
 .brand-center h1 {
-    color: #fbbf24; /* Gold color like menu section */
+    color: #fbbf24;
 }
 
 .admin-nav .nav-link {
@@ -56,10 +56,9 @@ body {
 
 /* ================================= MAIN CONTENT STYLES ================================= */
 .admin-container {
-    padding-top: 0; /* Override default padding */
+    padding: 0 !important;
 }
 
-/* Management Cards */
 .management-card {
     background-color: #1f2937; 
     border: 1px solid #374151; 
@@ -81,156 +80,262 @@ body {
     padding: 20px;
 }
 
-/* ================================= TWO COLUMN LAYOUT ================================= */
-.two-column-layout {
-    display: flex;
-    gap: 20px;
-    height: 600px;
-}
-
-.tabs-column {
-    flex: 0 0 250px;
-    background-color: #1f2937;
-    border-radius: 12px;
-    padding: 15px;
-    overflow-y: auto;
-}
-
-.content-column {
-    flex: 1;
-    background-color: #1f2937;
-    border-radius: 12px;
-    padding: 15px;
-    overflow-y: auto;
-}
-
-/* ================================= TABS STYLES (New Category Management) ================================= */
-.main-tabs {
+/* ================================= SINGLE COLUMN LAYOUT ================================= */
+.single-column-layout {
     display: flex;
     flex-direction: column;
+    gap: 20px;
+    height: 100%;
+}
+
+/* ================================= RIBBON TABS STYLES (REVISED & CLEANED) ================================= */
+/* This container creates the 3D frame effect */
+.ribbon-container {
+    margin-bottom: 15px;
+    border: 1px solid #374151;
+    border-radius: 12px;
+    background: linear-gradient(145deg, #1f2937, #253241);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    padding: 5px;
+}
+
+/* This wrapper uses Flexbox to place the ribbon and the add button side-by-side */
+.ribbon-wrapper {
+    display: flex;
+    align-items: stretch;
     gap: 10px;
-    margin-bottom: 15px;
 }
 
-.main-tab-item {
+.categories-ribbon, .sub-categories-ribbon {
     display: flex;
-    gap: 5px;
-}
-
-.main-tab-btn {
-    flex: 1;
-    color: #f0f0f0eb;
+    align-items: stretch;
+    gap: 10px;
     padding: 10px 15px;
-    transition: all 0.2s ease-in-out;
-    cursor: pointer;
-    border: 1px solid #374151;
-    border-radius: 6px;
-    background: none;
-    text-align: right;
-    font-size: 0.875rem;
+    background-color: transparent;
+    border-radius: 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    flex-grow: 1; /* Takes up available space */
+    position: relative; /* Needed for the ::after pseudo-element */
 }
 
-.main-tab-btn:hover {
-    color: #f3f4f6;
-    background-color: rgba(55, 65, 81, 0.5);
+.categories-ribbon::-webkit-scrollbar, .sub-categories-ribbon::-webkit-scrollbar {
+    display: none;
 }
 
-.main-tab-btn.active {
-    color: #fbbf24;
-    background-color: rgba(251, 191, 36, 0.1);
-    border-color: #fbbf24;
-}
-
-.add-main-tab-btn, .delete-main-tab-btn {
-    width: 40px;
-    padding: 10px;
-    transition: all 0.2s ease-in-out;
-    cursor: pointer;
-    border: 1px solid #374151;
-    border-radius: 6px;
-    background: none;
-    color: #9ca3af;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.add-main-tab-btn:hover {
-    color: #fbbf24;
-    border-color: #fbbf24;
-    background-color: rgba(251, 191, 36, 0.1);
-}
-
-.delete-main-tab-btn:hover {
-    color: #ef4444;
-    border-color: #ef4444;
-    background-color: rgba(239, 68, 68, 0.1);
-}
-
-.sub-tabs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 15px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #374151;
-}
-
-.sub-tab-item {
-    display: flex;
-    gap: 3px;
-}
-
-.sub-tab-btn {
-    color: #9ca3af;
-    padding: 6px 12px;
-    transition: all 0.2s ease-in-out;
-    cursor: pointer;
-    border: 1px solid #4b5563;
-    border-radius: 20px;
-    background: none;
-    font-size: 0.8rem;
-}
-
-.sub-tab-btn:hover {
-    color: #f3f4f6;
-    background-color: rgba(55, 65, 81, 0.5);
-}
-
-.sub-tab-btn.active {
-    color: #fbbf24;
-    background-color: rgba(251, 191, 36, 0.1);
-    border-color: #fbbf24;
-}
-
-.add-sub-tab-btn, .delete-sub-tab-btn {
+/* Add shadow to indicate scrollable content */
+.categories-ribbon.scrollable::after, .sub-categories-ribbon.scrollable::after {
+    /* content: ''; */
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
     width: 30px;
-    padding: 6px;
-    transition: all 0.2s ease-in-out;
+    background: linear-gradient(to right, transparent, rgba(31, 41, 55, 0.9));
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Tab Item Container */
+.main-tab-item, .sub-tab-item {
+    display: inline-flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    border: 1px solid #374151;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    min-width: 100px;
+    background-color: rgba(55, 65, 81, 0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.main-tab-item:hover, .sub-tab-item:hover {
+    border-color: #4b5563;
+    background-color: rgba(55, 65, 81, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.main-tab-item.active, .sub-tab-item.active {
+    border-color: #fbbf24;
+    background-color: rgba(251, 191, 36, 0.1);
+    box-shadow: 0 4px 8px rgba(251, 191, 36, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Tab Name Button */
+.main-tab-btn, .sub-tab-btn {
+    padding: 10px 15px;
+    border: none;
+    background: transparent;
+    color: #f0f0f0;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: center;
     cursor: pointer;
-    border: 1px solid #4b5563;
-    border-radius: 50%;
-    background: none;
-    color: #9ca3af;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.main-tab-item.active .main-tab-btn, .sub-tab-item.active .sub-tab-btn {
+    color: #fbbf24;
+}
+
+/* Normal Tab Actions Container */
+.tab-actions {
+    display: flex;
+    background-color: rgba(31, 41, 55, 0.5);
+    width: 100%;
+    padding: 4px 0;
+}
+
+/* Normal Edit/Delete Buttons */
+.edit-tab-btn, .delete-tab-btn {
+    flex: 1;
+    height: 30px;
+    border: none;
+    border-radius: 0;
+    margin: 0 1px;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 0.8rem;
+    color: #9ca3af;
+    background: transparent;
+    transition: all 0.2s ease;
 }
 
-.add-sub-tab-btn:hover {
-    color: #fbbf24;
+.edit-tab-btn:hover, .delete-tab-btn:hover {
+    color: #f0f0f0;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Add Tab Button - Positioned next to the ribbon */
+.add-tab-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed #4b5563;
+    border-radius: 8px;
+    flex-shrink: 0; /* Prevents the button from shrinking */
+    transition: all 0.2s ease;
+    min-width: 50px;
+    height: auto; /* Adjust height to match tabs */
+    background-color: rgba(55, 65, 81, 0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.add-tab-btn {
+    padding: 10px 15px;
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.add-tab-item:hover {
     border-color: #fbbf24;
     background-color: rgba(251, 191, 36, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-.delete-sub-tab-btn:hover {
-    color: #ef4444;
-    border-color: #ef4444;
-    background-color: rgba(239, 68, 68, 0.1);
+.add-tab-item:hover .add-tab-btn {
+    color: #fbbf24;
 }
 
-.products-container {
-    min-height: 300px;
+/* ================================= INLINE EDIT STYLES (3D & FLUSH) ================================= */
+
+/* Container for the inline edit mode */
+.inline-edit-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+/* Input field in edit mode */
+.inline-edit-container input {
+    padding: 10px 15px;
+    border: none;
+    background-color: #374151;
+    color: #f0f0f0;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+    border-bottom: 1px solid #4b5563;
+}
+
+/* Container for save/cancel buttons */
+.inline-edit-container .tab-actions {
+    display: flex;
+    background-color: transparent;
+    width: 100%;
+    padding: 0;
+}
+
+/* Save/Cancel buttons (3D, flush, no background color) */
+.inline-edit-action-btn {
+    flex: 1;
+    height: 32px;
+    border: none;
+    border-radius: 0;
+    margin: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    color: #9ca3af;
+    background-color: #4b5563;
+
+    /* 3D Bevel Effect */
+    border-top: 1px solid #6b7280;
+    border-left: 1px solid #6b7280;
+    border-right: 1px solid #374151;
+    border-bottom: 1px solid #374151;
+    transition: all 0.1s ease;
+}
+
+.inline-edit-action-btn:hover {
+    color: #f0f0f0;
+    background-color: #6b7280;
+}
+
+/* 3D Pressed Effect */
+.inline-edit-action-btn:active {
+    border-top: 1px solid #374151;
+    border-left: 1px solid #374151;
+    border-right: 1px solid #6b7280;
+    border-bottom: 1px solid #6b7280;
+}
+
+/* Icon colors for better UX */
+.inline-edit-action-btn.save-btn i {
+    color: #86efac; /* Light green */
+}
+.inline-edit-action-btn.cancel-btn i {
+    color: #fca5a5; /* Light red */
+}
+
+/* ================================= CONTENT AREA STYLES (REVISED FOR 3D EFFECT) ================================= */
+#contentArea {
+    border: 1px solid #374151;
+    border-radius: 12px;
+    background: linear-gradient(145deg, #1f2937, #253241);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    overflow-y: auto;
+    flex-grow: 1;
 }
 
 /* ================================= PRODUCT CARD STYLES ================================= */
@@ -317,7 +422,6 @@ body {
     font-size: 0.75rem;
 }
 
-/* Add New Product Card */
 .add-product-card {
     background-color: #1f2937;
     border: 2px dashed #4b5563;
@@ -409,26 +513,128 @@ body {
     color: #6b7280; 
 }
 
-/* ================================= MODAL ================================= */
+/* ================================= MODAL (REVISED FOR 3D EFFECT) ================================= */
 .modal-content {
     background-color: #1f2937; 
-    border: 1px solid #374151; 
+    border: 1px solid #4b5563; 
+    border-radius: 12px; 
     color: #f0f0f0; 
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    overflow: hidden; /* Ensures the header/footer borders don't poke out */
 }
 
 .modal-header {
-    border-bottom: 1px solid #374151; 
+    background: linear-gradient(to bottom, #2d3748, #1a202c);
+    border-bottom: 1px solid #4b5563; 
+    padding: 16px 20px;
+    /* 3D Bevel Effect */
+    border-top: 1px solid #4a5568;
+    border-left: 1px solid #4a5568;
+    border-right: 1px solid #2d3748;
+    border-bottom: 1px solid #2d3748;
 }
 
 .modal-footer {
-    border-top: 1px solid #374151; 
+    background: linear-gradient(to top, #2d3748, #1a202c);
+    border-top: 1px solid #4b5563; 
+    padding: 16px 20px;
+    /* 3D Inset Effect */
+    border-top: 1px solid #2d3748;
+    border-left: 1px solid #2d3748;
+    border-right: 1px solid #4a5568;
+    border-bottom: 1px solid #4a5568;
+}
+
+.modal-title {
+    color: #fbbf24;
+    font-weight: 600;
 }
 
 .btn-close {
     filter: invert(1); 
+    opacity: 0.8;
+}
+.btn-close:hover {
+    opacity: 1;
 }
 
-/* NEW: Styles for Product Modal Tabs */
+/* 3D Buttons in Modal Footer */
+.modal-footer .btn {
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.1s ease;
+}
+
+.modal-footer .btn-primary {
+    background-color: #fbbf24;
+    border-color: #f59e0b;
+    color: #1a1a1a;
+    /* 3D Bevel Effect */
+    border-top: 1px solid #fcd34d;
+    border-left: 1px solid #fcd34d;
+    border-right: 1px solid #f59e0b;
+    border-bottom: 1px solid #f59e0b;
+}
+.modal-footer .btn-primary:hover {
+    background-color: #f59e0b;
+    border-color: #d97706;
+}
+.modal-footer .btn-primary:active {
+    /* 3D Pressed Effect */
+    border-top: 1px solid #d97706;
+    border-left: 1px solid #d97706;
+    border-right: 1px solid #fcd34d;
+    border-bottom: 1px solid #fcd34d;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.modal-footer .btn-secondary {
+    background-color: #6b7280;
+    border-color: #4b5563;
+    /* 3D Bevel Effect */
+    border-top: 1px solid #9ca3af;
+    border-left: 1px solid #9ca3af;
+    border-right: 1px solid #4b5563;
+    border-bottom: 1px solid #4b5563;
+}
+.modal-footer .btn-secondary:hover {
+    background-color: #4b5563;
+    border-color: #374151;
+}
+.modal-footer .btn-secondary:active {
+    /* 3D Pressed Effect */
+    border-top: 1px solid #374151;
+    border-left: 1px solid #374151;
+    border-right: 1px solid #9ca3af;
+    border-bottom: 1px solid #9ca3af;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.modal-footer .btn-danger {
+    background-color: #ef4444;
+    border-color: #dc2626;
+    /* 3D Bevel Effect */
+    border-top: 1px solid #f87171;
+    border-left: 1px solid #f87171;
+    border-right: 1px solid #dc2626;
+    border-bottom: 1px solid #dc2626;
+}
+.modal-footer .btn-danger:hover {
+    background-color: #dc2626;
+    border-color: #b91c1c;
+}
+.modal-footer .btn-danger:active {
+    /* 3D Pressed Effect */
+    border-top: 1px solid #b91c1c;
+    border-left: 1px solid #b91c1c;
+    border-right: 1px solid #f87171;
+    border-bottom: 1px solid #f87171;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Styles for Product Modal Tabs */
 .nav-tabs .nav-link {
     color: #9ca3af;
     border: 1px solid transparent;
@@ -450,7 +656,7 @@ body {
     padding-top: 20px;
 }
 
-/* NEW: Styles for Image Upload Area */
+/* Styles for Image Upload Area */
 .image-upload-area {
     border-color: #4b5563;
     background-color: rgba(55, 65, 81, 0.2);
@@ -462,188 +668,6 @@ body {
     background-color: rgba(251, 191, 36, 0.05);
 }
 
-
-/* استایل‌های جدید برای دکمه‌های مدیریت تب */
-
-/* کانتینر اصلی هر تب */
-.main-tab-item, .sub-tab-item {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-/* دکمه اصلی تب */
-.main-tab-btn, .sub-tab-btn {
-    flex-grow: 1; /* دکمه اصلی تمام فضای باقی‌مانده را می‌گیرد */
-    text-align: center;
-}
-
-/* کانتینر دکمه‌های عملیات (ویرایش/حذف) */
-.tab-actions {
-    display: flex;
-    opacity: 0;
-    transition: opacity 0.2s ease-in-out;
-}
-
-/* وقتی ماوس روی کانتینر اصلی می‌رود، دکمه‌های عملیات نمایش داده می‌شوند */
-.main-tab-item:hover .tab-actions,
-.sub-tab-item:hover .tab-actions {
-    opacity: 1;
-}
-
-/* استایل دکمه‌های ویرایش و حذف کوچک */
-.edit-tab-btn, .delete-tab-btn, .delete-sub-tab-btn {
-    padding: 0.25rem 0.4rem;
-    font-size: 0.75rem;
-    line-height: 1;
-    border: none;
-    margin-left: 2px; /* فاصله بین دکمه‌ها */
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.edit-tab-btn {
-    background-color: #ffc107; /* زرد */
-    color: #000;
-}
-
-.edit-tab-btn:hover {
-    background-color: #e0a800;
-}
-
-.delete-tab-btn, .delete-sub-tab-btn {
-    background-color: #dc3545; /* قرمز */
-    color: #fff;
-}
-
-.delete-tab-btn:hover, .delete-sub-tab-btn:hover {
-    background-color: #c82333;
-}
-
-/* استایل دکمه اضافه کردن عمودی برای موبایل */
-.add-main-tab-btn, .add-sub-tab-btn {
-    writing-mode: vertical-rl; /* نوشتن عمودی از راست به چپ */
-    text-orientation: mixed; /* جهت‌گیری متن */
-    min-height: 80px; /* حداقل ارتفاع */
-    padding: 10px 5px;
-}
-
-@media (min-width: 768px) {
-    /* در نمایشگرهای بزرگ، دکمه اضافه کردن افقی باشد */
-    .add-main-tab-btn, .add-sub-tab-btn {
-        writing-mode: horizontal-tb;
-        min-height: auto;
-        padding: 0.5rem 1rem;
-    }
-}
-
-/* ================================================== */
-/* ============== LAYOUT DEBUGGER STYLES ============= */
-/* ================================================== */
-
-/* حالت کلی دیباگ */
-body.debug-mode {
-    position: relative;
-}
-
-/* هایلایت و اطلاعات المان‌ها */
-.debug-element-info {
-    position: absolute;
-    border: 2px dashed rgba(255, 0, 255, 0.7); /* کادر بنفش چشمک‌زن */
-    background-color: rgba(255, 0, 255, 0.1);
-    pointer-events: none; /* اجازه کلیک کردن روی المان‌های زیرین */
-    z-index: 9999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: monospace;
-    font-size: 11px;
-    color: #fff;
-    text-shadow: 1px 1px 2px #000;
-    overflow: hidden;
-    box-sizing: border-box;
-}
-
-.debug-element-info::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(45deg, rgba(255,0,255,0.2) 25%, transparent 25%, transparent 50%, rgba(255,0,255,0.2) 50%, rgba(255,0,255,0.2) 75%, transparent 75%, transparent);
-    background-size: 10px 10px;
-    z-index: -1;
-}
-
-.debug-size-info {
-    position: absolute;
-    bottom: 2px;
-    right: 2px;
-    background-color: rgba(0, 0, 0, 0.7);
-    padding: 2px 4px;
-    border-radius: 3px;
-    font-size: 10px;
-}
-
-/* کانتینر خطوط شبکه */
-#layout-debugger-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none; /* مهم: اجازه تعامل با صفحه را نگیرد */
-    z-index: 9998;
-}
-
-/* خطوط شبکه */
-.debug-grid-line {
-    position: absolute;
-    background-color: rgba(0, 255, 0, 0.3); /* خطوط سبز */
-}
-
-.debug-grid-line-vertical {
-    top: 0;
-    bottom: 0;
-    width: 1px;
-}
-
-.debug-grid-line-horizontal {
-    left: 0;
-    width: 100%;
-    height: 1px;
-}
-
-/* دکمه فعال‌سازی دیباگر */
-#debug-toggle-btn {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    z-index: 10000;
-    padding: 10px 15px;
-    background-color: #6c757d;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 12px;
-    font-family: monospace;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    transition: background-color 0.3s;
-}
-
-#debug-toggle-btn:hover {
-    background-color: #5a6268;
-}
-
-body.debug-mode #debug-toggle-btn {
-    background-color: #28a745; /* سبز وقتی فعال است */
-}
-
-body.debug-mode #debug-toggle-btn:hover {
-    background-color: #218838;
-}
 /* ================================= MOBILE NAVIGATION ================================= */
 .mobile-bottom-nav {
     position: fixed;
@@ -703,25 +727,225 @@ body.debug-mode #debug-toggle-btn:hover {
     display: block;
 }
 
-/* استایل‌های جدید برای چیدمان عمودی تب‌ها */
-.main-tab-item:not(:first-child) {
-    flex-direction: column; /* تغییر چیدمان به عمودی (زیر هم) */
-    align-items: flex-start; /* تراز کردن آیتم‌ها به سمت چپ */
+/* ================================= NOTIFICATION STYLES ================================= */
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    max-width: 350px;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.main-tab-item:not(:first-child) .main-tab-btn {
-    width: 100%; /* دکمه نام تمام عرض ردیف خود را بگیرد */
-    text-align: center; /* متن دکمه نام را وسط‌چین کن */
-    border-bottom: 1px solid transparent; /* ایجاد فاصله بصری */
-    padding-bottom: 8px;
-    margin-bottom: 5px;
+.notification {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(145deg, rgba(31, 41, 55, 0.9), rgba(37, 50, 65, 0.9));
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(55, 65, 81, 0.5);
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    padding: 16px;
+    overflow: hidden;
 }
 
-.main-tab-item:not(:first-child) .tab-actions {
-    width: 100%; /* کانتینر دکمه‌ها تمام عرض ردیف خود را بگیرد */
-    justify-content: center; /* دکمه‌های عملیات را وسط‌چین کن */
-    gap: 10px; /* ایجاد فاصله بین دکمه ویرایش و حذف */
+.notification-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-left: 12px;
 }
+
+.notification-success .notification-icon {
+    background-color: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+}
+
+.notification-error .notification-icon {
+    background-color: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.notification-info .notification-icon {
+    background-color: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+}
+
+.notification-icon i {
+    font-size: 20px;
+}
+
+.notification-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.notification-message {
+    color: #f0f0f0;
+    font-size: 14px;
+    line-height: 1.4;
+    margin-bottom: 8px;
+}
+
+.notification-ok-btn {
+    align-self: flex-end;
+    background-color: rgba(55, 65, 81, 0.5);
+    border: 1px solid rgba(75, 85, 99, 0.5);
+    border-radius: 6px;
+    color: #f0f0f0;
+    font-size: 12px;
+    padding: 4px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    /* 3D Bevel Effect */
+    border-top: 1px solid #6b7280;
+    border-left: 1px solid #6b7280;
+    border-right: 1px solid #374151;
+    border-bottom: 1px solid #374151;
+}
+
+.notification-ok-btn:hover {
+    background-color: rgba(75, 85, 99, 0.7);
+    color: #f0f0f0;
+}
+
+/* 3D Pressed Effect */
+.notification-ok-btn:active {
+    border-top: 1px solid #374151;
+    border-left: 1px solid #374151;
+    border-right: 1px solid #6b7280;
+    border-bottom: 1px solid #6b7280;
+}
+
+
+/* ================================= CUSTOM CONFIRMATION MODAL ================================= */
+#confirmModal .modal-content {
+    background: linear-gradient(145deg, #1f2937, #253241);
+    border: 1px solid #374151;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+#confirmModal .modal-header {
+    background: linear-gradient(to bottom, #2d3748, #1a202c);
+    border-bottom: 1px solid #4b5563;
+    padding: 16px 20px;
+    border-top: 1px solid #4a5568;
+    border-left: 1px solid #4a5568;
+    border-right: 1px solid #2d3748;
+    border-bottom: 1px solid #2d3748;
+}
+
+#confirmModal .modal-title {
+    color: #fbbf24;
+    font-weight: 600;
+}
+
+#confirmModal .modal-body {
+    padding: 20px;
+    color: #f0f0f0;
+}
+
+#confirmModal .modal-footer {
+    background: linear-gradient(to top, #2d3748, #1a202c);
+    border-top: 1px solid #4b5563;
+    padding: 16px 20px;
+    border-top: 1px solid #2d3748;
+    border-left: 1px solid #2d3748;
+    border-right: 1px solid #4a5568;
+    border-bottom: 1px solid #4a5568;
+}
+
+#confirmModal .btn {
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.1s ease;
+}
+
+#confirmModal .btn-danger {
+    background-color: #ef4444;
+    border-color: #dc2626;
+    border-top: 1px solid #f87171;
+    border-left: 1px solid #f87171;
+    border-right: 1px solid #dc2626;
+    border-bottom: 1px solid #dc2626;
+}
+
+#confirmModal .btn-danger:hover {
+    background-color: #dc2626;
+    border-color: #b91c1c;
+}
+
+#confirmModal .btn-danger:active {
+    border-top: 1px solid #b91c1c;
+    border-left: 1px solid #b91c1c;
+    border-right: 1px solid #f87171;
+    border-bottom: 1px solid #f87171;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+#confirmModal .btn-secondary {
+    background-color: #6b7280;
+    border-color: #4b5563;
+    border-top: 1px solid #9ca3af;
+    border-left: 1px solid #9ca3af;
+    border-right: 1px solid #4b5563;
+    border-bottom: 1px solid #4b5563;
+}
+
+#confirmModal .btn-secondary:hover {
+    background-color: #4b5563;
+    border-color: #374151;
+}
+
+#confirmModal .btn-secondary:active {
+    border-top: 1px solid #374151;
+    border-left: 1px solid #374151;
+    border-right: 1px solid #9ca3af;
+    border-bottom: 1px solid #9ca3af;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+/*------------------------------------------------------
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .notification-container {
+        top: auto;
+        bottom: 80px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+    
+    .notification {
+        padding: 12px;
+    }
+    
+    .notification-icon {
+        width: 32px;
+        height: 32px;
+        margin-left: 10px;
+    }
+    
+    .notification-icon i {
+        font-size: 16px;
+    }
+    
+    .notification-message {
+        font-size: 13px;
+    }
+}
+
 /* ================================= RESPONSIVE DESIGN ================================= */
 @media (max-width: 1024px) {
     .mobile-bottom-nav {
@@ -731,39 +955,29 @@ body.debug-mode #debug-toggle-btn:hover {
         display: none;
     }
     .admin-main {
-        padding-top: 80px; /* Adjust for smaller header */
-    }
-    
-    /* Change to single column on mobile */
-    .two-column-layout {
-        flex-direction: column;
-        height: auto;
-    }
-    
-    .tabs-column {
-        flex: none;
-        height: auto;
-        max-height: 200px;
-    }
-    
-    .content-column {
-        flex: none;
-        height: auto;
-        min-height: 400px;
+        padding-top: 80px;
     }
 }
 
 @media (max-width: 768px) {
-    .main-tab-btn {
-        font-size: 0.75rem;
+    .ribbon-container {
+        margin-bottom: 10px;
+    }
+    
+    .categories-ribbon, .sub-categories-ribbon {
         padding: 8px 12px;
+        gap: 8px;
     }
     
-    .sub-tab-btn {
-        font-size: 0.7rem;
-        padding: 5px 10px;
+    .main-tab-btn, .sub-tab-btn {
+        padding: 8px 12px;
+        font-size: 0.8rem;
     }
     
+    .main-tab-item, .sub-tab-item {
+        min-width: 90px;
+    }
+
     .product-title {
         font-size: 0.875rem;
     }
@@ -780,7 +994,6 @@ body.debug-mode #debug-toggle-btn:hover {
         height: 150px;
     }
     
-    /* Display cards in rows of 3 on mobile */
     .products-container .row {
         --bs-gutter-x: 0.5rem;
     }
@@ -816,75 +1029,8 @@ body.debug-mode #debug-toggle-btn:hover {
         font-size: 0.65rem;
     }
     
-    /* On very small screens, display cards 2 per row */
     .products-container .col-12 {
         flex: 0 0 calc(50% - 0.5rem);
         max-width: calc(50% - 0.5rem);
     }
-}
-
-/* استایل‌های جدید برای فیلد ویرایش خطی */
-.inline-edit-container {
-    position: relative;
-    display: inline-block;
-    width: 100%;
-}
-
-.inline-edit-input {
-    background-color: #374151;
-    border: 1px solid #fbbf24;
-    color: #f0f0f0;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 0.875rem;
-    width: 100%;
-    outline: none;
-    box-shadow: 0 0 0 0.25rem rgba(251, 191, 36, 0.25);
-}
-
-.inline-edit-actions {
-    position: absolute;
-    top: 0;
-    right: 0;
-    display: flex;
-    gap: 5px;
-    padding: 5px;
-}
-
-.inline-edit-btn {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.inline-edit-save {
-    background-color: #10b981;
-    color: white;
-}
-
-.inline-edit-save:hover {
-    background-color: #059669;
-}
-
-.inline-edit-cancel {
-    background-color: #ef4444;
-    color: white;
-}
-
-.inline-edit-cancel:hover {
-    background-color: #dc2626;
-}
-
-.tab-text {
-    display: inline-block;
-    width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }

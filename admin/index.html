@@ -52,26 +52,46 @@
     </header>
 
     <main class="admin-main">
-        <div class="container admin-container">
+        <div class="container-fluid admin-container">
             <!-- Main Category Tabs -->
             <div class="management-card">
                 <div class="card-header">
                     <i class="bi bi-tags"></i> Manage Categories & Products
                 </div>
                 <div class="card-body">
-                    <div class="two-column-layout">
-                        <!-- Left Column: Main Tabs -->
-                        <div class="tabs-column">
-                            <div class="main-tabs" id="mainTabs">
-                                <!-- Main tabs will be dynamically added here by JavaScript -->
+                    <!-- تغییر به چیدمان یک ستونه -->
+                    <div class="single-column-layout">
+                        <!-- ردیف اول: نوار دسته‌بندی‌های اصلی -->
+                        <div class="ribbon-container">
+                            <div class="ribbon-wrapper">
+                                <div class="categories-ribbon scrollable" id="mainTabsRibbon">
+                                    <!-- تب‌های اصلی به صورت داینامیک توسط جاوا اسکریپت اضافه می‌شوند -->
+                                </div>
+                                <div class="add-tab-item">
+                                    <button class="add-tab-btn" id="addMainTabBtn">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         
-                        <!-- Right Column: Tab Content -->
-                        <div class="content-column">
-                            <div id="contentArea">
-                                <!-- Tab content will be dynamically displayed here -->
+                        <!-- ردیف دوم: نوار زیردسته‌ها -->
+                        <div class="ribbon-container">
+                            <div class="ribbon-wrapper">
+                                <div class="sub-categories-ribbon scrollable" id="subTabsRibbon">
+                                    <!-- تب‌های زیرمجموعه به صورت داینامیک توسط جاوا اسکریپت اضافه می‌شوند -->
+                                </div>
+                                <div class="add-tab-item">
+                                    <button class="add-tab-btn" id="addSubTabBtn">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                </div>
                             </div>
+                        </div>
+                        
+                        <!-- ردیف سوم: محتوا (محصولات) -->
+                        <div id="contentArea">
+                            <!-- محتوای تب‌ها به صورت داینامیک نمایش داده می‌شود -->
                         </div>
                     </div>
                 </div>
@@ -150,7 +170,7 @@
         </div>
     </div>
 
-    <!-- NEW: Modal for Adding/Editing Product with Tabs -->
+    <!-- Modal for Adding/Editing Product with Tabs -->
     <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-fullscreen-md-down">
             <div class="modal-content">
@@ -165,16 +185,13 @@
                         <!-- Product Tabs -->
                         <ul class="nav nav-tabs" id="productTab" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="basic-tab" data-bs-toggle="tab" data-bs-target="#basic" type="button" role="tab">Basic Info</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="media-tab" data-bs-toggle="tab" data-bs-target="#media" type="button" role="tab">Media</button>
+                                <button class="nav-link active" id="basic-tab" data-bs-toggle="tab" data-bs-target="#basic" type="button" role="tab">Info</button>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="inventory-tab" data-bs-toggle="tab" data-bs-target="#inventory" type="button" role="tab">Inventory</button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="seo-tab" data-bs-toggle="tab" data-bs-target="#seo" type="button" role="tab">SEO</button>
+                                <button class="nav-link" id="seo-tab" data-bs-toggle="tab" data-bs-target="#seo" type="button" role="tab">Meta</button>
                             </li>
                         </ul>
                         
@@ -191,26 +208,21 @@
                                         <input type="number" class="form-control" id="price" required>
                                     </div>
                                 </div>
+                                
+                                <!-- Image field styled like mainCategoryFields -->
                                 <div class="mb-3">
-                                    <label for="description" class="form-label">Description</label>
-                                    <textarea class="form-control" id="description" rows="3"></textarea>
-                                </div>
-                            </div>
-                            
-                            <!-- Tab 2: Media -->
-                            <div class="tab-pane fade" id="media" role="tabpanel">
-                                <div class="mb-3">
-                                    <label class="form-label">Product Image</label>
-                                    <div class="image-upload-area p-4 border-dashed rounded text-center">
-                                        <i class="bi bi-cloud-upload fs-1 text-muted"></i>
-                                        <p class="mt-2">Drag & Drop image here or click to browse</p>
-                                        <input type="file" class="d-none" id="imageUpload">
-                                        <input type="url" class="form-control mt-2" id="image" placeholder="Or enter image URL">
+                                    <label for="image" class="form-label">Product Image</label>
+                                    <div class="input-group">
+                                        <input type="url" class="form-control" id="image" placeholder="Enter image URL or upload">
+                                        <input type="file" class="d-none" id="imageUpload" accept="image/*">
+                                        <button class="btn btn-outline-secondary" type="button" id="productUploadImageBtn">
+                                            <i class="bi bi-upload"></i> Upload
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                             
-                            <!-- Tab 3: Inventory -->
+                            <!-- Tab 2: Inventory -->
                             <div class="tab-pane fade" id="inventory" role="tabpanel">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
@@ -253,7 +265,7 @@
                                 </div>
                             </div>
                             
-                            <!-- Tab 4: SEO -->
+                            <!-- Tab 3: SEO -->
                             <div class="tab-pane fade" id="seo" role="tabpanel">
                                 <div class="mb-3">
                                     <label for="meta_title" class="form-label">Meta Title</label>
@@ -271,6 +283,24 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-danger" id="deleteProductBtn" style="display: none;">Delete</button>
                     <button type="button" class="btn btn-primary" id="saveProductBtn">Save Product</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Confirmation Modal -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmModalLabel">Confirm Action</h5>
+                </div>
+                <div class="modal-body">
+                    <p id="confirmMessage">Are you sure you want to perform this action?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="confirmCancelBtn">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmOkBtn">Delete</button>
                 </div>
             </div>
         </div>
