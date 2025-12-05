@@ -1,16 +1,8 @@
-// ================================= JAVASCRIPT FILE =================================
-// File: js/menu.js
-// Description: Menu and order logic for the Simoon Cafe application.
-// Author: [Your Name]
-// Last Modified: [Date]
-// ============================== END OF FILE HEADER ==============================
-
 // ================================= IMPORTS =================================
-let allMenuItems = [];
-
-import { elements, state } from './config.js';
+import { elements } from './config.js';
+import { stateManager } from './stateManager.js';
 import { formatPrice, normalizeImagePath } from './utils.js';
-import { updateProductCardControls, closeOrderSidebar } from './ui.js';
+import { updateProductCardControls, closeOrderSidebar, initSpecialsCarousel } from './ui.js';
 import { 
     menuLogger, 
     orderLogger, 
@@ -18,13 +10,8 @@ import {
     createPerformanceMonitor
 } from './logger.js';
 // ========================== END OF IMPORTS ==========================
-
+let filteredMenuItems = [];
 // ================================= HELPER FUNCTIONS =================================
-/**
- * Creates text representation of ingredients
- * @param {Array} ingredients - Array of ingredient objects
- * @returns {string} HTML string of ingredients
- */
 const createIngredientsText = (ingredients) => {
     if (!ingredients || ingredients.length === 0) return 'No ingredients information available';
     return ingredients.map(ing => {
@@ -38,11 +25,6 @@ const createIngredientsText = (ingredients) => {
     }).join('');
 };
 
-/**
- * Gets stock status text based on quantity
- * @param {number} quantity - Stock quantity
- * @returns {string} HTML string of stock status
- */
 const getStockStatus = (quantity) => {
     if (quantity > 10) return '<span class="text-green-600">In Stock</span>';
     if (quantity > 0) return `<span class="text-yellow-600">Only ${quantity} left</span>`;
@@ -51,91 +33,246 @@ const getStockStatus = (quantity) => {
 // ========================== END OF HELPER FUNCTIONS ==========================
 
 // ================================= MENU RENDERING =================================
-/**
- * Renders product grid for currently selected main and sub-category.
- * Filters products based on main category and special status.
- * Uses an atomic update with a fade transition for a smooth UX.
- */
-export const renderProducts = () => {
-    const monitor = createPerformanceMonitor('renderProducts');
+export const toggleSpecialsCarouselVisibility = () => {
+    console.log('===== TOGGLE SPECIALS CAROUSEL VISIBILITY START =====');
+    const state = stateManager.getState();
+    const specialsCarouselSection = document.getElementById('specials-carousel-section');
     
-    menuLogger.section('Render Products');
+    console.log('Current main category:', state.currentMainCategory);
+    console.log('Specials carousel section:', specialsCarouselSection);
+    console.log('Specials carousel section classes:', specialsCarouselSection?.className);
+    console.log('Specials carousel section innerHTML:', specialsCarouselSection?.innerHTML);
     
-    // استفاده از requestAnimationFrame برای اطمینان از ترتیب صحیح رندر
-    requestAnimationFrame(() => {
-        menuLogger.debug('Current state for rendering', {
-            currentMainCategory: state.currentMainCategory,
-            currentSubCategory: state.currentSubCategory,
-            totalItems: window.allMenuItems.length
-        });
+    if (state.currentMainCategory === 'Special') {
+        console.log('Showing specials carousel for Special tab');
+        specialsCarouselSection?.classList.remove('hidden');
         
-        // فیلتر کردن محصولات بر اساس دسته بندی فعلی
-        const filteredItems = window.allMenuItems.filter(item => {
-            // اگر در تب specials هستیم، فقط محصولات ویژه را نشان بده
-            if (state.currentMainCategory === 'specials') {
-                return item.is_special === true;
+        // Initialize carousel if not already done
+        if (!specialsCarouselSection.hasAttribute('data-initialized')) {
+            console.log('Initializing specials carousel...');
+            initSpecialsCarousel();
+            specialsCarouselSection.setAttribute('data-initialized', 'true');
+        }
+    } else {
+        console.log('Hiding specials carousel for non-Special tab');
+        specialsCarouselSection?.classList.add('hidden');
+        
+        // Clear carousel content
+        const track = specialsCarouselSection?.querySelector('.specials-carousel-track');
+        const indicators = specialsCarouselSection?.querySelector('.specials-carousel-indicators');
+        if (track) track.innerHTML = '';
+        if (indicators) indicators.innerHTML = '';
+        specialsCarouselSection?.removeAttribute('data-initialized');
+    }
+    
+    console.log('===== TOGGLE SPECIALS CAROUSEL VISIBILITY END =====');
+};
+
+export const setupSearch = () => {
+    console.log('===== SETUP SEARCH START =====');
+    const searchInput = document.getElementById('product-search');
+    const clearSearchBtn = document.getElementById('clear-search');
+    const searchContainer = document.getElementById('search-container');
+
+    console.log('Search elements:', { searchInput, clearSearchBtn, searchContainer });
+
+    const toggleSearchVisibility = () => {
+        const state = stateManager.getState();
+        console.log('Toggling search visibility for category:', state.currentMainCategory);
+        if (state.currentMainCategory === 'all') {
+            searchContainer.classList.remove('hidden');
+        } else {
+            searchContainer.classList.add('hidden');
+            searchInput.value = '';
+            // وقتی از تب all خارج می‌شویم، سرچ را ریست کرده و محصولات اصلی را نمایش می‌دهیم
+            filteredMenuItems = [...window.allMenuItems];
+            renderProducts();
+        }
+    };
+
+    // اولین بار اجرا برای تنظیم وضعیت اولیه
+    toggleSearchVisibility();
+
+    searchInput.addEventListener('input', () => {
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        
+        // نمایش اسپینر در حین جستجو
+        const menuGrid = document.getElementById('menu-grid');
+        menuGrid.innerHTML = `
+            <div class="flex justify-center items-center col-span-full py-12">
+                <div class="product-spinner"></div>
+            </div>
+        `;
+
+        // استفاده از debounce برای جلوگیری از اجرای زیاد تابع در هنگام تایپ
+        clearTimeout(window.searchTimeout);
+        window.searchTimeout = setTimeout(() => {
+            if (searchTerm === '') {
+                filteredMenuItems = [...window.allMenuItems];
+            } else {
+                filteredMenuItems = window.allMenuItems.filter(item => {
+                    return item.name.toLowerCase().includes(searchTerm) ||
+                           (item.ingredients && item.ingredients.some(ing => ing.name.toLowerCase().includes(searchTerm)));
+                });
             }
-            
-            // برای تب‌های دیگر، بر اساس دسته بندی اصلی و زیردسته فیلتر کن
-            const categoryMatch = item.category === state.currentMainCategory;
-            const subcategoryMatch = !state.currentSubCategory || item.sub_category === state.currentSubCategory;
-            
-            return categoryMatch && subcategoryMatch;
+            console.log('Search term:', searchTerm, 'Filtered items:', filteredMenuItems.length);
+            renderFilteredProducts(); // این تابع را باید بسازیم
+        }, 300); // 300 میلی‌ثانیه تاخیر
+    });
+
+    clearSearchBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        filteredMenuItems = [...window.allMenuItems];
+        renderFilteredProducts(); // این تابع را باید بسازیم
+    });
+    console.log('===== SETUP SEARCH END =====');
+};
+
+const renderFilteredProducts = () => {
+    const monitor = createPerformanceMonitor('renderFilteredProducts');
+    menuLogger.section('Render Filtered Products');
+    
+    // چک می‌کنیم که آیا در حالت جستجو هستیم یا خیر
+    const searchInput = document.getElementById('product-search');
+    const isSearchActive = searchInput.value.trim() !== '';
+
+    // اگر سرچ فعال نبود، کنترل را به renderProducts اصلی برگردان
+    if (!isSearchActive) {
+        console.log('Search is not active, delegating to main renderProducts...');
+        menuLogger.endSection();
+        renderProducts(); // تابع اصلی را فراخوانی کن
+        return;
+    }
+    
+    // اگر سرچ فعال بود، ادامه منطق فیلتر را اجرا کن
+    requestAnimationFrame(() => {
+        menuLogger.debug('Rendering search results', {
+            totalItems: window.allMenuItems.length,
+            filteredItemsCount: filteredMenuItems.length
         });
         
-        menuLogger.debug('Filtering results', {
-            filteredItemsCount: filteredItems.length,
-            categoryMatch: state.currentMainCategory,
-            subcategoryMatch: state.currentSubCategory
-        });
-        
-        // ساخت محتوای جدید
         const fragment = document.createDocumentFragment();
         
-        if (filteredItems.length === 0) {
+        if (filteredMenuItems.length === 0) {
             const emptyMessage = document.createElement('div');
-            emptyMessage.className = 'empty-state text-center py-12';
-            emptyMessage.innerHTML = `
-                <div class="text-gray-500">
-                    <i class="fas fa-utensils text-4xl mb-4"></i>
-                    <p class="text-lg">No products found in this category</p>
-                    <p class="text-sm mt-2">Please try another category</p>
-                </div>
-            `;
+            emptyMessage.className = 'empty-state text-center py-12 col-span-full';
+            emptyMessage.innerHTML = `<p class="text-gray-500">No products found for "<span class="font-semibold">${searchInput.value}</span>"</p>`;
             fragment.appendChild(emptyMessage);
         } else {
-            filteredItems.forEach((item, index) => {
+            filteredMenuItems.forEach((item, index) => {
                 const productCard = createProductCard(item, index);
                 fragment.appendChild(productCard);
             });
         }
         
-        // جایگزینی محتوا به صورت atomic
-        elements.menuGrid.innerHTML = '';
-        elements.menuGrid.appendChild(fragment);
+        const menuGrid = document.getElementById('menu-grid');
+        menuGrid.innerHTML = '';
+        menuGrid.appendChild(fragment);
         
-        menuLogger.debug('Products rendered', {
-            filteredItemsCount: filteredItems.length
+        menuLogger.debug('Filtered products rendered', {
+            filteredItemsCount: filteredMenuItems.length
         });
         
-        // اضافه کردن event listener ها
         attachProductEventListeners();
-        
-        // آپدیت کنترل‌های محصولات
         updateProductCardControls();
         
-        monitor.end({ totalItems: window.allMenuItems.length, filteredItems: filteredItems.length });
+        monitor.end({ totalItems: window.allMenuItems.length, filteredItems: filteredMenuItems.length });
         menuLogger.endSection();
     });
 };
 
-// تابع کمکی برای ساخت کارت محصول
+export const renderProducts = () => {
+    console.log('===== RENDER PRODUCTS START =====');
+    const startTime = performance.now();
+    const state = stateManager.getState();
+    console.log('Current state:', state);
+    
+    menuLogger.section('Render Products');
+    
+    toggleSpecialsCarouselVisibility();
+    
+    // نمایش اسپینر لودینگ
+    const menuGrid = document.getElementById('menu-grid');
+    if (menuGrid) {
+        menuGrid.innerHTML = `
+            <div class="flex justify-center items-center col-span-full py-12">
+                <div class="product-spinner"></div>
+            </div>
+        `;
+    }
+    
+    requestAnimationFrame(() => {
+        let itemsToRender = [];
+        
+        // اگر در حالت جستجو هستیم، از آرایه فیلتر شده استفاده کن
+        const isSearchActive = document.getElementById('product-search').value.trim() !== '';
+        
+        if (isSearchActive) {
+            itemsToRender = filteredMenuItems;
+            console.log('Rendering filtered search results:', itemsToRender.length);
+        } else {
+            // در غیر این صورت، منطق عادی دسته‌بندی را اجرا کن
+            if (state.currentMainCategory === 'all') {
+                itemsToRender = state.allMenuItems;
+                stateManager.setState({ currentSubCategory: '' });
+            } else if (state.currentMainCategory === 'Special') {
+                itemsToRender = state.allMenuItems.filter(item => item.is_special === true);
+            } else {
+                itemsToRender = state.allMenuItems.filter(item => {
+                    const categoryMatch = item.mainCategory === state.currentMainCategory;
+                    const subcategoryMatch = !state.currentSubCategory || item.subCategory === state.currentSubCategory;
+                    return categoryMatch && subcategoryMatch;
+                });
+            }
+        }
+        
+        console.log('Items to render:', itemsToRender.length);
+        
+        const fragment = document.createDocumentFragment();
+        
+        if (itemsToRender.length === 0) {
+            const emptyMessage = document.createElement('div');
+            emptyMessage.className = 'empty-state text-center py-12 col-span-full';
+            if (isSearchActive) {
+                 emptyMessage.innerHTML = `<p class="text-gray-500">No products found for "<span class="font-semibold">${document.getElementById('product-search').value}</span>"</p>`;
+            } else {
+                emptyMessage.innerHTML = `
+                    <div class="text-gray-500">
+                        <i class="fas fa-utensils text-4xl mb-4"></i>
+                        <p class="text-lg">No products found in this category</p>
+                        <p class="text-sm mt-2">Please try another category</p>
+                    </div>
+                `;
+            }
+            fragment.appendChild(emptyMessage);
+        } else {
+            itemsToRender.forEach((item, index) => {
+                const productCard = createProductCard(item, index);
+                fragment.appendChild(productCard);
+            });
+        }
+
+        if (menuGrid) {
+            menuGrid.innerHTML = '';
+            menuGrid.appendChild(fragment);
+        }
+        
+        attachProductEventListeners();
+        updateProductCardControls();
+        
+        const totalEndTime = performance.now();
+        console.log('Total render time:', totalEndTime - startTime, 'ms');
+        menuLogger.info(`Total renderProducts execution time: ${totalEndTime - startTime}ms`);
+        menuLogger.endSection();
+        console.log('===== RENDER PRODUCTS END =====');
+    });
+};
+
 const createProductCard = (item, index) => {
     const productCard = document.createElement('div');
     productCard.className = 'menu-item product-card-wrapper';
     productCard.dataset.productId = item.id;
     
-    // اضافه کردن delay برای انیمیشن بر اساس index
     productCard.style.animationDelay = `${index * 0.05}s`;
     productCard.style.setProperty('--item-index', index);
     
@@ -153,13 +290,13 @@ const createProductCard = (item, index) => {
             </div>
             <div class="card-content">
                 <h3 class="menu-item-name">${item.name}</h3>
-                <div class="separator-line"></div> <!-- خط جداکننده بین نام و توضیحات -->
+                <div class="separator-line"></div>
                 <div class="menu-item-details">
                     <div class="ingredients-section">
                         <p class="ingredients-title">Ingredients:</p>
                         <p class="menu-item-description">${ingredientsText}</p>
                     </div>
-                    <div class="separator-line"></div> <!-- خط جداکننده بین توضیحات و قیمت -->
+                    <div class="separator-line"></div>
                     <div class="menu-item-footer">
                         <div class="price-row">
                             <p class="menu-item-price">$${formatPrice(item.price)}</p>
@@ -188,9 +325,7 @@ const createProductCard = (item, index) => {
     return productCard;
 };
 
-// تابع کمکی برای اضافه کردن event listener ها
 const attachProductEventListeners = () => {
-    // Event listener برای دکمه‌های افزودن به سفارش
     document.querySelectorAll('.add-btn:not([disabled])').forEach(btn => {
         btn.addEventListener('click', function(e) {
             const productCard = this.closest('.product-card-wrapper');
@@ -200,7 +335,6 @@ const attachProductEventListeners = () => {
         });
     });
     
-    // Event listener برای دکمه‌های مورد علاقه
     document.querySelectorAll('.favorite-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.stopPropagation();
@@ -212,12 +346,6 @@ const attachProductEventListeners = () => {
 // ========================== END OF MENU RENDERING ==========================
 
 // ================================= ORDER MANAGEMENT =================================
-/**
- * Adds a product to the order or increases its quantity if already in the order.
- * Triggers a flying animation from the product image to the cart button.
- * @param {Event} e - The click event
- * @param {number} productId - The ID of product to add
- */
 export const addToOrder = (e, productId) => {
     const product = window.allMenuItems.find(p => p.id === productId);
     if (!product) {
@@ -225,18 +353,22 @@ export const addToOrder = (e, productId) => {
         return;
     }
 
+    const state = stateManager.getState();
     const existingItem = state.order.find(item => item.id === productId); 
     let isNewItem = false;
+    let updatedOrder;
     
     if (existingItem) {
-        existingItem.quantity++;
+        updatedOrder = state.order.map(item => 
+            item.id === productId ? { ...item, quantity: item.quantity + 1 } : item
+        );
         orderLogger.debug('Item quantity increased in order', {
             productId,
             productName: product.name,
-            newQuantity: existingItem.quantity
+            newQuantity: existingItem.quantity + 1
         });
     } else {
-        state.order.push({ ...product, quantity: 1, note: '' }); 
+        updatedOrder = [...state.order, { ...product, quantity: 1, note: '' }];
         isNewItem = true;
         orderLogger.info('New item added to order', {
             productId,
@@ -245,38 +377,36 @@ export const addToOrder = (e, productId) => {
         });
     }
 
-    // Update UI first
+    stateManager.setState({ order: updatedOrder });
     updateOrderUI(); 
     updateProductCardControls(productId);
-    
-    // Execute flying animation
     executeFlyingAnimationForProduct(productId);
 };
 
-/**
- * Changes the quantity of an item in the order.
- * Triggers a flying animation when increasing quantity.
- * @param {number} productId - The ID of product
- * @param {number} change - The change in quantity (positive or negative)
- */
 export const changeQuantity = (productId, change) => {
+    const state = stateManager.getState();
     const item = state.order.find(i => i.id === productId); 
     if (item) {
         const oldQuantity = item.quantity;
-        item.quantity += change;
+        const newQuantity = item.quantity + change;
         
-        if (item.quantity <= 0) {
+        if (newQuantity <= 0) {
             removeFromOrder(productId);
         } else {
+            const updatedOrder = state.order.map(item => 
+                item.id === productId ? { ...item, quantity: newQuantity } : item
+            );
+            
             orderLogger.debug('Item quantity changed', {
                 productId,
                 productName: item.name,
                 oldQuantity,
-                newQuantity: item.quantity,
+                newQuantity,
                 change
             });
             
-            // Execute flying animation when increasing quantity
+            stateManager.setState({ order: updatedOrder });
+            
             if (change > 0) {
                 executeFlyingAnimationForProduct(productId);
             }
@@ -289,32 +419,25 @@ export const changeQuantity = (productId, change) => {
     }
 };
 
-/**
- * Removes an item from the order.
- * @param {number} productId - The ID of product to remove
- */
 export const removeFromOrder = (productId) => {
+    const state = stateManager.getState();
     const item = state.order.find(i => i.id === productId);
     const itemName = item ? item.name : 'Unknown';
     
-    state.order = state.order.filter(item => item.id !== productId); 
+    const updatedOrder = state.order.filter(item => item.id !== productId);
     
     orderLogger.info('Item removed from order', {
         productId,
         productName: itemName
     });
     
+    stateManager.setState({ order: updatedOrder });
     updateOrderUI();
     updateProductCardControls(productId);
 };
 
-/**
- * Executes the flying animation for a product.
- * @param {number} productId - The ID of product
- */
 const executeFlyingAnimationForProduct = (productId) => {
     try {
-        // Find required elements for animation
         const productCard = document.querySelector(`.product-card-wrapper[data-product-id="${productId}"]`);
         
         if (!productCard) {
@@ -327,31 +450,26 @@ const executeFlyingAnimationForProduct = (productId) => {
             return;
         }
         
-        // Ensure cart button is visible
         if (elements.menuOrderBtn.classList.contains('hidden')) {
             elements.menuOrderBtn.classList.remove('hidden');
             elements.menuOrderBtn.style.display = 'flex';
             elements.menuOrderBtn.style.visibility = 'visible';
         }
         
-        // Ensure button has correct dimensions
         if (elements.menuOrderBtn.offsetWidth === 0 || elements.menuOrderBtn.offsetHeight === 0) {
             elements.menuOrderBtn.style.width = '56px';
             elements.menuOrderBtn.style.height = '56px';
         }
         
-        // Wait for UI to update and button to get dimensions
         setTimeout(() => {
             const orderIconRect = elements.menuOrderBtn.getBoundingClientRect();
             const productImgRect = productImg.getBoundingClientRect();
             
-            // If values are not valid, cancel animation
             if (orderIconRect.width === 0 || orderIconRect.height === 0 || 
                 productImgRect.width === 0 || productImgRect.height === 0) {
                 return;
             }
             
-            // Execute animation using separate function
             executeFlyingAnimation(productImg, orderIconRect, productImgRect, productId);
         }, 100);
     } catch (error) {
@@ -359,23 +477,13 @@ const executeFlyingAnimationForProduct = (productId) => {
     }
 };
 
-/**
- * Executes the flying image animation.
- * @param {HTMLElement} productImg - The product image element
- * @param {DOMRect} orderIconRect - The rectangle of order button
- * @param {DOMRect} productImgRect - The rectangle of product image
- * @param {number} productId - The ID of product
- */
 const executeFlyingAnimation = (productImg, orderIconRect, productImgRect, productId) => {
-    // Create a unique ID for this flying image
     const uniqueId = `flying-${productId}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     
-    // Clone image
     const flyingImg = productImg.cloneNode(true);
     flyingImg.id = uniqueId;
     flyingImg.classList.add('flying-image');
     
-    // Set initial styles
     const initialStyles = {
         position: 'fixed',
         top: `${productImgRect.top}px`,
@@ -395,19 +503,14 @@ const executeFlyingAnimation = (productImg, orderIconRect, productImgRect, produ
     
     Object.assign(flyingImg.style, initialStyles);
     
-    // Add to body
     document.body.appendChild(flyingImg);
     
-    // Force a reflow
     flyingImg.offsetHeight;
     
-    // Set transition and animate
     requestAnimationFrame(() => {
-        // Recalculate values to ensure they are correct
         const freshOrderIconRect = elements.menuOrderBtn.getBoundingClientRect();
         const freshProductImgRect = productImg.getBoundingClientRect();
         
-        // If values are not valid, cancel animation
         if (freshOrderIconRect.width === 0 || freshOrderIconRect.height === 0 || 
             freshProductImgRect.width === 0 || freshProductImgRect.height === 0) {
             document.getElementById(uniqueId)?.remove();
@@ -424,7 +527,6 @@ const executeFlyingAnimation = (productImg, orderIconRect, productImgRect, produ
         flyingImg.style.opacity = '0.3';
     });
     
-    // Clean up after animation
     setTimeout(() => {
         const imgToRemove = document.getElementById(uniqueId);
         
@@ -433,9 +535,8 @@ const executeFlyingAnimation = (productImg, orderIconRect, productImgRect, produ
             menuLogger.debug('Flying image removed', { uniqueId });
         }
         
-        // Add shake animation to cart button
         elements.menuOrderBtn.classList.remove('shake-animation');
-        void elements.menuOrderBtn.offsetWidth; // Force reflow
+        void elements.menuOrderBtn.offsetWidth;
         elements.menuOrderBtn.classList.add('shake-animation');
         
         setTimeout(() => {
@@ -444,36 +545,27 @@ const executeFlyingAnimation = (productImg, orderIconRect, productImgRect, produ
     }, 800);
 };
 
-// --- Payment Process Functions ---
-
-/**
- * Displays the payment method selection step in the sidebar.
- */
 export const showPaymentView = () => {
+    const state = stateManager.getState();
     orderLogger.info('Showing payment view', {
         orderLength: state.order.length,
         totalAmount: state.order.reduce((sum, item) => sum + (item.price * item.quantity), 0)
     });
     
-    state.currentOrderStep = 'payment';
+    stateManager.setState({ currentOrderStep: 'payment' });
     
-    // Hide order review
     elements.orderReviewContainer.classList.add('hidden');
-    
-    // Show payment form
     elements.paymentFormContainer.classList.remove('hidden');
 };
 
-/**
- * Returns to the order review step.
- */
 export const showOrderReviewView = () => {
+    const state = stateManager.getState();
     orderLogger.info('Showing order review view', {
         orderLength: state.order.length,
         totalAmount: state.order.reduce((sum, item) => sum + (item.price * item.quantity), 0)
     });
     
-    state.currentOrderStep = 'review';
+    stateManager.setState({ currentOrderStep: 'review' });
 
     if (elements.paymentFormContainer) {
         elements.paymentFormContainer.classList.add('hidden');
@@ -488,13 +580,10 @@ export const showOrderReviewView = () => {
     }
 };
 
-/**
- * Finalizes the order after payment confirmation.
- */
 export const confirmPayment = () => {
+    const state = stateManager.getState();
     const selectedPaymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
     
-    // Create order list with notes
     let orderDetails = state.order.map(item => 
         `${item.quantity}x ${item.name} ${item.note ? `(Note: ${item.note})` : ''}`
     ).join('\n');
@@ -508,24 +597,23 @@ export const confirmPayment = () => {
     
     alert(`Order confirmed!\n\nOrder Details:\n${orderDetails}\n\nPayment Method: ${selectedPaymentMethod}\nTotal: ${elements.orderTotal.textContent}`);
     
-    state.order = [];
-    state.currentOrderStep = 'review';
+    stateManager.setState({ 
+        order: [],
+        currentOrderStep: 'review'
+    });
     updateOrderUI(); 
     updateProductCardControls(); 
     closeOrderSidebar();
 };
 
-/**
- * Updates the order sidebar UI, including item count, list of items, and total price.
- */
 export const updateOrderUI = () => {
+    const state = stateManager.getState();
     const totalItems = state.order.reduce((sum, item) => sum + item.quantity, 0);
     elements.menuOrderCount.textContent = totalItems;
     elements.menuOrderCount.classList.toggle('hidden', totalItems === 0);
 
     const totalPrice = formatPrice(state.order.reduce((sum, item) => sum + (item.price * item.quantity), 0));
 
-    // Update both total displays
     if (elements.orderTotal) elements.orderTotal.textContent = totalPrice;
     if (elements.orderTotalReview) elements.orderTotalReview.textContent = totalPrice;
 
@@ -540,9 +628,9 @@ export const updateOrderUI = () => {
                     <div class="order-item-meta">
                         <span class="order-item-price">${formatPrice(item.price)}</span>
                         <div class="order-item-qty-controls">
-                            <button onclick="changeQuantity(${item.id}, -1)">-</button>
+                            <button onclick="window.changeQuantity(${item.id}, -1)">-</button>
                             <span>${item.quantity}</span>
-                            <button onclick="changeQuantity(${item.id}, 1)">+</button>
+                            <button onclick="window.changeQuantity(${item.id}, 1)">+</button>
                         </div>
                     </div>
                     <input type="text" class="order-item-note" placeholder="Add a note (e.g., less salt)" value="${item.note || ''}">
@@ -557,6 +645,5 @@ export const updateOrderUI = () => {
         orderLength: state.order.length
     });
 };
-
 // ========================== END OF ORDER MANAGEMENT ==========================
 // ============================== END OF JAVASCRIPT FILE ==============================

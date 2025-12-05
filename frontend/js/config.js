@@ -1,52 +1,12 @@
-// ================================= JAVASCRIPT FILE =================================
+// ================================= CONFIGURATION =================================
 // File: js/config.js
-// Description: Central configuration, state management, and DOM element caching for the Simoon Cafe application.
-// Author: [Your Name]
-// Last Modified: [Date]
+// Description: Central configuration and DOM element caching for the Simoon Cafe application.
 // ============================== END OF FILE HEADER ==============================
 
-// ================================= STATE MANAGEMENT =================================
-/**
- * @description A single object containing all the application's state variables.
- * This makes state management more predictable and easier to debug.
- * All state is mutable and should be modified directly (e.g., `state.currentPage = 'menu'`).
- */
-export const state = {
-    /** @type {Array<Object>} Stores items in the current user's order. */
-    order: [],
-    /** @type {Array<Object>} Stores user's favorite menu items. */
-    favorites: [],
-    /** @type {string} The currently selected main category (e.g., 'pizza', 'specials'). */
-    currentMainCategory: '',
-    /** @type {string} The currently selected sub-category (e.g., 'american', 'italian'). */
-    currentSubCategory: 'american',
-    /** @type {string} The identifier of the currently active page (e.g., 'home', 'menu'). */
-    currentPage: 'home',
-    /** @type {number} The current slide index for the main restaurant carousel. */
-    currentSlide: 0,
-    /** @type {number|null} The table number if ordering from a QR code. */
-    currentTableNumber: null,
-    /** @type {boolean} Flag to check if the user arrived via a QR code link. */
-    isFromQRCode: false,
-    /** @type {number} The current slide index for the specials carousel. */
-    currentSpecialsSlide: 0,
-    /** @type {number|null} Stores the interval ID for the specials carousel auto-play. */
-    specialsCarouselInterval: null,
-    /** @type {'review' | 'payment'} مرحله فعلی فرآیند سفارش در سایدبار */
-    currentOrderStep: 'review',
-};
-// ========================== END OF STATE MANAGEMENT ==========================
-
 // مسیر پایه برای تصاویر Supabase
-// این مقدار را با شناسه پروژه Supabase خود جایگزین کنید
 export const IMAGE_BASE_PATH = 'https://kgareesfljwsclqljqvr.supabase.co/storage/v1/object/public/images/';
 
 // ================================= DOM ELEMENTS =================================
-/**
- * @description Cached DOM elements.
- * Caching elements on initialization improves performance by avoiding repeated DOM queries.
- * All elements that are accessed frequently should be added here.
- */
 export const elements = {
     // Header and Navigation
     headerContainer: document.getElementById('header-container'),
@@ -91,39 +51,31 @@ export const elements = {
     carouselPrev: document.getElementById('carousel-prev'),
     carouselNext: document.getElementById('carousel-next'),
 
-    // Category Display (dynamic elements, might be null initially)
+    // Category Display
     categoryTitle: document.getElementById('category-title'),
     categoryImageContainer: document.querySelector('.category-image-container'),
     categoryDescription: document.getElementById('category-description'),
+    
+    // Search and carousel
+    productSearch: document.getElementById('product-search'),
+    clearSearchBtn: document.getElementById('clear-search'),
+    searchContainer: document.getElementById('search-container'),
+    specialsCarouselSection: document.getElementById('specials-carousel-section'),
 };
-// ========================== END OF DOM ELEMENTS ==========================
 
 // ================================= APPLICATION CONFIGURATION =================================
-/**
- * @description Application-wide configuration constants.
- * Add any global settings, timeouts, or API endpoints here.
- */
-
-// --- تشخیص خودکار محیط و تنظیم آدرس API ---
 let API_BASE_URL;
 
 if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-    // محیط توسعه (Development)
     API_BASE_URL = 'http://localhost:5000';
 } else {
-    // محیط تولید (Production) - آدرس سرور خود را اینجا قرار دهید
-    API_BASE_URL = 'https://simoon.onrender.com'; // <--- این آدرس را با آدرس بک‌اند خود در Render جایگزین کنید
+    API_BASE_URL = 'https://simoon.onrender.com';
 }
 
 export const config = {
-    /** @type {string} The base URL for the backend API. */
-    API_BASE_URL: API_BASE_URL, // استفاده از مقدار تعیین شده بالا
-    
-    /** @type {number} Interval in milliseconds for the main carousel auto-play. */
+    API_BASE_URL: API_BASE_URL,
     mainCarouselInterval: 5000,
-    /** @type {number} Interval in milliseconds for the specials carousel auto-play. */
     specialsCarouselIntervalTime: 4000,
-    /** @type {number} Breakpoint for mobile view in pixels. */
     mobileBreakpoint: 768,
 };
-// ========================== END OF APPLICATION CONFIGURATION ==========================
+// ============================== END OF JAVASCRIPT FILE ==============================

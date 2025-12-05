@@ -1,18 +1,19 @@
 /* ================================= CSS FILE ================================= */
-/* File: css/styles.css
-/* Description: Main stylesheet for Simoon Cafe website
-/* Author: [Your Name]
-/* Last Modified: [Date]
+/* File: css/styles.css */
+/* Description: Main stylesheet for Simoon Cafe website */
+/* Author: [Your Name] */
+/* Last Modified: [Date] */
 /* ============================== END OF FILE HEADER ============================== */
 
 /* ================================= GLOBAL STYLES & ANIMATIONS ================================= */
 /* --- Global Styles & Font Families --- */
 body { 
     font-family: 'Inter', sans-serif; 
-    background-color: #1a1a1a; /* Extracted from: body class="bg-gray-900" */
-    color: #f0f0f0; /* Extracted from: body class="text-gray-100" */
-    min-height: 100vh; /* Extracted from: body class="min-h-screen" */
+    background-color: #1a1a1a;
+    color: #f0f0f0;
+    min-height: 100vh;
 }
+
 .serif-font { 
     font-family: 'Playfair Display', serif; 
 }
@@ -32,6 +33,7 @@ body {
     10%, 30%, 50%, 70%, 90% { transform: translateX(-5px) rotate(-2deg); }
     20%, 40%, 60%, 80% { transform: translateX(5px) rotate(2deg); }
 }
+
 .shake-animation { 
     animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; 
 }
@@ -42,6 +44,7 @@ body {
     50% { transform: translateY(-20px); }
     100% { transform: translateY(0px); }
 }
+
 .floating { 
     animation: float 6s ease-in-out infinite; 
 }
@@ -51,6 +54,7 @@ body {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
 .fade-in { 
     animation: fadeIn 0.8s ease-out forwards; 
 }
@@ -60,13 +64,16 @@ body {
 .custom-scrollbar::-webkit-scrollbar { 
     width: 6px; 
 }
+
 .custom-scrollbar::-webkit-scrollbar-track { 
     background: #374151; 
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb { 
     background: #6b7280; 
     border-radius: 10px; 
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb:hover { 
     background: #9ca3af; 
 }
@@ -75,9 +82,26 @@ body {
 .page-section { 
     display: none; 
 }
+
 .page-section.active { 
     display: block; 
 }
+
+/* --- Loading Spinner --- */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.subcategory-spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(251, 191, 36, 0.3);
+    border-radius: 50%;
+    border-top-color: #fbbf24;
+    animation: spin 1s ease-in-out infinite;
+    margin: 0 auto;
+}
+
 /* ========================== END OF GLOBAL STYLES & ANIMATIONS ========================== */
 
 /* ================================= HEADER & NAVIGATION ================================= */
@@ -103,10 +127,12 @@ body {
     padding: 0.5rem 1rem;
     border-radius: 0.375rem;
 }
+
 .nav-link:hover { 
     color: #f3f4f6; 
     background-color: rgba(55, 65, 81, 0.5); 
 }
+
 .nav-link.active { 
     color: #fbbf24; 
     background-color: rgba(251, 191, 36, 0.1); 
@@ -170,14 +196,10 @@ body {
     font-weight: 500;
     display: block;
 }
+
 /* ========================== END OF HEADER & NAVIGATION ========================== */
 
 /* ================================= HOME PAGE STYLES ================================= */
-/* --- Main Content Padding --- */
-/* main {
-    padding-top: 64px; 
-} */
-
 /* --- Welcome Section --- */
 .welcome-section {
     position: relative;
@@ -185,11 +207,11 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    /* background-image: url('../images/locwel.png'); */
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
 }
+
 .welcome-section::before {
     content: '';
     position: absolute;
@@ -200,47 +222,55 @@ body {
     background: rgba(0, 0, 0, 0.6);
     z-index: 1;
 }
+
 .welcome-content {
     position: relative;
     z-index: 2;
     text-align: center;
 }
-/* --- Extracted Animation Delays --- */
-.welcome-content .fade-in:nth-of-type(2) { /* Targets the <p> tag */
-    animation-delay: 0.2s; /* Extracted from: <p class="... fade-in" style="animation-delay: 0.2s"> */
+
+/* --- Animation Delays --- */
+.welcome-content .fade-in:nth-of-type(2) {
+    animation-delay: 0.2s;
 }
-.welcome-content .fade-in.button { /* Targets the <button> tag */
-    animation-delay: 0.4s; /* Extracted from: <button class="... fade-in" style="animation-delay: 0.4s"> */
+
+.welcome-content .fade-in.button {
+    animation-delay: 0.4s;
 }
 
 /* --- Feature Section --- */
 .feature-section {
     padding: 2rem 0;
 }
-/* --- Extracted Animation Delays for Feature Section --- */
+
+/* --- Animation Delays for Feature Section --- */
 .feature-section .grid > .fade-in:first-child {
-    animation-delay: 0.1s; /* Extracted from: <div class="fade-in" style="animation-delay: 0.1s"> */
+    animation-delay: 0.1s;
 }
+
 .feature-section .grid > .fade-in:last-child {
-    animation-delay: 0.3s; /* Extracted from: <div class="fade-in" style="animation-delay: 0.3s"> */
+    animation-delay: 0.3s;
 }
 
 /* --- Parallax Elements --- */
 .parallax-element {
-    position: absolute; /* Extracted from: <div class="parallax-element floating" style="top: 20%; right: 10%;"> */
+    position: absolute;
 }
+
 .parallax-element:first-of-type {
     top: 20%;
     right: 10%;
 }
+
 .parallax-element:last-of-type {
     bottom: 20%;
     left: 10%;
-    animation-delay: 1s; /* Extracted from: <div class="parallax-element floating" style="bottom: 20%; left: 10%; animation-delay: 1s;"> */
+    animation-delay: 1s;
 }
 
-/* ================================= RESTAURANT CAROUSEL (ROBUST VERSION) ================================= */
-/* ================================= RESTAURANT CAROUSEL (ROBUST VERSION) ================================= */
+/* ========================== END OF HOME PAGE STYLES ========================== */
+
+/* ================================= RESTAURANT CAROUSEL ================================= */
 .carousel-container {
     position: relative;
     width: 100%;
@@ -258,16 +288,14 @@ body {
     will-change: transform;
 }
 
-/* استایل اسلایدهای عادی */
 .carousel-slide {
-    width: 100%; /* هر اسلاید به اندازه ۱۰۰٪ عرض کانتینر است */
+    width: 100%;
     flex-shrink: 0;
     height: 100%;
 }
 
-/* استایل جدید برای اسلاید واید */
 .carousel-slide-wide {
-    width: 200%; /* این اسلاید به اندازه ۲ اسلاید عادی فضا می‌گیرد */
+    width: 200%;
 }
 
 .carousel-slide img {
@@ -276,7 +304,7 @@ body {
     object-fit: cover;
 }
 
-/* دکمه‌های ناوبری */
+/* --- Navigation Buttons --- */
 .carousel-nav {
     position: absolute;
     top: 50%;
@@ -294,14 +322,21 @@ body {
     z-index: 10;
     transition: all 0.2s ease-in-out;
 }
+
 .carousel-nav:hover {
     background: rgba(0, 0, 0, 0.8);
     transform: translateY(-50%) scale(1.1);
 }
-.carousel-prev { left: 15px; }
-.carousel-next { right: 15px; }
 
-/* نشانگرها (نقاط) */
+.carousel-prev { 
+    left: 15px; 
+}
+
+.carousel-next { 
+    right: 15px; 
+}
+
+/* --- Indicators --- */
 .carousel-indicators {
     position: absolute;
     bottom: 15px;
@@ -326,8 +361,8 @@ body {
     background-color: #fbbf24;
     transform: scale(1.2);
 }
+
 /* ========================== END OF RESTAURANT CAROUSEL ========================== */
-/* ========================== END OF HOME PAGE STYLES ========================== */
 
 /* ================================= MENU PAGE STYLES ================================= */
 /* --- Menu Navigation --- */
@@ -335,16 +370,12 @@ body {
     position: sticky;
     top: 0;
     z-index: 30;
-    background-color: #1a1a1a; /* رنگ اصلی و پیش‌فرض */
+    background-color: #1a1a1a;
     border-bottom: 1px solid #374151;
-    /* transition: background-color 0.3s ease; */ /* این خط را حذف کنید تا تداخلی پیش نیاید */
-    /* transition: opacity 0.3s ease, transform 0.3s ease; */
-
 }
 
-/* این کلاس فقط در موبایل اضافه می‌شود و بک‌گراند را تغییر می‌دهد */
 .navigation-wrapper.mobile-image-bg {
-    background-color: transparent; /* رنگ اصلی را حذف می‌کنیم */
+    background-color: transparent;
     background-image: linear-gradient(rgb(0 0 0 / 89%), rgb(0 0 0 / 52%)), var(--category-bg-image);
     background-size: cover;
     background-position: center center;
@@ -353,71 +384,187 @@ body {
     backdrop-filter: blur(8px);
 }
 
-/* این کلاس برای مخفی کردن دیو محتوا در موبایل است */
 .category-display-section.hide-category-display {
     display: none;
 }
 
-/* مخفی کردن نویگیشن وrapper در موبایل برای تب specials */
+
+/* نوار خالی برای زیرشاخه‌های تب‌های all و special */
+.subcategory-empty-placeholder {
+    height: 50px; /* ارتفاع مشابه نوار زیرشاخه‌های دیگر */
+    width: 100%;
+}
+
+/* اصلاح: مخفی کردن عکس دسته‌بندی برای تب‌های all و special */
+.category-image-container.hidden {
+    display: none;
+}
+
+/* اصلاح: مخفی کردن بخش دود برای تب‌های all و special */
+#category-smoke-container.hidden {
+    display: none;
+}
+
+
+/* اصلاح: مخفی کردن عکس دسته‌بندی برای تب‌های all و special */
+.category-image-container.hidden {
+    display: none !important;
+}
+
+/* برای جلوگیری از نمایش اولیه در دسکتاپ */
+.category-image-container.initial-hidden {
+    display: none !important;
+}
+
+/* انیمیشن محو شدن برای عکس دسته‌بندی */
+.category-image-container {
+    transition: opacity 0.3s ease-in-out;
+}
+
+.category-image-container.fade-out {
+    opacity: 0;
+}
+
+.category-image-container.fade-in {
+    opacity: 1;
+}
+/* --- Search Container --- */
+/* استایل برای اسپینر محصولات */
+.product-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(251, 191, 36, 0.3);
+    border-radius: 50%;
+    border-top-color: #fbbf24;
+    animation: spin 1s ease-in-out infinite;
+    margin: 0 auto;
+}
+
+/* استایل برای جستجوی ثابت */
+#search-container {
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(55, 65, 81, 0.5);
+    background-color: rgba(17, 24, 39, 0.95);
+    backdrop-filter: blur(8px);
+}
+
+/* برای موبایل */
 @media (max-width: 768px) {
-    .navigation-wrapper.hide-on-mobile-specials {
-        display: none;
-    }
-    
-    /* در موبایل، فقط تب‌ها نمایش داده شوند */
-    .navigation-wrapper.hide-on-mobile-specials .category-nav {
-        display: flex;
-        position: fixed;
-        top: 28px;
-        left: 0;
-        right: 0;
-        z-index: 30;
-        background-color: #1a1a1a;
-        border-bottom: 1px solid #374151;
+    #search-container {
+        top: 100px; /* ارتفاع هدر در موبایل */
     }
 }
 
-/* Main Category Tabs */
+/* اضافه کردن فضای خالی به بالای بخش محصولات */
+#menu-page .container.mx-auto.px-4.py-12:first-of-type {
+    padding-top: 100px; /* فضای خالی برای جستجو */
+}
+
+@media (max-width: 768px) {
+    #menu-page .container.mx-auto.px-4.py-12:first-of-type {
+        padding-top: 80px; /* فضای خالی برای جستجو در موبایل */
+    }
+}
+
+#product-search {
+    transition: all 0.2s ease-in-out;
+}
+
+#product-search:focus {
+    box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.2);
+}
+
+#clear-search {
+    transition: color 0.2s ease-in-out;
+}
+
+#clear-search:hover {
+    color: #fbbf24;
+}
+
+.empty-state span {
+    color: #fbbf24;
+}
+
+/* --- Main Category Tabs --- */
 .category-nav { 
-    /* border-top: 1px solid #374151;  */
     border-bottom: 1px solid #374151; 
     padding: 10px 0px 10px 0px;
 }
+
 .category-btn {
-    color:#f0f0f0eb;;
+    color: #f0f0f0eb;
     padding-bottom: 2px;
     margin-bottom: 2px;
     transition: color 0.2s ease-in-out;
     cursor: pointer;
 }
+
 .category-btn:hover { 
     color: #f3f4f6; 
 }
+
 .category-btn.active {
     color: #fbbf24;
     border-bottom: 3px solid #fbbf24;
 }
 
-/* Sub-Category Tabs */
+/* --- Sub-Category Tabs --- */
+/* --- Sub-Category Tabs --- */
 .subcategory-nav {
-    padding-top: 2px;
+    /* حذف padding-top و padding-bottom برای کنترل کامل ارتفاع */
+    padding-top: 0;
+    padding-bottom: 0;
     border-bottom: 1px solid #1F2937;
     box-shadow: 4px 4px 10px #1F2937;
-    padding-bottom: 5px;
+    
+    /* این بخش مهم است: ارتفاع ثابت برای ناوبر */
+    height: 62px; /* ارتفاع دقیق بر اساس لاگ‌ها */
+    display: flex;
+    align-items: center; /* محتوای داخلی را عمودی وسط چین می‌کند */
 }
+
+/* استایل ناوبر داخلی که دکمه‌ها در آن قرار دارند */
+.subcategory-nav nav {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    /* این padding باعث می‌شود دکمه‌ها از بالا و پایین فاصله داشته باشند */
+    padding: 12px 0; 
+    gap: 0.75rem; /* gap-3 در Tailwind */
+}
+
+@media (min-width: 768px) {
+    .subcategory-nav nav {
+        gap: 1.5rem; /* md:gap-6 در Tailwind */
+    }
+}
+
+/* نوار خالی برای زیرشاخه‌های تب‌های all و special */
+.subcategory-empty-placeholder {
+    /* این عنصر دیگر نیازی به ارتفاع ندارد، چون والدش ارتفاع ثابت دارد */
+    display: none; /* بهتر است کاملاً مخفی شود چون کاربردی ندارد */
+}
+
 .subcategory-btn {
     color: #6b7280;
-    padding-bottom: 6px;
-    margin-bottom: 2px;
     transition: color 0.2s ease-in-out;
     cursor: pointer;
+    /* padding عمودی و افقی برای دکمه‌ها */
+    padding: 6px 12px; 
+    margin-bottom: 2px;
+    border-bottom: 3px solid transparent; /* برای حفظ فضا برای خط فعال */
 }
+
 .subcategory-btn:hover { 
     color: #d1d5db; 
 }
+
 .subcategory-btn.active {
     color: #fbbf24;
-    border-bottom: 3px solid #fbbf24;
+    border-bottom-color: #fbbf24;
 }
 
 /* --- Category Display Section --- */
@@ -425,71 +572,70 @@ body {
     background-color: #1f2937;
     border-bottom: 1px solid #374151;
 }
-.category-display-section.hide-category-display {
-    display: none;
-}
 
-/* --- Extracted Layout for Category Display --- */
 #category-display-wrapper {
     display: flex;
-    flex-direction: column; /* Extracted from: class="flex flex-col gap-8 w-full" */
-    /* gap: 2rem; */
+    flex-direction: column;
     width: 100%;
 }
+
 .category-image-container {
-    position: relative; /* Extracted from: class="... w-full relative" */
+    position: relative;
     width: 100%;
-    aspect-ratio: 16 / 9; /* Changed from custom height to a responsive aspect ratio */
-    /* border-radius: 12px; */
+    aspect-ratio: 16 / 9;
     overflow: hidden;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
+
 .category-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease;
 }
+
 .category-image:hover {
     transform: scale(1.05);
 }
+
 .category-info-overlay {
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 0; /* Default for mobile */
-    width: 100%; /* Default for mobile */
+    left: 0;
+    width: 100%;
     background-color: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
     padding: 2rem;
     display: flex;
-    flex-direction: column; /* Extracted from: class="... flex flex-col ..." */
-    justify-content: center; /* Extracted from: class="... justify-center ..." */
-    text-align: center; /* Default for mobile */
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
     color: #ffffff;
     line-height: 1.7;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
 }
-/* --- Responsive layout for overlay --- */
+
 @media (min-width: 200px) {
     .category-info-overlay {
         left: 0;
         right: auto;
         width: 33.333%;
         text-align: left;
-        padding: 3rem; /* md:p-8 */
+        padding: 3rem;
     }
 }
+
 .category-title {
     font-size: 1.5rem;
     text-align: center;
     font-weight: 700;
     color: #fbbf24;
-    /* margin-bottom: 1rem; */
     padding-top: 5px;
     text-transform: capitalize;
 }
+
 .smoke-container {
     position: absolute;
     bottom: 25%;
@@ -499,6 +645,7 @@ body {
     height: 100px;
     pointer-events: none;
 }
+
 .smoke-puff {
     position: absolute;
     bottom: 0;
@@ -514,30 +661,31 @@ body {
     animation-timing-function: ease-out;
     animation-fill-mode: forwards;
 }
+
 @keyframes smoke-rise {
     0% { opacity: 0; transform: translateX(-50%) translateY(0) scale(0.3); }
     20% { opacity: 0.6; }
     100% { opacity: 0; transform: translateX(-50%) translateY(-150px) scale(1.8); }
 }
 
-/* ================================= SPECIALS CAROUSEL STYLES ================================= */
-.specials-carousel-container {
+/* --- Specials Carousel --- */
+#specials-carousel-section {
     position: relative;
     width: 100%;
     aspect-ratio: 3 / 2;
     max-width: 100%;
     max-height: 500px;
-    margin: 0 auto;
+    margin: 1rem auto;
     overflow: hidden;
-    /* border-radius: 12px; */
     background-color: #1a1a1a;
     box-shadow: 0 40px 60px #1F2937;
+    transition: min-height 0.3s ease-in-out;
 }
 
-.cc{
-
+.cc {
     padding-top: 5px;
 }
+
 .specials-carousel-track {
     position: relative;
     width: 100%;
@@ -550,8 +698,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    /* --- تغییر: عکس کامل و واضح نمایش داده می‌شود --- */
-    background-size: contain; /* عکس کامل و بدون برش یا کشیدگی نمایش داده می‌شود */
+    background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     opacity: 0;
@@ -562,7 +709,6 @@ body {
     opacity: 1;
 }
 
-/* استایل‌دهی به بخش اطلاعات اسلاید */
 .carousel-slide-info {
     position: absolute;
     bottom: 0;
@@ -589,8 +735,7 @@ body {
     opacity: 0.9;
 }
 
-/* انتقال اندیکاتورها به بالای دیو */
-.carousel-indicators {
+.specials-carousel-indicators {
     position: absolute;
     top: 15px;
     left: 50%;
@@ -600,7 +745,7 @@ body {
     z-index: 10;
 }
 
-.indicator {
+.specials-carousel-indicators .indicator {
     position: relative;
     width: 12px;
     height: 12px;
@@ -611,11 +756,11 @@ body {
     transition: background 0.3s ease;
 }
 
-.indicator.active {
+.specials-carousel-indicators .indicator.active {
     background: #fbbf24;
 }
 
-.indicator .indicator-timer {
+.specials-carousel-indicators .indicator .indicator-timer {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -632,7 +777,6 @@ body {
 }
 
 /* --- Product Cards --- */
-/* استایل‌های اصلی کارت محصول */
 .product-card {
     position: relative;
     background-color: #1f2937;
@@ -688,7 +832,6 @@ body {
 }
 
 .menu-item-details {
-    /* margin-bottom: 1rem; */
     text-align: left;
 }
 
@@ -772,93 +915,17 @@ body {
     color: #fbbf24; 
 }
 
-
 .add-to-order-controls {
     display: flex;
     justify-content: center;
-    /* margin-top: 0.75rem; */
 }
 
-/* Responsive برای موبایل */
-@media (max-width: 640px) {
-    .product-card {
-        padding: 12px;
-        padding-top: 40px;
-    }
-    
-    /* .product-image-container {
-        width: 60px;
-        height: 60px;
-        top: -15px;
-    } */
-    
-    .menu-item-name {
-        font-size: 0.95rem;
-    }
-    
-    .ingredients-title {
-        font-size: 0.8rem;
-    }
-    
-    .menu-item-description {
-        font-size: 0.7rem;
-    }
-    
-    .menu-item-price {
-        font-size: 0.9rem;
-    }
-    
-    .menu-item-stock {
-        font-size: 0.7rem;
-    }
-}
-
-@media (max-width: 480px) {
-    #menu-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
-    }
-    
-    .product-card {
-        padding: 10px;
-        padding-top: 35px;
-    }
-    
-    /* .product-image-container {
-        width: 50px;
-        height: 50px;
-    } */
-    
-    .menu-item-name {
-        font-size: 0.85rem;
-    }
-    
-    .menu-item-description {
-        font-size: 0.65rem;
-    }
-}
-
-.favorite-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: rgba(31, 41, 55, 0.8);
-    color: #ef4444;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-    z-index: 11;
-}
-.favorite-btn:hover { 
-    background: rgba(31, 41, 55, 1); 
-    transform: scale(1.1); 
-}
-.favorite-btn.active { 
-    color: #fbbf24; 
+/* --- Separator Lines --- */
+.separator-line {
+    height: 1px;
+    background: linear-gradient(to right, transparent, #374151, transparent);
+    margin: 0.5rem 0;
+    width: 100%;
 }
 
 /* --- Menu Order Button --- */
@@ -878,6 +945,7 @@ body {
     box-shadow: 0 4px 20px rgba(251, 191, 36, 0.4);
     transition: all 0.3s ease;
 }
+
 .menu-order-btn:hover {
     transform: scale(1.1);
     background: rgba(251, 191, 36, 1);
@@ -890,36 +958,32 @@ body.menu-page-active .footer-section {
     display: none;
 }
 
-/* ========================== END OF TEMPORARY DEBUGGING STYLES ========================== */
-
 /* ========================== END OF MENU PAGE STYLES ========================== */
-/* ================================= CATERING & EVENTS PAGE STYLES ================================= */
-/* Styles for Catering & Events page can be added here */
-/* ========================== END OF CATERING & EVENTS PAGE STYLES ========================== */
 
 /* ================================= SIDEBARS ================================= */
 /* --- Sidebar Transitions & Layout --- */
 .order-sidebar { 
     transform: translateX(-100%); 
     transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-    /* Extracted from: class="order-sidebar fixed top-0 left-0 h-full w-80 md:w-96 ..." */
     position: fixed;
     top: 0;
     left: 0;
     height: 100%;
-    width: 20rem; /* w-80 */
-    background-color: #1f2937; /* bg-gray-900 */
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); /* shadow-2xl */
+    width: 20rem;
+    background-color: #1f2937;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     z-index: 50;
     display: flex;
     flex-direction: column;
     border-right: 1px solid #374151;
 }
+
 @media (min-width: 768px) {
     .order-sidebar {
-        width: 24rem; /* md:w-96 */
+        width: 24rem;
     }
 }
+
 .order-sidebar.open { 
     transform: translateX(0); 
 }
@@ -927,24 +991,25 @@ body.menu-page-active .footer-section {
 .user-panel-sidebar { 
     transform: translateX(100%); 
     transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-    /* Extracted from: class="user-panel-sidebar fixed top-0 right-0 h-full w-80 md:w-96 ..." */
     position: fixed;
     top: 0;
     right: 0;
     height: 100%;
-    width: 20rem; /* w-80 */
-    background-color: #1f2937; /* bg-gray-900 */
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); /* shadow-2xl */
+    width: 20rem;
+    background-color: #1f2937;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     z-index: 50;
     display: flex;
     flex-direction: column;
     border-left: 1px solid #374151;
 }
+
 @media (min-width: 768px) {
     .user-panel-sidebar {
-        width: 24rem; /* md:w-96 */
+        width: 24rem;
     }
 }
+
 .user-panel-sidebar.open { 
     transform: translateX(0); 
 }
@@ -954,13 +1019,14 @@ body.menu-page-active .footer-section {
     transition: opacity 0.3s ease-in-out; 
     opacity: 0; 
 }
+
 .overlay:not(.hidden) { 
     opacity: 1; 
 }
 
 /* --- Order Items Container --- */
 .order-items-container {
-    flex-grow: 1; /* Extracted from: class="order-items-container flex-grow ..." */
+    flex-grow: 1;
     overflow-y: auto;
 }
 
@@ -974,12 +1040,15 @@ body.menu-page-active .footer-section {
     cursor: pointer;
     transition: background-color 0.2s;
 }
+
 .order-type-option:hover {
     background-color: rgba(55, 65, 81, 0.5);
 }
+
 .order-type-option input[type="radio"] {
     margin-right: 10px;
 }
+
 .order-type-option label {
     cursor: pointer;
     flex-grow: 1;
@@ -993,118 +1062,44 @@ body.menu-page-active .footer-section {
     border-radius: 8px;
     display: none;
 }
+
 /* ========================== END OF SIDEBARS ========================== */
 
-/* ================================= FOOTER ================================= */
-.footer-section {
-    background-color: #111827;
-    border-top: 1px solid #374151;
-    padding: 3rem 0;
-    margin-bottom: 60px; /* Space for bottom nav on mobile */
-}
-.social-links {
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-    margin-top: 1.5rem;
-}
-.social-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #374151;
-    color: #9ca3af;
-    transition: all 0.2s ease;
-}
-.social-link:hover {
-    background-color: #fbbf24;
-    color: #000000;
-    transform: scale(1.1);
-}
-/* ========================== END OF FOOTER ========================== */
-/* ================================= NEW LAYOUT CLASSES FOR CATEGORY DISPLAY ================================= */
-
-/* --- Layout for non-specials categories (top-to-bottom) --- */
-.default-category-layout {
-    display: flex;
-    flex-direction: column;
-    /* gap: 2rem;  */
-    width: 100%;
-}
-
-/* --- Layout for 'specials' category (side-by-side on desktop) --- */
-.specials-layout {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem; /* معادل Tailwind's gap-8 */
-    align-items: center;
-    text-align: center;
-}
-
-/* Responsive adjustment for specials layout */
-@media (min-width: 768px) {
-    .specials-layout {
-        flex-direction: row;
-        align-items: center;
-        text-align: left;
-    }
-    .specials-layout .category-info {
-        flex: 1; /* اشغال نیمی از فضا */
-        padding-right: 2rem;
-    }
-    .specials-layout .category-image-container {
-        flex: 1; /* اشغال نیمی دیگر فضا */
-    }
-}
-
-/* ========================== END OF NEW LAYOUT CLASSES ========================== */
-/* .custom-padding {
-  padding-top: 0.5rem; 
-  padding-bottom: 0.5rem; 
-} */
 /* ================================= PAYMENT FORM STYLES ================================= */
-/* استایل‌دهی کلی به کانتینر فرم پرداخت */
 #payment-form-container {
     display: flex;
     flex-direction: column;
     height: 100%;
-    max-height: 100vh; /* اطمینان از اینکه فرم از ارتفاع صفحه بیشتر نمی‌شود */
-    overflow: hidden; /* جلوگیری از اسکرول کل صفحه */
+    max-height: 100vh;
+    overflow: hidden;
 }
 
-/* کانتینر جدید برای جزئیات پرداخت - این بخش اسکرول می‌شود */
 #payment-details-container {
     flex-grow: 1;
     overflow-y: auto;
-    -webkit-overflow-scrolling: touch; /* برای اسکرول روان‌تر در iOS */
+    -webkit-overflow-scrolling: touch;
 }
 
-/* مخفی کردن تمام بخش‌های جزئیات به طور پیش‌فرض */
 .payment-details {
     display: none;
-    box-sizing: border-box; /* اطمینان از محاسبه صحیح اندازه */
+    box-sizing: border-box;
 }
 
-/* استایل‌دهی به ورودی‌های فرم کارت اعتباری */
 .payment-details input {
     color: #f9fafb;
     box-sizing: border-box;
 }
+
 .payment-details input::placeholder {
     color: #9ca3af;
 }
 
-/* استایل‌دهی به گرید باکس‌های روش پرداخت */
 .payment-methods-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 1rem;
 }
 
-/* استایل‌دهی به هر باکس روش پرداخت */
 .payment-method-box {
     background-color: #374151;
     border: 2px solid transparent;
@@ -1125,33 +1120,27 @@ body.menu-page-active .footer-section {
     transform: translateY(-2px);
 }
 
-/* استایل حالت فعال (انتخاب شده) */
 .payment-method-box.active {
     border-color: #fbbf24;
     background-color: #4b5563;
     color: #ffffff;
 }
 
-/* استایل‌دهی به آیکون‌ها */
 .payment-method-box i {
     font-size: 2rem;
     margin-bottom: 0.5rem;
 }
 
-/* استایل‌دهی به متن */
 .payment-method-box span {
     font-size: 0.875rem;
     font-weight: 500;
 }
 
-/* بهینه‌سازی فرم پرداخت برای موبایل */
 @media (max-width: 640px) {
-    /* کاهش فاصله‌ها در فرم پرداخت */
     #payment-form-container .p-4 {
         padding: 0.75rem !important;
     }
     
-    /* کوچک کردن باکس‌های روش پرداخت */
     .payment-methods-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 0.5rem;
@@ -1162,18 +1151,15 @@ body.menu-page-active .footer-section {
         border-radius: 8px;
     }
     
-    /* کوچک کردن آیکون‌ها */
     .payment-method-box i {
         font-size: 1.5rem;
         margin-bottom: 0.25rem;
     }
     
-    /* کوچک کردن متن */
     .payment-method-box span {
         font-size: 0.75rem;
     }
     
-    /* کاهش padding در جزئیات پرداخت برای جلوگیری از سرریز */
     #payment-details-container {
         padding: 0.75rem !important;
     }
@@ -1182,42 +1168,34 @@ body.menu-page-active .footer-section {
         padding: 0.75rem !important;
     }
     
-    /* بهینه‌سازی ورودی‌های فرم کارت اعتباری */
     .payment-details input {
         padding: 0.5rem !important;
         margin-bottom: 0.5rem !important;
     }
     
-    /* کاهش فاصله بین دکمه‌ها */
     #payment-form-container > div:last-child {
         padding: 0.75rem !important;
     }
     
-    /* بهینه‌سازی تصاویر QR کد */
     .payment-details img {
         width: 150px !important;
         height: 150px !important;
     }
 }
 
-/* بهینه‌سازی برای موبایل‌های بسیار کوچک */
 @media (max-width: 480px) {
-    /* کاهش بیشتر فاصله‌ها */
     #payment-form-container .p-4 {
         padding: 0.5rem !important;
     }
     
-    /* کوچک کردن بیشتر باکس‌های روش پرداخت */
     .payment-method-box {
         padding: 0.75rem 0.25rem;
     }
     
-    /* کوچک کردن بیشتر آیکون‌ها */
     .payment-method-box i {
         font-size: 1.25rem;
     }
     
-    /* کاهش فاصله در جزئیات پرداخت */
     #payment-details-container {
         padding: 0.5rem !important;
     }
@@ -1226,55 +1204,51 @@ body.menu-page-active .footer-section {
         padding: 0.5rem !important;
     }
     
-    /* کاهش فاصله بین دکمه‌ها */
     #payment-form-container > div:last-child {
         padding: 0.5rem !important;
     }
     
-    /* بهینه‌سازی تصاویر QR کد برای موبایل‌های کوچک */
     .payment-details img {
         width: 120px !important;
         height: 120px !important;
     }
 }
 
-/* کد جدید و صحیح */
-/* این قانون فقط و فقط برای کانتینرهای فرم پرداخت شما اعمال می‌شود */
 #order-review-container.hidden,
 #payment-form-container.hidden {
     display: none !important;
 }
-/* رفع مشکل اینپوت‌های کارت اعتباری در موبایل */
+
 .payment-details .flex.gap-3 {
     display: flex;
-    gap: 0.75rem; /* معادل gap-3 */
-    overflow-x: hidden; /* جلوگیری از اسکرول افقی */
+    gap: 0.75rem;
+    overflow-x: hidden;
 }
 
 .payment-details .flex.gap-3 input:first-child {
-    flex-grow: 1; /* اینپوت اول تمام فضای خالی را پر می‌کند */
-    flex-shrink: 1; /* اجازه کوچک شدن می‌دهد */
-    min-width: 0; /* مهم برای اجازه کوچک شدن */
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
 }
 
 .payment-details .flex.gap-3 input:last-child {
-    flex-shrink: 0; /* اینپوت دوم کوچک نمی‌شود */
-    width: 100px; /* عرض ثابت و مناسب */
+    flex-shrink: 0;
+    width: 100px;
 }
-/* ========================== END OF PAYMENT FORM STYLES ================================= */
+
+/* ========================== END OF PAYMENT FORM STYLES ========================== */
+
 /* ================================= ORDER ITEMS STYLES ================================= */
-/* استایل‌دهی به کانتینر اصلی آیتم‌های سفارش */
 #order-items {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
 
-/* استایل‌دهی به هر آیتم سفارش */
 .order-item {
     display: flex;
     gap: 0.75rem;
-    background-color: #374151; /* bg-gray-700 */
+    background-color: #374151;
     border-radius: 0.75rem;
     padding: 0.75rem;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -1285,16 +1259,14 @@ body.menu-page-active .footer-section {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* استایل‌دهی به عکس محصول در سبد خرید */
 .order-item-image {
     width: 60px;
     height: 60px;
     object-fit: cover;
     border-radius: 0.5rem;
-    flex-shrink: 0; /* جلوگیری از کوچک شدن عکس */
+    flex-shrink: 0;
 }
 
-/* کانتینر جزئیات و کنترل‌های محصول */
 .order-item-details {
     display: flex;
     flex-direction: column;
@@ -1302,32 +1274,28 @@ body.menu-page-active .footer-section {
     gap: 0.5rem;
 }
 
-/* نام محصول */
 .order-item-name {
     font-weight: 600;
     font-size: 0.875rem;
-    color: #f9fafb; /* text-gray-100 */
+    color: #f9fafb;
 }
 
-/* کانتینر قیمت و کنترل تعداد */
 .order-item-meta {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-/* قیمت محصول */
 .order-item-price {
     font-weight: 500;
-    color: #fbbf24; /* text-amber-400 */
+    color: #fbbf24;
 }
 
-/* کنترل‌های تعداد (+ و -) */
 .order-item-qty-controls {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background-color: #1f2937; /* bg-gray-800 */
+    background-color: #1f2937;
     border-radius: 0.375rem;
     padding: 0.125rem;
 }
@@ -1340,66 +1308,65 @@ body.menu-page-active .footer-section {
     justify-content: center;
     background-color: transparent;
     border: none;
-    color: #d1d5db; /* text-gray-300 */
+    color: #d1d5db;
     border-radius: 0.25rem;
     cursor: pointer;
     transition: background-color 0.2s, color 0.2s;
 }
 
 .order-item-qty-controls button:hover {
-    background-color: #374151; /* bg-gray-700 */
-    color: #f9fafb; /* text-gray-100 */
+    background-color: #374151;
+    color: #f9fafb;
 }
 
 .order-item-qty-controls span {
     font-size: 0.875rem;
     font-weight: 500;
-    color: #f9fafb; /* text-gray-100 */
-    min-width: 1.5rem; /* ثابت نگه داشتن عرض برای اعداد */
+    color: #f9fafb;
+    min-width: 1.5rem;
     text-align: center;
 }
 
-/* فیلد توضیحات (یادداشت) */
 .order-item-note {
     width: 100%;
-    background-color: #1f2937; /* bg-gray-800 */
-    border: 1px solid #4b5563; /* border-gray-600 */
+    background-color: #1f2937;
+    border: 1px solid #4b5563;
     border-radius: 0.375rem;
     padding: 0.5rem;
     font-size: 0.75rem;
-    color: #d1d5db; /* text-gray-300 */
+    color: #d1d5db;
     resize: none;
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .order-item-note:focus {
     outline: none;
-    border-color: #fbbf24; /* focus:ring-amber-400 */
-    box-shadow: 0 0 0 1px #fbbf24; /* focus:ring-2 focus:ring-amber-500 */
+    border-color: #fbbf24;
+    box-shadow: 0 0 0 1px #fbbf24;
 }
 
-/* بهینه‌سازی برای موبایل‌های کوچک */
 @media (max-width: 480px) {
     .order-item-image {
         width: 50px;
         height: 50px;
     }
+    
     .order-item-name {
         font-size: 0.8rem;
     }
+    
     .order-item-note {
         font-size: 0.7rem;
     }
 }
 
-
 /* ========================== END OF ORDER ITEMS STYLES ========================== */
+
 /* ================================= ORDER SUMMARY STYLES ================================= */
 .order-summary-container {
     padding: 0.5rem;
     border-top: 1px solid #374151;
-    /* background-color: #292524;  */
-    flex-shrink: 0; /* جلوگیری از کوچک شدن این بخش */
+    flex-shrink: 0;
 }
 
 .order-summary-container .flex {
@@ -1408,82 +1375,43 @@ body.menu-page-active .footer-section {
 }
 
 .order-summary-container span:first-child {
-    font-size: 1.125rem; /* text-lg */
-    font-weight: 600; /* font-semibold */
-    color: #f3f4f6; /* text-gray-100 */
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #f3f4f6;
 }
 
 .order-summary-container span:last-child {
-    font-size: 1.25rem; /* text-xl */
-    font-weight: 700; /* font-bold */
-    color: #fbbf24; /* text-amber-400 */
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fbbf24;
 }
-/* ========================== END OF ORDER SUMMARY STYLES ================================= */
+
+/* ========================== END OF ORDER SUMMARY STYLES ========================== */
+
+/* ================================= BUTTON STYLES ================================= */
 .cancel-payment-btn {
     background-color: rgb(31, 40, 51);
-    border: 2px solid rgb(217 119 6 / var(--tw-bg-opacity, 1)); /* ضخامت 2 پیکسل، خطی، رنگ قرمز */
-    border-radius: 4px; /* اگر می‌خواهید گوشه‌ها گرد باشد (اختیاری) */
-    color: rgb(217 119 6 / var(--tw-bg-opacity, 1)); /* رنگ متن برای خوانایی بهتر */
-}
-.confirm-payment-btn {
-    background-color:rgb(217 119 6 / var(--tw-bg-opacity, 1));
+    border: 2px solid rgb(217 119 6 / var(--tw-bg-opacity, 1));
     border-radius: 4px;
+    color: rgb(217 119 6 / var(--tw-bg-opacity, 1));
+}
 
-}
-.submit-order-btn{
+.confirm-payment-btn {
+    background-color: rgb(217 119 6 / var(--tw-bg-opacity, 1));
     border-radius: 4px;
 }
-.pp1{
+
+.submit-order-btn {
+    border-radius: 4px;
+}
+
+.pp1 {
     padding: 8px;
 }
 
-.menu-nav-P {
-    padding: 0.5rem;
-    
-}
-/* --- Scroll to Next Category Icon --- */
-#scroll-to-next-category {
-    position: fixed;
-    bottom: 100px; /* کمی بالاتر از دکمه سبد خرید */
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 34;
-    width: 50px;
-    height: 50px;
-    background-color: rgba(251, 191, 36, 0.8);
-    color: #1a1a1a;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    /* انیمیشن */
-    animation: bounce 2s infinite;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
+/* ========================== END OF BUTTON STYLES ========================== */
 
-#scroll-to-next-category:not(.hidden) {
-    opacity: 1;
-}
-
-#scroll-to-next-category:hover {
-    background-color: rgba(251, 191, 36, 1);
-    transform: translateX(-50%) scale(1.1);
-}
-
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
-    40% { transform: translateX(-50%) translateY(-10px); }
-    60% { transform: translateX(-50%) translateY(-5px); }
-}
-
-
-
-
-/* ================================= HOW TO ORDER SECTION (Desktop + Mobile) ================================= */
+/* ================================= HOW TO ORDER SECTION ================================= */
 .how-to-order-section {
     background-color: #111827;
     padding: 1rem 0;
@@ -1499,7 +1427,6 @@ body.menu-page-active .footer-section {
     margin: 0 auto;
 }
 
-/* خط اتصال بین گام‌ها (فقط برای دسکتاپ) */
 .order-steps-container::before {
     content: '';
     position: absolute;
@@ -1511,7 +1438,6 @@ body.menu-page-active .footer-section {
     z-index: 1;
 }
 
-/* استایل هر گام (مشترک بین دسکتاپ و موبایل) */
 .order-step {
     display: flex;
     flex-direction: column;
@@ -1526,7 +1452,6 @@ body.menu-page-active .footer-section {
     transform: translateY(-5px);
 }
 
-/* کانتینر آیکون و شماره گام */
 .order-step-icon {
     width: 80px;
     height: 80px;
@@ -1541,7 +1466,6 @@ body.menu-page-active .footer-section {
     transition: all 0.3s ease;
 }
 
-/* انیمیشن پالس برای آیکون‌ها (مشترک) */
 .order-step-icon::before {
     content: '';
     position: absolute;
@@ -1568,7 +1492,6 @@ body.menu-page-active .footer-section {
     transition: color 0.3s ease;
 }
 
-/* عنوان و توضیحات گام (مشترک) */
 .order-step-title {
     font-size: 1.25rem;
     font-weight: 700;
@@ -1582,42 +1505,36 @@ body.menu-page-active .footer-section {
     line-height: 1.5;
 }
 
-/* انیمیشن پالس (مشترک) */
 @keyframes pulse {
     0% { transform: scale(1); opacity: 1; }
     50% { transform: scale(1.2); opacity: 0; }
     100% { transform: scale(1); opacity: 0; }
 }
 
-/* ================================================= */
-/* ======== طراحی اختصاصی برای موبایل (فلوچارت) ======== */
-/* ================================================= */
 @media (max-width: 768px) {
-    /* مخفی کردن خط افقی دسکتاپ */
     .order-steps-container::before {
         display: none;
     }
-    .carousel-nav{
+    
+    .carousel-nav {
         display: none;
     }
+    
     .welcome-section {
         min-height: 80vh;
     }
-    /* تغییر چیدمان به عمودی */
+    
     .order-steps-container {
         flex-direction: column;
         align-items: center;
-        gap: 3rem; /* فاصله بین کارت‌ها */
+        gap: 3rem;
     }
 
-    /* طراحی هر کارت در فلوچارت موبایل */
     .order-step {
         width: 100%;
-        /* flex-direction: column; */
         text-align: left;
         align-items: center;
         background-color: #1f2937;
-        /* border: 4px solid #374151; */
         border-radius: 4px;
         padding: 1rem;
         box-shadow: 0 20px 15px rgb(0 0 0);
@@ -1626,11 +1543,10 @@ body.menu-page-active .footer-section {
         transform: translateY(20px);
     }
 
-    /* فلش پایینی برای اتصال کارت‌ها */
     .order-step::after {
         content: '↓';
         position: absolute;
-        bottom: -2.5rem; /* موقعیت فلش */
+        bottom: -2.5rem;
         left: 50%;
         transform: translateX(-50%);
         font-size: 2rem;
@@ -1638,17 +1554,14 @@ body.menu-page-active .footer-section {
         text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
-    /* حذف فلش از آخرین کارت */
     .order-step:last-child::after {
         display: none;
     }
 
-    /* تنظیمات آیکون درون کارت موبایل */
     .order-step-icon {
         width: 60px;
         height: 60px;
         margin-bottom: 0;
-        /* margin-right: 1.5rem; */
         flex-shrink: 0;
     }
     
@@ -1656,7 +1569,6 @@ body.menu-page-active .footer-section {
         font-size: 1.5rem;
     }
 
-    /* تریک خفن: انیمیشن ظاهر شدن هم‌زمان (Staggered Animation) */
     .order-step:nth-child(1) { animation: fadeInUp 0.6s ease-out 0.1s forwards; }
     .order-step:nth-child(2) { animation: fadeInUp 0.6s ease-out 0.2s forwards; }
     .order-step:nth-child(3) { animation: fadeInUp 0.6s ease-out 0.3s forwards; }
@@ -1669,75 +1581,107 @@ body.menu-page-active .footer-section {
         }
     }
 }
+
 /* ========================== END OF HOW TO ORDER SECTION ========================== */
 
+/* ================================= FOOTER ================================= */
+.footer-section {
+    background-color: #111827;
+    border-top: 1px solid #374151;
+    padding: 3rem 0;
+    margin-bottom: 60px;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #374151;
+    color: #9ca3af;
+    transition: all 0.2s ease;
+}
+
+.social-link:hover {
+    background-color: #fbbf24;
+    color: #000000;
+    transform: scale(1.1);
+}
+
+/* ========================== END OF FOOTER ========================== */
+
 /* ================================= RESPONSIVE DESIGN ================================= */
-/* --- Media Queries --- */
 @media (max-width: 1024px) {
     .mobile-bottom-nav {
         display: flex;
     }
+    
     .desktop-nav {
         display: none;
     }
+    
     .main-header {
         justify-content: space-between;
     }
+    
     .brand-center {
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
     }
+    
     main {
-        padding-bottom: 60px !important; /* Space for bottom nav */
+        padding-bottom: 60px !important;
     }
 }
-.menu-grid{
+
+.menu-grid {
     gap: 5rem 1rem; 
 }
+
 @media (max-width: 640px) {
     .category-nav nav {
         gap: 0.5rem;
         font-size: 0.875rem;
     }
+    
     .subcategory-nav nav {
         gap: 0.5rem;
         font-size: 0.875rem;
     }
+    
     #menu-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 5rem 1rem;
     }
 }
-/* .menu-grid.loading {
-    opacity: 0;
-} */
-.menu-item {
-    /* opacity: 0; */
-    transform: translateY(20px);
-    /* animation: fadeInUp 0.5s ease forwards; */
-    animation-delay: calc(var(--item-index) * 0.05s);
-}
 
-/* خطوط جداکننده بین اجزای کارت محصول */
-.separator-line {
-    height: 1px;
-    background: linear-gradient(to right, transparent, #374151, transparent);
-    margin: 0.5rem 0;
-    width: 100%;
+.menu-item {
+    transform: translateY(20px);
+    animation-delay: calc(var(--item-index) * 0.05s);
 }
 
 @media (max-width: 480px) {
     .welcome-content h2 {
         font-size: 2rem;
     }
+    
     .welcome-content p {
         font-size: 1rem;
     }
+    
     .menu-order-btn {
         width: 48px;
         height: 48px;
-        /* bottom: 70px; */
         right: 15px;
     }
 }
@@ -1746,17 +1690,62 @@ body.menu-page-active .footer-section {
     .brand-center h1 {
         font-size: 1.25rem;
     }
+    
     .mobile-bottom-nav-item i {
         font-size: 1.1rem;
     }
+    
     .mobile-bottom-nav-item span {
         font-size: 0.6rem;
     }
 }
 
-.pb{
+.pb {
     padding-bottom: 2rem;
 }
+
+.menu-nav-P {
+    padding: 0.5rem;
+}
+
+/* --- Scroll to Next Category Icon --- */
+#scroll-to-next-category {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 34;
+    width: 50px;
+    height: 50px;
+    background-color: rgba(251, 191, 36, 0.8);
+    color: #1a1a1a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    animation: bounce 2s infinite;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+#scroll-to-next-category:not(.hidden) {
+    opacity: 1;
+}
+
+#scroll-to-next-category:hover {
+    background-color: rgba(251, 191, 36, 1);
+    transform: translateX(-50%) scale(1.1);
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+    40% { transform: translateX(-50%) translateY(-10px); }
+    60% { transform: translateX(-50%) translateY(-5px); }
+}
+
 /* ========================== END OF RESPONSIVE DESIGN ========================== */
 
 /* ============================== END OF CSS FILE ============================== */

@@ -19,7 +19,16 @@
             console.log('✅ Raw JSON data received:', data);
             console.log('📊 Total products received:', data.length);
             
-            admin.state.products = data;
+            // --- تغییر کلیدی در اینجا ---
+            // بک‌اند category_name و sub_category_name را ارسال می‌کند.
+            // ما آن‌ها را به پراپرتی‌هایی که بقیه کد انتظار دارد (category و sub_category) تبدیل می‌کنیم.
+            const transformedData = data.map(item => ({
+                ...item, // تمام پراپرتی‌های اصلی (id, price, category_id و ...) را نگه دار
+                category: item.category_name, // یک پراپرتی جدید به نام 'category' با مقدار نام دسته‌بندی بساز
+                sub_category: item.sub_category_name // یک پراپرتی جدید به نام 'sub_category' با مقدار نام زیردسته بساز
+            }));
+            
+            admin.state.products = transformedData;
             console.log('✅ Global products variable updated. Total count:', admin.state.products.length);
 
             console.log('===== 🛒 [ADMIN] Product fetching complete =====\n\n');

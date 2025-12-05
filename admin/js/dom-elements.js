@@ -13,6 +13,14 @@
     admin.dom.mainTabs = document.getElementById('mainTabs');
     admin.dom.contentArea = document.getElementById('contentArea');
 
+    // --- NEW ELEMENTS ADDED ---
+    // Section Title
+    admin.dom.sectionTitle = document.getElementById('section-title');
+
+    // Sections
+    admin.dom.categoriesSection = document.getElementById('categories-section');
+    admin.dom.inventorySection = document.getElementById('inventory-section');
+
     // Modal Elements
     admin.dom.categoryModal = document.getElementById('categoryModal');
     admin.dom.productModal = document.getElementById('productModal');
@@ -74,6 +82,18 @@
     admin.dom.logoutBtn = document.getElementById('logoutBtn');
     admin.dom.navLinks = document.querySelectorAll('.nav-link');
     admin.dom.mobileNavItems = document.querySelectorAll('.mobile-bottom-nav-item');
+
+    // Inventory Modals
+    admin.dom.stockUpdateModal = document.getElementById('stockUpdateModal');
+    admin.dom.stockUpdateForm = document.getElementById('stockUpdateForm');
+    admin.dom.confirmStockUpdateBtn = document.getElementById('confirmStockUpdateBtn');
+
+    admin.dom.addIngredientModal = document.getElementById('addIngredientModal');
+    admin.dom.addIngredientForm = document.getElementById('addIngredientForm');
+    admin.dom.confirmAddIngredientBtn = document.getElementById('confirmAddIngredientBtn');
+
+    // Inventory Buttons
+    admin.dom.addIngredientBtn = document.getElementById('add-ingredient-btn');
 
 
 

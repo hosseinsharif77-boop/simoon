@@ -64,6 +64,7 @@ simoon/
 │   │   ├── 📄 event-handlers.js
 │   │   ├── 📄 utility-functions.js
 │   │   ├── 📄 config.js
+│   │   ├── 📄 inventory-management.js
 │   │   ├── 📄 category-management.js               
 │   │   └── 📄 product-management.js              
 │   │
@@ -96,7 +97,8 @@ simoon/
         ├── 📄 data.js
         ├── 📄 config.js           | **هاب اصلی تنظیمات.** شامل `state`، عناصر DOM کش شده و ثابت‌هایی مثل `API_BASE_URL`
         ├── 📄 api.js              | **لایه سرویس API.** شامل توابعی (`fetchMenuItems`) برای ارتباط با بک‌اند
-        ├── 📄 menu.js             | **منطق اصلی کسب‌وکار مربوط به منو.** مدیریت رندر محصولات، سبد خرید (`addToOrder`, `changeQuantity`) و فرآیند سفارش
+        ├── 📄 menu.js             | **منطق اصلی کسب‌وکار مربوط به منو.** مدیریت رندر محصولات، سبد خرید 
+        ├── 📄stateManager.js
         ├── 📄 ui.js               | **توابع کمکی رابط کاربری.** شامل توابعی برای به‌روزرسانی UI بر اساس تغییرات state (مثلاً `updateOrderUI`, `showPage`)
         └── 📄 utils.js            | **توابع عمومی و قابل استفاده مجدد.** ابزارهایی مانند `formatPrice`
 

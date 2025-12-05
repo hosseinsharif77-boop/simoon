@@ -172,6 +172,47 @@
             });
         }
         
+        // در داخل تابع admin.setupEventListeners یا رویداد DOMContentLoaded
+
+        // مدیریت کلیک روی لینک‌های ناوبری دسکتاپ و موبایل
+        const handleNavigationClick = function(event) {
+            // حذف کلاس active از همه لینک‌ها
+            admin.dom.navLinks.forEach(link => link.classList.remove('active'));
+            admin.dom.mobileNavItems.forEach(item => item.classList.remove('active'));
+
+            // اضافه کردن کلاس active به لینک کلیک شده
+            const clickedElement = event.currentTarget;
+            clickedElement.classList.add('active');
+
+            // پیدا کردن لینک متناظر در موبایل یا دسکتاپ و فعال کردن آن
+            const section = clickedElement.dataset.section;
+            document.querySelector(`.mobile-bottom-nav-item[data-section="${section}"]`)?.classList.add('active');
+            document.querySelector(`.nav-link[data-section="${section}"]`)?.classList.add('active');
+
+            // نمایش سکشن مربوطه و به‌روزرسانی عنوان
+            if (section === 'categories') {
+                admin.showSection('categories');
+                admin.updateSectionTitle('Manage Categories & Products');
+            } else if (section === 'inventory') {
+                admin.showSection('inventory');
+                admin.updateSectionTitle('Inventory Management');
+                // مقداردهی اولیه بخش انبار (اختیاری)
+                if (typeof admin.inventory.init === 'function') {
+                    admin.inventory.init();
+                }
+            }
+            // می‌توانید برای سکشن‌های دیگر هم شرط اضافه کنید
+        };
+
+        // اتصال رویداد به لینک‌های دسکتاپ
+        admin.dom.navLinks.forEach(link => {
+            link.addEventListener('click', handleNavigationClick);
+        });
+
+        // اتصال رویداد به آیتم‌های موبایل
+        admin.dom.mobileNavItems.forEach(item => {
+            item.addEventListener('click', handleNavigationClick);
+        });
         console.log('EVENT-HANDLERS: Event listeners setup complete.');
     };
 

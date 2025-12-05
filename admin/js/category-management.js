@@ -1,5 +1,5 @@
 /**
- * Simoon Cafe Admin Panel - Category Management (Updated for Dynamic Tabs & Inline Edit)
+ * Simoon Cafe Admin Panel - Category Management (Updated for Dynamic Tabs & Inline Edit & Special Products)
  */
 (function(admin) {
     'use strict';
@@ -12,7 +12,7 @@
                 return;
             }
             
-            const productCategories = [...new Set(admin.state.products.map(p => p.category))].sort();
+            const productCategories = [...new Set(admin.state.products.map(p => p.category).filter(cat => cat != null))].sort();
             const tempSubcategories = {};
 
             admin.state.products.forEach(p => {
@@ -36,10 +36,10 @@
                 const customData = await customResponse.json();
                 console.log('✅ Custom categories received:', customData);
 
-                const customMainCategories = customData.filter(item => item.type === 'category').map(item => item.name);
+                const customMainCategories = customData.filter(item => item.type === 'category' && item.name != null).map(item => item.name);
                 admin.state.allCategories = [...new Set([...productCategories, ...customMainCategories])].sort();
 
-                customData.filter(item => item.type === 'subcategory').forEach(item => {
+                customData.filter(item => item.type === 'subcategory' && item.name != null && item.parent_category != null).forEach(item => {
                     if (!tempSubcategories[item.parent_category]) {
                         tempSubcategories[item.parent_category] = new Set();
                     }
@@ -50,6 +50,18 @@
                 console.error('!!! ERROR fetching custom categories !!!', error.message);
                 console.error('Stack Trace:', error.stack);
                 admin.state.allCategories = productCategories;
+            }
+            
+            // NEW: Check if there are any special products and add the Special tab
+            const hasSpecialProducts = admin.state.products.some(p => p.is_special === true);
+            if (hasSpecialProducts) {
+                // Add 'Special' if it's not already there
+                if (!admin.state.allCategories.includes('Special')) {
+                    admin.state.allCategories.push('Special');
+                }
+            } else {
+                // Remove 'Special' if no special products exist
+                admin.state.allCategories = admin.state.allCategories.filter(cat => cat !== 'Special');
             }
             
             admin.state.subcategoriesByCategory = {};
@@ -69,52 +81,66 @@
         }
     };
 
+
     admin.renderMainTabs = function() {
         console.log('--- Rendering main tabs ribbon ---');
         const mainTabsRibbon = document.getElementById('mainTabsRibbon');
         mainTabsRibbon.innerHTML = '';
         
-        // حلقه برای ساخت تب‌های اصلی
         admin.state.allCategories.forEach((category, index) => {
+            if (!category) {
+                console.warn('Skipping undefined category in renderMainTabs');
+                return;
+            }
+
             const tabItem = document.createElement('div');
             tabItem.className = `main-tab-item ${category === admin.state.activeMainCategory ? 'active' : ''}`;
+            
+            if (category === 'Special') {
+                tabItem.classList.add('special-tab');
+            }
             
             const tabButton = document.createElement('button');
             tabButton.className = `main-tab-btn`;
             tabButton.setAttribute('data-category', category);
-            tabButton.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+            
+            if (category === 'Special') {
+                tabButton.innerHTML = '<i class="bi bi-star-fill"></i> Special';
+            } else {
+                tabButton.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+            }
             
             const actionsContainer = document.createElement('div');
             actionsContainer.className = 'tab-actions';
 
-            const editButton = document.createElement('button');
-            editButton.className = 'edit-tab-btn';
-            editButton.setAttribute('data-category', category);
-            editButton.innerHTML = `<i class="bi bi-pencil"></i>`;
-            editButton.title = 'Edit Category';
+            if (category !== 'Special') {
+                const editButton = document.createElement('button');
+                editButton.className = 'edit-tab-btn';
+                editButton.setAttribute('data-category', category);
+                editButton.innerHTML = `<i class="bi bi-pencil"></i>`;
+                editButton.title = 'Edit Category';
 
-            const deleteButton = document.createElement('button');
-            deleteButton.className = 'delete-tab-btn';
-            deleteButton.setAttribute('data-category', category);
-            deleteButton.innerHTML = `<i class="bi bi-trash"></i>`;
-            deleteButton.title = 'Delete Category';
+                const deleteButton = document.createElement('button');
+                deleteButton.className = 'delete-tab-btn';
+                deleteButton.setAttribute('data-category', category);
+                deleteButton.innerHTML = `<i class="bi bi-trash"></i>`;
+                deleteButton.title = 'Delete Category';
 
-            actionsContainer.appendChild(editButton);
-            actionsContainer.appendChild(deleteButton);
+                actionsContainer.appendChild(editButton);
+                actionsContainer.appendChild(deleteButton);
+            }
             
             tabItem.appendChild(tabButton);
             tabItem.appendChild(actionsContainer);
             mainTabsRibbon.appendChild(tabItem);
         });
         
-        // اضافه کردن event listener برای نام تب‌ها
         document.querySelectorAll('.main-tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 admin.selectMainCategory(btn.getAttribute('data-category'));
             });
         });
         
-        // اضافه کردن event listener برای دکمه‌های ویرایش
         document.querySelectorAll('.edit-tab-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -122,7 +148,6 @@
             });
         });
         
-        // اضافه کردن event listener برای دکمه‌های حذف
         document.querySelectorAll('.delete-tab-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -130,7 +155,6 @@
             });
         });
         
-        // اگر دسته‌بندی فعلی انتخاب نشده، اولین دسته‌بندی را انتخاب کن
         if (admin.state.allCategories.length > 0 && !admin.state.activeMainCategory) {
             admin.selectMainCategory(admin.state.allCategories[0]);
         }
@@ -142,18 +166,15 @@
     admin.selectMainCategory = function(category) {
         console.log(`--- Selecting main category: ${category} ---`);
         
-        // حذف کلاس active از تمام تب‌ها
         document.querySelectorAll('.main-tab-item').forEach(item => {
             item.classList.remove('active');
         });
         
-        // اضافه کردن کلاس active به تب انتخاب شده
         const activeTabButton = document.querySelector(`.main-tab-btn[data-category="${category}"]`);
         if (activeTabButton) {
             const activeTabItem = activeTabButton.closest('.main-tab-item');
             activeTabItem.classList.add('active');
             
-            // NEW: Auto-scroll to selected tab
             setTimeout(() => {
                 activeTabItem.scrollIntoView({
                     behavior: 'smooth',
@@ -177,14 +198,29 @@
             return;
         }
         
+        // NEW: Special category doesn't have subcategories, render special carousel management
+        if (admin.state.activeMainCategory === 'Special') {
+            // نمایش بخش مدیریت کاروسل ویژه
+            admin.toggleSpecialCarouselManagement(true);
+            admin.renderSpecialSlidesManagement();
+            return; 
+        } else {
+            // مخفی کردن بخش مدیریت کاروسل برای دسته‌بندی‌های دیگر
+            admin.toggleSpecialCarouselManagement(false);
+        }
+
+        // --- Original logic for other categories ---
         const subcategories = admin.state.subcategoriesByCategory[admin.state.activeMainCategory] || [];
         
-        // ردیف دوم: نوار زیرمجموعه‌ها - استفاده از ساختار HTML موجود
         const subTabsContainer = document.getElementById('subTabsRibbon');
-        subTabsContainer.innerHTML = ''; // پاک کردن محتوای قبلی
+        subTabsContainer.innerHTML = '';
         
-        // اضافه کردن زیرمجموعه‌ها
         subcategories.forEach((subcategory) => {
+            if (!subcategory) {
+                console.warn('Skipping undefined subcategory in renderContentArea');
+                return;
+            }
+
             const subTabItem = document.createElement('div');
             subTabItem.className = `sub-tab-item ${subcategory === admin.state.activeSubCategory ? 'active' : ''}`;
             
@@ -216,14 +252,12 @@
             subTabsContainer.appendChild(subTabItem);
         });
         
-        // ردیف سوم: محصولات
         const productsContainer = document.createElement('div');
         productsContainer.className = 'products-container';
         productsContainer.innerHTML = admin.renderProductsBySubCategory();
-        admin.dom.contentArea.innerHTML = ''; // پاک کردن محتوای قبلی
+        admin.dom.contentArea.innerHTML = '';
         admin.dom.contentArea.appendChild(productsContainer);
         
-        // Event Listeners for sub-tabs
         document.querySelectorAll('.sub-tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 admin.selectSubCategory(btn.getAttribute('data-subcategory'));
@@ -257,6 +291,49 @@
                 admin.openAddProductModal(category, subcategory);
             });
         });
+    };
+
+    // NEW: Function to render products for the "Special" tab
+    admin.renderSpecialProducts = function() {
+        const specialProducts = admin.state.products.filter(p => p.is_special === true);
+        
+        let html = '<div class="row g-3">';
+        
+        if (specialProducts.length === 0) {
+            html += '<div class="col-12"><div class="alert alert-info text-center">No special products found. Mark products as special in their edit modal to see them here.</div></div>';
+        } else {
+            specialProducts.forEach(product => {
+                html += `
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <div class="product-card h-100 special-product-card" data-product-id="${product.id}">
+                            <div class="product-image-container">
+                                <img src="${product.image || 'https://picsum.photos/seed/product' + product.id + '/300/200.jpg'}" class="product-image" alt="${product.name}">
+                                <div class="special-badge">
+                                    <i class="bi bi-star-fill"></i> Special
+                                </div>
+                                <div class="product-actions">
+                                    <button class="btn btn-sm btn-warning" onclick="event.stopPropagation(); SimoonAdmin.openEditProductModal(${product.id})"><i class="bi bi-pencil"></i></button>
+                                    <button class="btn btn-sm btn-danger" onclick="event.stopPropagation(); SimoonAdmin.confirmDeleteProduct(${product.id})"><i class="bi bi-trash"></i></button>
+                                </div>
+                            </div>
+                            <div class="product-info">
+                                <h5 class="product-title">${product.name}</h5>
+                                <div class="product-meta">
+                                    <span class="badge bg-secondary">${product.category}</span>
+                                    <span class="product-price">$${product.price}</span>
+                                </div>
+                                <div class="product-stock">
+                                    <small class="text-muted">Stock: ${product.stock_quantity}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        
+        html += '</div>';
+        return html;
     };
 
     admin.selectSubCategory = function(subcategory) {
@@ -349,6 +426,7 @@
         console.log('--- Populating category dropdowns ---');
         admin.dom.category.innerHTML = '<option value="">Select...</option>';
         admin.state.allCategories.forEach(cat => {
+            if (cat === 'Special' || !cat) return; // MODIFIED: Skip 'Special' category
             const option = document.createElement('option');
             option.value = cat;
             option.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
@@ -357,6 +435,7 @@
 
         admin.dom.parentCategory.innerHTML = '<option value="">Select main category...</option>';
         admin.state.allCategories.forEach(cat => {
+            if (cat === 'Special' || !cat) return; // MODIFIED: Skip 'Special' category
             const option = document.createElement('option');
             option.value = cat;
             option.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
@@ -365,8 +444,7 @@
         console.log('✅ Category dropdowns populated.');
     };
 
-    // --- NEW: Inline Edit Functions ---
-
+    // --- Inline Edit Functions ---
     admin.startInlineEditCategory = function(categoryName) {
         console.log(`Starting inline edit for category: ${categoryName}`);
         
@@ -377,7 +455,6 @@
         
         const currentText = tabButton.textContent;
         
-        // ساختار HTML جدید برای حالت ویرایش
         const editHtml = `
             <div class="inline-edit-container">
                 <input type="text" class="form-control" value="${currentText}">
@@ -388,7 +465,6 @@
             </div>
         `;
         
-        // جایگزینی کل محتوای تب با ساختار ویرایش
         tabItem.innerHTML = editHtml;
         
         const input = tabItem.querySelector('input');
@@ -398,7 +474,6 @@
         input.focus();
         input.select();
         
-        // اضافه کردن event listenerها
         saveBtn.addEventListener('click', () => admin.saveInlineEditCategory(categoryName, input.value));
         cancelBtn.addEventListener('click', () => admin.cancelInlineEditCategory(categoryName, currentText));
         input.addEventListener('keydown', (e) => {
@@ -417,49 +492,41 @@
         }
         
         try {
-            // استفاده از encodeURIComponent برای ارسال صحیح نام‌های حاوی کاراکترهای خاص
             const response = await fetch(`${admin.API_URL}/admin/categories/${encodeURIComponent(oldName)}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
                     name: newName.trim(), 
                     type: 'category'
-                    // حذف image و description تا زمانی که مطمئن شویم در پایگاه داده وجود دارند
                 })
             });
             
             if (response.ok) {
-                // Update the category name in the state
                 const index = admin.state.allCategories.indexOf(oldName);
                 if (index !== -1) {
                     admin.state.allCategories[index] = newName.trim();
                 }
                 
-                // Update the active category if it's the one being edited
                 if (admin.state.activeMainCategory === oldName) {
                     admin.state.activeMainCategory = newName.trim();
                 }
                 
-                // Update subcategories if they belong to this category
                 if (admin.state.subcategoriesByCategory[oldName]) {
                     admin.state.subcategoriesByCategory[newName.trim()] = admin.state.subcategoriesByCategory[oldName];
                     delete admin.state.subcategoriesByCategory[oldName];
                 }
                 
-                // Update products that belong to this category
                 admin.state.products.forEach(product => {
                     if (product.category === oldName) {
                         product.category = newName.trim();
                     }
                 });
                 
-                // Re-render the tabs
                 admin.renderMainTabs();
                 if (admin.state.activeMainCategory) {
                     admin.renderContentArea();
                 }
                 
-                // Show success message
                 admin.showNotification(`Category "${oldName}" renamed to "${newName.trim()}" successfully!`, 'success');
             } else {
                 const errorData = await response.json();
@@ -477,7 +544,6 @@
         const tabItem = document.querySelector(`.main-tab-item:has(.inline-edit-container)`);
         if (!tabItem) return;
 
-        // بازسازی ساختار HTML اصلی
         const originalHtml = `
             <button class="main-tab-btn ${admin.state.activeMainCategory === categoryName ? 'active' : ''}" data-category="${categoryName}">${originalText}</button>
             <div class="tab-actions">
@@ -486,10 +552,8 @@
             </div>
         `;
         
-        // جایگزینی محتوای ویرایش با ساختار اصلی
         tabItem.innerHTML = originalHtml;
         
-        // اتصال مجدد event listenerها
         const newTabButton = tabItem.querySelector('.main-tab-btn');
         const newEditBtn = tabItem.querySelector('.edit-tab-btn');
         const newDeleteBtn = tabItem.querySelector('.delete-tab-btn');
@@ -504,7 +568,8 @@
             admin.confirmDeleteCategory(categoryName);
         });
     };
-
+    
+    // Subcategory inline edit functions
     admin.startInlineEditSubcategory = function(parentCategory, subcategoryName) {
         console.log(`Starting inline edit for subcategory: ${subcategoryName} in category: ${parentCategory}`);
         
@@ -515,7 +580,6 @@
         
         const currentText = tabButton.textContent;
         
-        // ساختار HTML جدید برای حالت ویرایش
         const editHtml = `
             <div class="inline-edit-container">
                 <input type="text" class="form-control" value="${currentText}">
@@ -526,7 +590,6 @@
             </div>
         `;
         
-        // جایگزینی کل محتوای تب با ساختار ویرایش
         tabItem.innerHTML = editHtml;
         
         const input = tabItem.querySelector('input');
@@ -536,7 +599,6 @@
         input.focus();
         input.select();
         
-        // اضافه کردن event listenerها
         saveBtn.addEventListener('click', () => admin.saveInlineEditSubcategory(parentCategory, subcategoryName, input.value));
         cancelBtn.addEventListener('click', () => admin.cancelInlineEditSubcategory(subcategoryName, currentText));
         input.addEventListener('keydown', (e) => {
@@ -555,7 +617,6 @@
         }
         
         try {
-            // استفاده از encodeURIComponent برای ارسال صحیح نام‌های حاوی کاراکترهای خاص
             const response = await fetch(`${admin.API_URL}/admin/subcategories/${encodeURIComponent(oldName)}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
@@ -563,12 +624,10 @@
                     name: newName.trim(), 
                     type: 'subcategory',
                     parentCategory: parentCategory
-                    // حذف image و description تا زمانی که مطمئن شویم در پایگاه داده وجود دارند
                 })
             });
             
             if (response.ok) {
-                // Update the subcategory name in the state
                 if (admin.state.subcategoriesByCategory[parentCategory]) {
                     const index = admin.state.subcategoriesByCategory[parentCategory].indexOf(oldName);
                     if (index !== -1) {
@@ -576,22 +635,18 @@
                     }
                 }
                 
-                // Update the active subcategory if it's the one being edited
                 if (admin.state.activeSubCategory === oldName) {
                     admin.state.activeSubCategory = newName.trim();
                 }
                 
-                // Update products that belong to this subcategory
                 admin.state.products.forEach(product => {
                     if (product.sub_category === oldName) {
                         product.sub_category = newName.trim();
                     }
                 });
                 
-                // Re-render the content area
                 admin.renderContentArea();
                 
-                // Show success message
                 admin.showNotification(`Subcategory "${oldName}" renamed to "${newName.trim()}" successfully!`, 'success');
             } else {
                 const errorData = await response.json();
@@ -609,7 +664,6 @@
         const tabItem = document.querySelector(`.sub-tab-item:has(.inline-edit-container)`);
         if (!tabItem) return;
 
-        // بازسازی ساختار HTML اصلی
         const originalHtml = `
             <button class="sub-tab-btn ${admin.state.activeSubCategory === subcategoryName ? 'active' : ''}" data-subcategory="${subcategoryName}">${originalText}</button>
             <div class="tab-actions">
@@ -618,10 +672,8 @@
             </div>
         `;
         
-        // جایگزینی محتوای ویرایش با ساختار اصلی
         tabItem.innerHTML = originalHtml;
         
-        // اتصال مجدد event listenerها
         const newTabButton = tabItem.querySelector('.sub-tab-btn');
         const newEditBtn = tabItem.querySelector('.edit-tab-btn');
         const newDeleteBtn = tabItem.querySelector('.delete-tab-btn');
@@ -639,15 +691,12 @@
 
     // --- Notification Function ---
     admin.showNotification = function(message, type = 'info') {
-        // Create notification container
         const notificationContainer = document.createElement('div');
         notificationContainer.className = 'notification-container';
         
-        // Create notification element
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
         
-        // Create icon based on type
         let iconClass = 'bi-info-circle';
         if (type === 'success') {
             iconClass = 'bi-check-circle';
@@ -655,7 +704,6 @@
             iconClass = 'bi-exclamation-circle';
         }
         
-        // Create notification content
         notification.innerHTML = `
             <div class="notification-icon">
                 <i class="bi ${iconClass}"></i>
@@ -666,24 +714,18 @@
             </div>
         `;
         
-        // Add to container
         notificationContainer.appendChild(notification);
-        
-        // Add to document
         document.body.appendChild(notificationContainer);
         
-        // Add event listener for OK button
         const okBtn = notification.querySelector('.notification-ok-btn');
         okBtn.addEventListener('click', () => {
             hideNotification(notificationContainer);
         });
         
-        // Auto-dismiss after 3 seconds
         setTimeout(() => {
             hideNotification(notificationContainer);
         }, 3000);
         
-        // Function to hide notification with animation
         function hideNotification(element) {
             element.style.opacity = '0';
             element.style.transform = 'translateX(100%)';
@@ -696,7 +738,6 @@
             }, 300);
         }
         
-        // Show notification with animation
         setTimeout(() => {
             notificationContainer.style.opacity = '1';
             notificationContainer.style.transform = 'translateX(0)';
@@ -711,47 +752,37 @@
         const confirmCancelBtn = document.getElementById('confirmCancelBtn');
         const confirmModalLabel = document.getElementById('confirmModalLabel');
         
-        // Set message
         confirmMessage.textContent = message;
         
-        // Set title if provided
         if (options.title) {
             confirmModalLabel.textContent = options.title;
         } else {
             confirmModalLabel.textContent = 'Confirm Action';
         }
         
-        // Set button text if provided
         if (options.okText) {
             confirmOkBtn.textContent = options.okText;
         } else {
             confirmOkBtn.textContent = 'Delete';
         }
         
-        // Set button class if provided
         if (options.okClass) {
             confirmOkBtn.className = `btn ${options.okClass}`;
         } else {
             confirmOkBtn.className = 'btn btn-danger';
         }
         
-        // Create a modal instance
         const modal = new bootstrap.Modal(confirmModal);
         
-        // Set up event listeners
         const handleConfirm = function() {
             modal.hide();
             onConfirm();
-            
-            // Clean up event listeners
             confirmOkBtn.removeEventListener('click', handleConfirm);
             confirmCancelBtn.removeEventListener('click', handleCancel);
         };
         
         const handleCancel = function() {
             modal.hide();
-            
-            // Clean up event listeners
             confirmOkBtn.removeEventListener('click', handleConfirm);
             confirmCancelBtn.removeEventListener('click', handleCancel);
         };
@@ -759,29 +790,21 @@
         confirmOkBtn.addEventListener('click', handleConfirm);
         confirmCancelBtn.addEventListener('click', handleCancel);
         
-        // Show modal
         modal.show();
     };
 
-    // --- Modal Management Functions (unchanged) ---
-
+    // --- Modal Management Functions ---
     admin.addMainCategory = function() {
-        console.log('Opening modal for a NEW MAIN CATEGORY.');
         const existingModal = bootstrap.Modal.getInstance(admin.dom.categoryModal);
         if (existingModal) existingModal.dispose();
 
         admin.state.currentEditingId = null;
-        admin.state.currentEditingType = 'category'; // KEY: Set the type
+        admin.state.currentEditingType = 'category';
         admin.dom.categoryModalLabel.innerText = 'Add new category';
         admin.dom.categoryForm.reset();
-        
-        // مهم: مقدار نوع دسته‌بندی را به اصلی تنظیم کنید
         admin.dom.categoryType.value = 'category';
-        
-        // Show main category fields, hide subcategory fields
         admin.dom.mainCategoryFields.style.display = 'block';
         admin.dom.parentCategoryDiv.style.display = 'none';
-        
         admin.dom.deleteCategoryBtn.style.display = 'none';
         
         const modal = new bootstrap.Modal(admin.dom.categoryModal);
@@ -789,23 +812,17 @@
     };
 
     admin.addSubcategory = function(parentCategory) {
-        console.log(`Opening modal for a NEW SUBCATEGORY under "${parentCategory}".`);
         const existingModal = bootstrap.Modal.getInstance(admin.dom.categoryModal);
         if (existingModal) existingModal.dispose();
 
         admin.state.currentEditingId = null;
-        admin.state.currentEditingType = 'subcategory'; // KEY: Set the type
+        admin.state.currentEditingType = 'subcategory';
         admin.dom.categoryModalLabel.innerText = 'Add new subcategory';
         admin.dom.categoryForm.reset();
-        
-        // مهم: مقدار نوع دسته‌بندی را به زیردسته تنظیم کنید
         admin.dom.categoryType.value = 'subcategory';
-        
-        // Hide main category fields, show subcategory fields
         admin.dom.mainCategoryFields.style.display = 'none';
         admin.dom.parentCategoryDiv.style.display = 'block';
-        
-        admin.populateCategoryDropdowns(); // Ensure parent dropdown is populated
+        admin.populateCategoryDropdowns();
         
         if (parentCategory) {
             admin.dom.parentCategory.value = parentCategory;
@@ -817,39 +834,7 @@
         modal.show();
     };
 
-    // --- NEW FUNCTION FOR IMAGE UPLOAD ---
-    admin.handleImageUpload = async function(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        
-        const formData = new FormData();
-        formData.append('image', file);
-        
-        try {
-            const response = await fetch(`${admin.API_URL}/upload-image`, {
-                method: 'POST',
-                body: formData
-            });
-            
-            if (response.ok) {
-                const data = await response.json();
-                admin.dom.categoryImage.value = data.imageUrl;
-                admin.showNotification('Image uploaded successfully!', 'success');
-            } else {
-                const errorData = await response.json();
-                admin.showNotification(`Error uploading image: ${errorData.message}`, 'error');
-            }
-        } catch (error) {
-            console.error('Error uploading image:', error);
-            admin.showNotification('Error uploading image!', 'error');
-        }
-    };
-
-    // --- SAVE FUNCTION (REVISED TO HANDLE BOTH TYPES) ---
-    // Note: The first, redundant saveCategory function has been removed.
-
     admin.editCategory = function(categoryName) {
-        console.log(`CATEGORY-MANAGEMENT: Opening editCategory modal for: ${categoryName}`);
         const existingModal = bootstrap.Modal.getInstance(admin.dom.categoryModal);
         if (existingModal) existingModal.dispose();
 
@@ -858,10 +843,7 @@
         admin.dom.categoryModalLabel.innerText = 'Edit Category';
         admin.dom.categoryForm.reset();
         admin.dom.categoryName.value = categoryName;
-        
-        // مهم: مقدار نوع دسته‌بندی را به اصلی تنظیم کنید
         admin.dom.categoryType.value = 'category';
-        
         admin.dom.parentCategoryDiv.style.display = 'none';
         admin.dom.deleteCategoryBtn.style.display = 'block';
         
@@ -870,7 +852,6 @@
     };
 
     admin.editSubcategory = function(parentCategory, subcategoryName) {
-        console.log(`CATEGORY-MANAGEMENT: Opening editSubcategory modal for: ${subcategoryName}`);
         const existingModal = bootstrap.Modal.getInstance(admin.dom.categoryModal);
         if (existingModal) existingModal.dispose();
 
@@ -879,10 +860,7 @@
         admin.dom.categoryModalLabel.innerText = 'Edit Subcategory';
         admin.dom.categoryForm.reset();
         admin.dom.categoryName.value = subcategoryName;
-        
-        // مهم: مقدار نوع دسته‌بندی را به زیردسته تنظیم کنید
         admin.dom.categoryType.value = 'subcategory';
-        
         admin.dom.parentCategory.value = parentCategory;
         admin.dom.parentCategoryDiv.style.display = 'block';
         admin.dom.deleteCategoryBtn.style.display = 'block';
@@ -890,16 +868,12 @@
         const modal = new bootstrap.Modal(admin.dom.categoryModal);
         modal.show();
     };
-
+    
     admin.confirmDeleteCategory = function(categoryName) {
         admin.showConfirmDialog(
             `Are you sure you want to delete category "${categoryName}"? This will also delete all subcategories and products in this category.`,
             () => admin.deleteCategory(categoryName),
-            {
-                title: 'Delete Category',
-                okText: 'Delete',
-                okClass: 'btn-danger'
-            }
+            { title: 'Delete Category', okText: 'Delete', okClass: 'btn-danger' }
         );
     };
 
@@ -907,16 +881,9 @@
         admin.showConfirmDialog(
             `Are you sure you want to delete subcategory "${subcategoryName}"? This will also delete all products in this subcategory.`,
             () => admin.deleteSubcategory(parentCategory, subcategoryName),
-            {
-                title: 'Delete Subcategory',
-                okText: 'Delete',
-                okClass: 'btn-danger'
-            }
+            { title: 'Delete Subcategory', okText: 'Delete', okClass: 'btn-danger' }
         );
     };
-
-
-    // --- Save/Delete Functions (Final versions) ---
 
     admin.saveCategory = async function() {
         const categoryNameValue = admin.dom.categoryName.value.trim();
@@ -947,15 +914,10 @@
             const data = await response.json();
 
             if (response.ok) {
-                console.log('CATEGORY-MANAGEMENT: Category saved successfully. Preparing to close modal.');
                 const modal = bootstrap.Modal.getInstance(admin.dom.categoryModal);
                 if (modal) {
                     modal.hide();
-                    admin.dom.categoryModal.addEventListener('hidden.bs.modal', function () {
-                        console.log('CATEGORY-MANAGEMENT: Category modal is now fully hidden. Disposing instance and moving focus.');
-                        modal.dispose();
-                        document.querySelector('#addMainTabBtn')?.focus(); // Updated ID
-                    }, { once: true });
+                    modal.dispose();
                 }
                 
                 admin.showNotification(`${categoryTypeValue === 'category' ? 'Category' : 'Subcategory'} "${categoryNameValue}" has been successfully ${admin.state.currentEditingId ? 'updated' : 'added'}.`, 'success');
@@ -963,7 +925,6 @@
                 await admin.fetchCategoriesAndSubcategories();
                 admin.renderMainTabs();
                 
-                // NEW: Select the newly created category
                 if (!admin.state.currentEditingId && categoryTypeValue === 'category') {
                     admin.selectMainCategory(categoryNameValue);
                 }
@@ -985,20 +946,15 @@
         const categoryToDelete = categoryName || admin.state.currentEditingId;
         if (!categoryToDelete) return;
 
-        // NEW: Determine the next category to select if the current one is being deleted
         let categoryToSelect = null;
         const wasActive = admin.state.activeMainCategory === categoryToDelete;
         if (wasActive) {
             const deletedIndex = admin.state.allCategories.indexOf(categoryToDelete);
-            
-            // Create a temporary array to see what will remain after deletion
             const remainingCategories = admin.state.allCategories.filter(cat => cat !== categoryToDelete);
             
             if (deletedIndex > 0 && remainingCategories.length > 0) {
-                // Select the previous category from the original list
                 categoryToSelect = admin.state.allCategories[deletedIndex - 1];
             } else if (deletedIndex === 0 && remainingCategories.length > 0) {
-                // If it was the first one, select the new first one
                 categoryToSelect = remainingCategories[0];
             }
         }
@@ -1012,39 +968,26 @@
             });
             
             if (response.ok) {
-                // به‌روزرسانی فوری state محلی
-                // 1. حذف دسته‌بندی از لیست اصلی
                 admin.state.allCategories = admin.state.allCategories.filter(cat => cat !== categoryToDelete);
-
-                // 2. حذف زیرشاخه‌های مرتبط با آن
                 delete admin.state.subcategoriesByCategory[categoryToDelete];
-
-                // 3. حذف محصولات متعلق به این دسته‌بندی از state
                 admin.state.products = admin.state.products.filter(p => p.category !== categoryToDelete);
 
-                // 4. NEW: Set the new active category
                 if (wasActive) {
-                    admin.state.activeMainCategory = categoryToSelect; // This will be null if no categories are left
+                    admin.state.activeMainCategory = categoryToSelect;
                     admin.state.activeSubCategory = null;
                 }
 
-                // 5. رندر مجدد رابط کاربری
                 admin.renderMainTabs();
                 
-                // NEW: If we have a category to select, select it now
                 if (categoryToSelect) {
-                    // We need to explicitly call this to trigger the scroll and content rendering
                     admin.selectMainCategory(categoryToSelect);
                 } else if (wasActive) {
-                    // This case happens if the last category was deleted
                     admin.dom.contentArea.innerHTML = '<div class="text-center text-muted p-4">Please select a category.</div>';
                 }
                 
-                // 6. نمایش پیام موفقیت
                 admin.showNotification(`Category "${categoryToDelete}" and all its data have been deleted.`, 'success');
                 
             } else if (response.status === 404) {
-                // اگر دسته‌بندی از قبل حذف شده، فقط state را به‌روز کن
                 admin.state.allCategories = admin.state.allCategories.filter(cat => cat !== categoryToDelete);
                 delete admin.state.subcategoriesByCategory[categoryToDelete];
                 admin.state.products = admin.state.products.filter(p => p.category !== categoryToDelete);
@@ -1072,7 +1015,6 @@
         console.log(`--- Deleting subcategory "${subcategoryToDelete}" from category "${parentCategory}" ---`);
         
         try {
-            // استفاده از encodeURIComponent برای ارسال صحیح نام‌های حاوی کاراکترهای خاص
             const response = await fetch(`${admin.API_URL}/admin/subcategories/${encodeURIComponent(subcategoryToDelete)}`, { 
                 method: 'DELETE', 
                 headers: { 'Content-Type': 'application/json' }, 
@@ -1080,15 +1022,10 @@
             });
             
             if (response.ok) {
-                console.log('CATEGORY-MANAGEMENT: Subcategory deleted successfully. Preparing to close modal.');
                 const modal = bootstrap.Modal.getInstance(admin.dom.categoryModal);
                 if (modal) {
                     modal.hide();
-                    admin.dom.categoryModal.addEventListener('hidden.bs.modal', function () {
-                        console.log('CATEGORY-MANAGEMENT: Category modal is now fully hidden. Disposing instance and moving focus.');
-                        modal.dispose();
-                        document.querySelector('#addMainTabBtn')?.focus(); // Updated ID
-                    }, { once: true });
+                    modal.dispose();
                 }
                 
                 admin.showNotification(`Subcategory "${subcategoryToDelete}" has been successfully deleted.`, 'success');
@@ -1117,7 +1054,6 @@
     };
 
     // --- Event Listeners for the Add Buttons ---
-    // These are now attached to the static buttons in the HTML.
     document.addEventListener('DOMContentLoaded', function() {
         const addMainTabBtn = document.getElementById('addMainTabBtn');
         if (addMainTabBtn) {

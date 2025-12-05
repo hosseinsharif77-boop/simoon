@@ -25,7 +25,7 @@
             <div class="container-fluid">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="brand-center">
-                        <h1 class="text-xl md:text-2xl font-bold">Simoon Admin</h1>
+                        <h2 id="section-title" class="h5 text-muteds mt-1">Manage Categories & Products</h2>
                     </div>
                     <div class="d-flex">
                         <button class="btn btn-outline-secondary me-2" type="button" id="previewBtn">
@@ -44,6 +44,7 @@
             <div class="container-fluid">
                 <div class="d-flex justify-content-center flex-wrap gap-6 md:gap-10 text-lg font-medium">
                     <button class="nav-link active" data-section="categories">Categories</button>
+                    <button class="nav-link" data-section="inventory">Inventory</button>
                     <button class="nav-link" data-section="orders">Orders</button>
                     <button class="nav-link" data-section="settings">Settings</button>
                 </div>
@@ -54,19 +55,12 @@
     <main class="admin-main">
         <div class="container-fluid admin-container">
             <!-- Main Category Tabs -->
-            <div class="management-card">
-                <div class="card-header">
-                    <i class="bi bi-tags"></i> Manage Categories & Products
-                </div>
+            <div class="management-card" id="categories-section">
                 <div class="card-body">
-                    <!-- تغییر به چیدمان یک ستونه -->
                     <div class="single-column-layout">
-                        <!-- ردیف اول: نوار دسته‌بندی‌های اصلی -->
                         <div class="ribbon-container">
                             <div class="ribbon-wrapper">
-                                <div class="categories-ribbon scrollable" id="mainTabsRibbon">
-                                    <!-- تب‌های اصلی به صورت داینامیک توسط جاوا اسکریپت اضافه می‌شوند -->
-                                </div>
+                                <div class="categories-ribbon scrollable" id="mainTabsRibbon"></div>
                                 <div class="add-tab-item">
                                     <button class="add-tab-btn" id="addMainTabBtn">
                                         <i class="bi bi-plus"></i>
@@ -74,13 +68,9 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- ردیف دوم: نوار زیردسته‌ها -->
                         <div class="ribbon-container">
                             <div class="ribbon-wrapper">
-                                <div class="sub-categories-ribbon scrollable" id="subTabsRibbon">
-                                    <!-- تب‌های زیرمجموعه به صورت داینامیک توسط جاوا اسکریپت اضافه می‌شوند -->
-                                </div>
+                                <div class="sub-categories-ribbon scrollable" id="subTabsRibbon"></div>
                                 <div class="add-tab-item">
                                     <button class="add-tab-btn" id="addSubTabBtn">
                                         <i class="bi bi-plus"></i>
@@ -88,10 +78,199 @@
                                 </div>
                             </div>
                         </div>
+                                    <!-- special crusel -->
+                        <div id="special-carousel-management" class="special-carousel-management" style="display: none;">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0">Manage Special Carousel</h5>
+                                <button id="add-special-slide-btn" class="btn btn-primary">
+                                    <i class="bi bi-plus-circle"></i> Add New Slide
+                                </button>
+                            </div>
+                            <div id="special-slides-container" class="row g-3">
+                                <!-- اسلایدهای کاروسل در اینجا توسط جاوااسکریپت رندر می‌شوند -->
+                            </div>
+                        </div>
+                        <div id="contentArea"></div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- Inventory Section -->
+            <div id="inventory-section" class="management-card" style="display: none;">
+                <div class="card-body">
+                    <div class="single-column-layout">
+                        <!-- Inventory Navigation Ribbon (فقط ۳ تب) -->
+                        <div class="ribbon-container">
+                            <div class="ribbon-wrapper">
+                                <div class="categories-ribbon scrollable" id="inventoryTabsRibbon">
+                                    <div class="main-tab-item active" data-section="ingredients">
+                                        <button class="main-tab-btn">مواد اولیه</button>
+                                    </div>
+                                    <div class="main-tab-item" data-section="low-stock">
+                                        <button class="main-tab-btn">هشدارهای موجودی</button>
+                                    </div>
+                                    <div class="main-tab-item" data-section="reports">
+                                        <button class="main-tab-btn">گزارشات تحلیلی</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         
-                        <!-- ردیف سوم: محتوا (محصولات) -->
-                        <div id="contentArea">
-                            <!-- محتوای تب‌ها به صورت داینامیک نمایش داده می‌شود -->
+                        <!-- Content Area -->
+                        <div id="inventoryContentArea">
+                            <!-- Ingredients Content (جدول ترکیبی و قدرتمند) -->
+                            <div id="ingredients-content" class="inventory-content active">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="input-group" style="max-width: 300px;">
+                                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                        <input type="text" id="search-ingredients" class="form-control" placeholder="جستجوی مواد اولیه...">
+                                    </div>
+                                    <button id="add-ingredient-btn" class="btn btn-primary">
+                                        <i class="bi bi-plus-circle"></i> افزودن ماده اولیه
+                                    </button>
+                                </div>
+                                <div id="ingredients-table-container">
+                                    <!-- جدول مواد اولیه در اینجا نمایش داده می‌شود -->
+                                </div>
+                            </div>
+                            
+                            <!-- Low Stock Content -->
+                            <div id="low-stock-content" class="inventory-content">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title mb-0">
+                                            <i class="bi bi-exclamation-triangle-fill text-warning"></i> 
+                                            مواد اولیه با موجودی کم
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="low-stock-table-container">
+                                            <!-- جدول هشدارهای موجودی در اینجا نمایش داده می‌شود -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Reports Content -->
+                            <div id="reports-content" class="inventory-content">
+                                <!-- فیلد جستجوی محصولات -->
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="input-group" style="max-width: 300px;">
+                                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                        <input type="text" id="search-products" class="form-control" placeholder="جستجوی محصولات...">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5 class="card-title mb-0">سطح موجودی محصولات</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <div id="product-stock-table-container">
+                                                    <!-- جدول موجودی محصولات در اینجا نمایش داده می‌شود -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5 class="card-title mb-0">گزارش عملیات انبار</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <div id="inventory-logs-container">
+                                                    <!-- جدول گزارشات انبار در اینجا نمایش داده می‌شود -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+<!-- مودال‌ها بدون تغییر -->
+
+            <!-- Stock Update Modal -->
+            <div class="modal fade" id="stockUpdateModal" tabindex="-1" aria-labelledby="stockUpdateModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="stockUpdateModalLabel">Update Stock</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="stockUpdateForm">
+                                <input type="hidden" id="stockIngredientId">
+                                <input type="hidden" id="stockUpdateType">
+                                <div class="mb-3">
+                                    <label for="stockIngredientName" class="form-label">Ingredient Name</label>
+                                    <input type="text" class="form-control" id="stockIngredientName" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="stockQuantity" class="form-label">Quantity</label>
+                                    <input type="number" step="0.01" class="form-control" id="stockQuantity" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="stockReason" class="form-label">Reason (Optional)</label>
+                                    <textarea class="form-control" id="stockReason" rows="2"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" id="confirmStockUpdateBtn">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Ingredient Modal -->
+            <div class="modal fade" id="addIngredientModal" tabindex="-1" aria-labelledby="addIngredientModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addIngredientModalLabel">Add New Ingredient</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addIngredientForm">
+                                <div class="mb-3">
+                                    <label for="newIngredientName" class="form-label">Ingredient Name</label>
+                                    <input type="text" class="form-control" id="newIngredientName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="newIngredientUnit" class="form-label">Unit of Measurement</label>
+                                    <select class="form-select" id="newIngredientUnit" required>
+                                        <option value="">Select Unit</option>
+                                        <option value="grams">Grams</option>
+                                        <option value="kg">Kilograms</option>
+                                        <option value="ml">Milliliters</option>
+                                        <option value="liters">Liters</option>
+                                        <option value="pieces">Pieces</option>
+                                        <option value="tablespoon">Tablespoon</option>
+                                        <option value="cup">Cup</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="newIngredientStock" class="form-label">Initial Stock Quantity</label>
+                                    <input type="number" step="0.01" class="form-control" id="newIngredientStock" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="newIngredientMinStock" class="form-label">Minimum Stock Alert</label>
+                                    <input type="number" step="0.01" class="form-control" id="newIngredientMinStock" required>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" id="confirmAddIngredientBtn">Add Ingredient</button>
                         </div>
                     </div>
                 </div>
@@ -105,6 +284,10 @@
             <i class="bi bi-tags"></i>
             <span>Categories</span>
         </div>
+        <div class="mobile-bottom-nav-item" data-section="inventory">
+            <i class="bi bi-boxes"></i>
+            <span>Inventory</span>
+        </div>
         <div class="mobile-bottom-nav-item" data-section="orders">
             <i class="bi bi-receipt"></i>
             <span>Orders</span>
@@ -115,7 +298,7 @@
         </div>
     </div>
 
-    <!-- Modal for Adding/Editing Category (Handles both Main and Sub) -->
+    <!-- Modal for Adding/Editing Category -->
     <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -127,14 +310,10 @@
                     <form id="categoryForm">
                         <input type="hidden" id="categoryId">
                         <input type="hidden" id="categoryType">
-                        
-                        <!-- Common Name Field -->
                         <div class="mb-3">
                             <label for="categoryName" class="form-label">Name</label>
                             <input type="text" class="form-control" id="categoryName" required>
                         </div>
-
-                        <!-- Fields ONLY for Main Category -->
                         <div id="mainCategoryFields">
                             <div class="mb-3">
                                 <label for="categoryImage" class="form-label">Image URL</label>
@@ -151,8 +330,6 @@
                                 <textarea class="form-control" id="categoryDescription" rows="3"></textarea>
                             </div>
                         </div>
-
-                        <!-- Fields ONLY for Subcategory -->
                         <div class="mb-3" id="parentCategoryDiv" style="display: none;">
                             <label for="parentCategory" class="form-label">Parent Category</label>
                             <select id="parentCategory" class="form-select">
@@ -170,7 +347,7 @@
         </div>
     </div>
 
-    <!-- Modal for Adding/Editing Product with Tabs -->
+    <!-- Modal for Adding/Editing Product -->
     <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-fullscreen-md-down">
             <div class="modal-content">
@@ -181,8 +358,6 @@
                 <div class="modal-body">
                     <form id="productForm">
                         <input type="hidden" id="productId">
-                        
-                        <!-- Product Tabs -->
                         <ul class="nav nav-tabs" id="productTab" role="tablist">
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link active" id="basic-tab" data-bs-toggle="tab" data-bs-target="#basic" type="button" role="tab">Info</button>
@@ -194,9 +369,7 @@
                                 <button class="nav-link" id="seo-tab" data-bs-toggle="tab" data-bs-target="#seo" type="button" role="tab">Meta</button>
                             </li>
                         </ul>
-                        
                         <div class="tab-content" id="productTabContent">
-                            <!-- Tab 1: Basic Info -->
                             <div class="tab-pane fade show active" id="basic" role="tabpanel">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
@@ -208,8 +381,6 @@
                                         <input type="number" class="form-control" id="price" required>
                                     </div>
                                 </div>
-                                
-                                <!-- Image field styled like mainCategoryFields -->
                                 <div class="mb-3">
                                     <label for="image" class="form-label">Product Image</label>
                                     <div class="input-group">
@@ -221,8 +392,6 @@
                                     </div>
                                 </div>
                             </div>
-                            
-                            <!-- Tab 2: Inventory -->
                             <div class="tab-pane fade" id="inventory" role="tabpanel">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
@@ -246,26 +415,18 @@
                                     <div class="col-md-6 mb-3">
                                         <div class="form-check mt-4">
                                             <input class="form-check-input" type="checkbox" id="is_special">
-                                            <label class="form-check-label" for="is_special">
-                                                Is a special product
-                                            </label>
+                                            <label class="form-check-label" for="is_special">Is a special product</label>
                                         </div>
                                     </div>
                                 </div>
-                                
-                                <!-- Ingredients Section -->
                                 <div class="mb-3">
                                     <label for="ingredients" class="form-label">Ingredients</label>
-                                    <div id="ingredientsContainer">
-                                        <!-- Ingredient rows will be added here -->
-                                    </div>
+                                    <div id="ingredientsContainer"></div>
                                     <button type="button" class="btn btn-sm btn-outline-secondary mt-2" id="addIngredientBtn">
                                         <i class="bi bi-plus"></i> Add Ingredient
                                     </button>
                                 </div>
                             </div>
-                            
-                            <!-- Tab 3: SEO -->
                             <div class="tab-pane fade" id="seo" role="tabpanel">
                                 <div class="mb-3">
                                     <label for="meta_title" class="form-label">Meta Title</label>
@@ -306,30 +467,131 @@
         </div>
     </div>
 
+    <!-- Modal for Stock In/Out -->
+    <div class="modal fade" id="stockUpdateModal" tabindex="-1" aria-labelledby="stockUpdateModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="stockUpdateModalLabel">Update Stock</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="stockUpdateForm">
+                        <input type="hidden" id="stockIngredientId">
+                        <input type="hidden" id="stockUpdateType">
+                        <div class="mb-3">
+                            <label for="stockIngredientName" class="form-label">Ingredient</label>
+                            <input type="text" class="form-control" id="stockIngredientName" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="stockQuantity" class="form-label">Quantity</label>
+                            <input type="number" step="0.01" class="form-control" id="stockQuantity" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="stockReason" class="form-label">Reason</label>
+                            <input type="text" class="form-control" id="stockReason" placeholder="e.g., New supply, spoilage" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmStockUpdateBtn">Update Stock</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Adding a New Ingredient -->
+    <div class="modal fade" id="addIngredientModal" tabindex="-1" aria-labelledby="addIngredientModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addIngredientModalLabel">Add New Ingredient</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addIngredientForm">
+                        <div class="mb-3">
+                            <label for="newIngredientName" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="newIngredientName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newIngredientUnit" class="form-label">Unit</label>
+                            <select class="form-select" id="newIngredientUnit" required>
+                                <option value="grams">Grams</option>
+                                <option value="kg">Kilograms</option>
+                                <option value="ml">Milliliters</option>
+                                <option value="liters">Liters</option>
+                                <option value="pieces">Pieces</option>
+                                <option value="tablespoon">Tablespoon</option>
+                                <option value="cup">Cup</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newIngredientStock" class="form-label">Initial Stock Quantity</label>
+                            <input type="number" step="0.01" class="form-control" id="newIngredientStock" value="0">
+                        </div>
+                        <div class="mb-3">
+                            <label for="newIngredientMinStock" class="form-label">Minimum Stock Alert</label>
+                            <input type="number" step="0.01" class="form-control" id="newIngredientMinStock" value="10">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmAddIngredientBtn">Add Ingredient</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Adding/Editing Special Carousel Slide -->
+    <div class="modal fade" id="specialSlideModal" tabindex="-1" aria-labelledby="specialSlideModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="specialSlideModalLabel">Add New Carousel Slide</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="specialSlideForm">
+                        <input type="hidden" id="specialSlideId">
+                        <div class="mb-3">
+                            <label for="specialSlideImageUrl" class="form-label">Image URL</label>
+                            <input type="url" class="form-control" id="specialSlideImageUrl" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="specialSlideTitle" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="specialSlideTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="specialSlideDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="specialSlideDescription" rows="3" required></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="deleteSpecialSlideBtn" style="display: none;">Delete</button>
+                    <button type="button" class="btn btn-primary" id="saveSpecialSlideBtn">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- Custom JS -->
-    <!-- Note: You will need to update your JavaScript files to work with this new structure -->
-    <!-- 1. پیکربندی و وضعیت -->
     <script src="js/config.js"></script>
-
-    <!-- 2. تعریف عناصر DOM -->
     <script src="js/dom-elements.js"></script>
-
-    <!-- 3. توابع مدیریت رویدادها -->
     <script src="js/event-handlers.js"></script>
-
-    <!-- 4. توابع کمکی -->
     <script src="js/utility-functions.js"></script>
-
-    <!-- 5. توابع مدیریتی (ترتیب این دو اهمیتی ندارد) -->
     <script src="js/category-management.js"></script>
     <script src="js/product-management.js"></script>
-    <script src="js/auto-layout-logger.js"></script><!-- <--- این خط را اضافه کنید -->
-
-
-    <!-- 6. نقطه شروع و اجرای برنامه -->
+    <script src="js/auto-layout-logger.js"></script>
+    <script src="js/inventory-management.js"></script>
+    <script src="js/special-carousel-management.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

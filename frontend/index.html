@@ -213,7 +213,6 @@
                 </div>
             </section>
             <!-- ========================== END OF HOW TO ORDER SECTION ========================== -->
-            <!-- ========================== END OF HOW TO ORDER SECTION ========================== -->
 
             <!-- --- Restaurant Environment Carousel --- -->
             <!-- --- Restaurant Gallery --- -->
@@ -284,31 +283,51 @@
 
 
         <!-- -------------------------- PAGE 2: MENU --------------------------- -->
+        <!-- -------------------------- PAGE 2: MENU --------------------------- -->
         <section id="menu-page" class="page-section">
             <!-- --- Sticky Navigation Wrapper --- -->
             <div class="navigation-wrapper">
                 <!-- Main Category Navigation -->
                 <section id="menu-nav" class="category-nav">
                     <nav class="container mx-auto px-4 flex justify-center flex-wrap gap-6 md:gap-10 text-lg font-medium">
-                        <button data-main-category="specials" class="category-btn" data-category-image-name="https://images.pexels.com/photos/1351239/pexels-photo-1351239.jpeg?auto=compress&cs=tinysrgb&w=600">Specials</button>                        
-                        <button data-main-category="pizza" class="category-btn active" data-category-image-name="pizza.jpg">Pizza</button>
-                        <button data-main-category="sandwich" class="category-btn" data-category-image-name="sandwich.png">Sandwich</button>
-                        <button data-main-category="fried-chicken" class="category-btn" data-category-image-name="chike.png">Fried Chicken</button>
-                        <button data-main-category="pasta" class="category-btn" data-category-image-name="gemini.png">Pasta</button>
-                        <button data-main-category="breakfast" class="category-btn" data-category-image-name="https://images.pexels.com/photos/3738730/pexels-photo-3738730.jpeg?auto=compress&cs=tinysrgb&w=600">Breakfast</button>
-                        <button data-main-category="kids-menu" class="category-btn" data-category-image-name="https://images.pexels.com/photos/5946081/pexels-photo-5946081.jpeg?auto=compress&cs=tinysrgb&w=600">Kids Menu</button>
-                        <button data-main-category="drinks" class="category-btn" data-category-image-name="https://images.pexels.com/photos/67468/orange-juice-splash-pexels-photo.jpg?auto=compress&cs=tinysrgb&w=600">Drinks</button>
-                        <!-- دسته‌بندی‌های سفارشی از طریق جاوا اسکریپت اضافه می‌شوند -->
+                        <!-- تب جدید All به عنوان تب پیش‌فرض -->
+                        <button data-main-category="all" class="category-btn active" data-category-image-name="all.jpg">All</button>
+                        
+                        <!-- دسته‌بندی‌های دیگر -->
+                        <!-- بقیه دسته‌بندی‌ها از طریق جاوا اسکریپت اضافه می‌شوند -->
                     </nav>
                 </section>
                 
                 <!-- Sub-Category Navigation -->
-                <section id="subcategory-nav" class="subcategory-nav hidden">
+                <section id="subcategory-nav" class="subcategory-nav">
                     <nav class="container mx-auto px-4 flex justify-center flex-wrap gap-3 md:gap-6 text-base">
                         <!-- Sub-category buttons will be dynamically inserted here by JavaScript -->
                     </nav>
                 </section>
+                
+                <!-- Search Container (ثابت و همیشه نمایش داده می‌شود) -->
+                <div id="search-container" class="container mx-auto px-4 py-4">
+                    <div class="relative">
+                        <input type="text" id="product-search" placeholder="Search for products..." class="w-full px-4 py-3 pr-10 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        <button id="clear-search" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
+
+            <!-- --- NEW: Search Container (فقط در تب All نمایش داده می‌شود) --- -->
+ 
+
+            <!-- --- NEW: Specials Carousel Section (منتقل شده به اینجا) --- -->
+            <section id="specials-carousel-section" class="container mx-auto px-4 py-8 hidden">
+                <div class="specials-carousel-container">
+                    <div class="specials-carousel-track">
+                        <!-- Carousel slides will be dynamically inserted here by JavaScript -->
+                    </div>
+                    <!-- Carousel indicators will be dynamically inserted here by JavaScript -->
+                </div>
+            </section>
 
             <!-- --- Category Display Section --- -->
             <section class="category-display-section">
@@ -328,16 +347,6 @@
                         </div>
                         <h2 id="category-title" class="category-title text-center md:text-right w-full">Pizza American</h2>
                     </div>
-                </div>
-            </section>
-            
-            <!-- --- NEW: Specials Carousel Section --- -->
-            <section id="specials-carousel-section" class="container mx-auto px-4 py-8 hidden">
-                <div class="specials-carousel-container">
-                    <div class="specials-carousel-track">
-                        <!-- Carousel slides will be dynamically inserted here by JavaScript -->
-                    </div>
-                    <!-- Carousel indicators will be dynamically inserted here by JavaScript -->
                 </div>
             </section>
             

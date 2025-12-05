@@ -1,10 +1,9 @@
-// ================================= JAVASCRIPT FILE =================================
+// ================================= LOGGING SYSTEM =================================
 // File: js/logger.js
-// Description: Comprehensive logging system for the Simoon Cafe application
-// Author: [Your Name]
-// Last Modified: [Date]
+// Description: Comprehensive logging system for Simoon Cafe application
 // ============================== END OF FILE HEADER ==============================
-import { state } from './config.js';
+import { stateManager } from './stateManager.js';
+
 // ================================= LOG LEVELS =================================
 const LOG_LEVELS = {
     ERROR: 0,
@@ -14,7 +13,6 @@ const LOG_LEVELS = {
     TRACE: 4
 };
 
-// Set the current log level (change this to control verbosity)
 let currentLogLevel = LOG_LEVELS.DEBUG;
 
 // ================================= LOGGER CLASS =================================
@@ -23,12 +21,10 @@ class Logger {
         this.prefix = prefix;
     }
 
-    // Helper method to check if we should log at this level
     shouldLog(level) {
         return level <= currentLogLevel;
     }
 
-    // Format the log message with timestamp and prefix
     formatMessage(level, message, data = null) {
         const timestamp = new Date().toISOString();
         const levelName = Object.keys(LOG_LEVELS)[level];
@@ -36,14 +32,12 @@ class Logger {
         
         if (data) {
             formattedMessage += '\nData:';
-            // اگر داده یک خطا است، پیام و پشته فراخوانی آن را استخراج کن
             if (data instanceof Error) {
                 formattedMessage += '\n' + JSON.stringify({
                     name: data.name,
                     message: data.message,
                     stack: data.stack
                 }, null, 2);
-            
             } else if (typeof data === 'object') {
                 formattedMessage += '\n' + JSON.stringify(data, null, 2);
             } else {
@@ -54,7 +48,6 @@ class Logger {
         return formattedMessage;
     }
 
-    // Log methods for each level
     error(message, data = null) {
         if (this.shouldLog(LOG_LEVELS.ERROR)) {
             console.error(this.formatMessage(LOG_LEVELS.ERROR, message, data));
@@ -82,11 +75,10 @@ class Logger {
     trace(message, data = null) {
         if (this.shouldLog(LOG_LEVELS.TRACE)) {
             console.log(this.formatMessage(LOG_LEVELS.TRACE, message, data));
-            console.trace(); // Adds stack trace for detailed debugging
+            console.trace();
         }
     }
 
-    // Specialized logging methods for common operations
     logNavigation(from, to, additionalInfo = {}) {
         this.info(`Navigation: ${from} → ${to}`, additionalInfo);
     }
@@ -183,19 +175,16 @@ class Logger {
         this.info(`Performance: ${operation} took ${duration}ms`, additionalInfo);
     }
 
-    // Create a section divider for better log readability
     section(title) {
         console.log(`\n===== ${title} =====`);
     }
 
-    // End a section
     endSection() {
         console.log(`===== END =====\n`);
     }
 }
 
 // ================================= SPECIALIZED LOGGERS =================================
-// Create specialized loggers for different parts of the application
 export const apiLogger = new Logger('API');
 export const uiLogger = new Logger('UI');
 export const menuLogger = new Logger('MENU');
@@ -203,9 +192,9 @@ export const orderLogger = new Logger('ORDER');
 export const navLogger = new Logger('NAV');
 export const dataLogger = new Logger('DATA');
 export const perfLogger = new Logger('PERF');
+export const carouselLogger = new Logger('CAROUSEL');
 
 // ================================= UTILITY FUNCTIONS =================================
-// Function to validate menu data
 export function validateMenuData(data) {
     const issues = [];
     
@@ -228,7 +217,6 @@ export function validateMenuData(data) {
     };
 }
 
-// Function to check if images exist
 export function checkImagesExist(data) {
     const promises = data.map(item => {
         return new Promise((resolve) => {
@@ -248,23 +236,21 @@ export function checkImagesExist(data) {
     return Promise.all(promises);
 }
 
-// Function to log component states
 export function logComponentStates() {
-    // Log navigation state
+    const state = stateManager.getState();
+    
     navLogger.logComponentState('Navigation', {
         currentPage: state.currentPage,
         currentMainCategory: state.currentMainCategory,
         currentSubCategory: state.currentSubCategory
     });
     
-    // Log menu state
     menuLogger.logComponentState('Menu', {
         totalItems: window.allMenuItems ? window.allMenuItems.length : 0,
         currentMainCategory: state.currentMainCategory,
         currentSubCategory: state.currentSubCategory
     });
     
-    // Log order state
     orderLogger.logComponentState('Order', {
         itemCount: state.order.length,
         totalItems: state.order.reduce((sum, item) => sum + item.quantity, 0),
@@ -272,7 +258,6 @@ export function logComponentStates() {
     });
 }
 
-// Function to create a performance monitor
 export function createPerformanceMonitor(operationName) {
     const startTime = performance.now();
     
@@ -285,18 +270,17 @@ export function createPerformanceMonitor(operationName) {
     };
 }
 
-// Function to log detailed menu state
 export function logDetailedMenuState(caller = 'Unknown') {
+    const state = stateManager.getState();
+    
     navLogger.section(`DETAILED MENU STATE (from: ${caller})`);
     
-    // Log state variables
     navLogger.debug('State Variables', {
         currentMainCategory: state.currentMainCategory,
         currentSubCategory: state.currentSubCategory,
         currentPage: state.currentPage
     });
     
-    // Log DOM elements
     const activeMainBtn = document.querySelector('.category-btn.active');
     const activeSubBtn = document.querySelector('.subcategory-btn.active');
     const navigationWrapper = document.querySelector('.navigation-wrapper');
@@ -315,7 +299,6 @@ export function logDetailedMenuState(caller = 'Unknown') {
         }
     });
     
-    // Log menu items
     if (window.allMenuItems) {
         const filteredItems = window.allMenuItems.filter(item => 
             item.mainCategory === state.currentMainCategory && 
@@ -330,17 +313,53 @@ export function logDetailedMenuState(caller = 'Unknown') {
         });
     }
     
+    const specialsCarouselSection = document.getElementById('specials-carousel-section');
+    const specialsCarouselTrack = document.querySelector('.specials-carousel-track');
+    const carouselSlides = specialsCarouselTrack ? specialsCarouselTrack.querySelectorAll('.specials-carousel-slide') : [];
+    
+    carouselLogger.debug('Specials Carousel State', {
+        carouselSectionExists: !!specialsCarouselSection,
+        carouselTrackExists: !!specialsCarouselTrack,
+        isHidden: specialsCarouselSection ? specialsCarouselSection.classList.contains('hidden') : 'N/A',
+        slideCount: carouselSlides.length,
+        currentSlide: state.currentSpecialsSlide,
+        currentCategory: state.currentMainCategory,
+        isInitialized: specialsCarouselSection ? specialsCarouselSection.hasAttribute('data-initialized') : false
+    });
+    
+    if (carouselSlides.length > 0) {
+        const slideImages = Array.from(carouselSlides).map(slide => {
+            const img = slide.querySelector('.special-item-image');
+            return {
+                slideIndex: Array.from(carouselSlides).indexOf(slide),
+                imageSrc: img ? img.src : 'No image element',
+                imageExists: img ? (img.complete && img.naturalHeight !== 0) : false,
+                imageError: img ? img.hasAttribute('data-error') : false
+            };
+        });
+        
+        carouselLogger.debug('Carousel Images State', slideImages);
+    }
+    
     navLogger.endSection();
 }
 
-// Function to log navigation events
 export function logNavigationEvent(from, to, additionalInfo = {}) {
     navLogger.logNavigation(from, to, additionalInfo);
     
-    // Log detailed state after navigation
     setTimeout(() => {
         logDetailedMenuState('After Navigation');
     }, 100);
 }
 
+export function logCarouselEvent(eventType, additionalInfo = {}) {
+    carouselLogger.info(`Carousel Event: ${eventType}`, additionalInfo);
+}
+
+export function logImageEvent(imageUrl, eventType, additionalInfo = {}) {
+    uiLogger.info(`Image Event: ${eventType}`, {
+        imageUrl,
+        ...additionalInfo
+    });
+}
 // ============================== END OF JAVASCRIPT FILE ==============================
