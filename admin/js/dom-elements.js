@@ -4,7 +4,6 @@
 (function(admin) {
     'use strict';
 
-    // بررسی امنیتی: اگر admin.dom وجود نداشت، آن را بساز
     if (!admin.dom) {
         admin.dom = {};
     }
@@ -13,7 +12,6 @@
     admin.dom.mainTabs = document.getElementById('mainTabs');
     admin.dom.contentArea = document.getElementById('contentArea');
 
-    // --- NEW ELEMENTS ADDED ---
     // Section Title
     admin.dom.sectionTitle = document.getElementById('section-title');
 
@@ -21,14 +19,41 @@
     admin.dom.categoriesSection = document.getElementById('categories-section');
     admin.dom.inventorySection = document.getElementById('inventory-section');
 
+    // --- NEW: Products Table Elements ---
+    admin.dom.productsTableContainer = document.getElementById('products-table-container');
+    admin.dom.productsTable = document.getElementById('products-table');
+    admin.dom.productsTableBody = document.getElementById('products-table-body');
+    admin.dom.productsPagination = document.getElementById('products-pagination');
+    admin.dom.productSearchInput = document.getElementById('product-search-input');
+    admin.dom.clearSearchBtn = document.getElementById('clear-search-btn');
+    admin.dom.bulkActionsBar = document.getElementById('bulk-actions-bar');
+    admin.dom.selectedCount = document.getElementById('selected-count');
+    admin.dom.selectAllBtn = document.getElementById('select-all-btn');
+    admin.dom.deselectAllBtn = document.getElementById('deselect-all-btn');
+    admin.dom.selectAllCheckbox = document.getElementById('select-all-checkbox');
+    admin.dom.exportProductsBtn = document.getElementById('export-products-btn');
+    admin.dom.toggleViewBtn = document.getElementById('toggle-view-btn');
+
+    // Bulk Edit Modal Elements
+    admin.dom.bulkEditModal = document.getElementById('bulkEditModal');
+    admin.dom.bulkEditForm = document.getElementById('bulkEditForm');
+    admin.dom.bulkCategory = document.getElementById('bulk-category');
+    admin.dom.bulkSubcategory = document.getElementById('bulk-subcategory');
+    admin.dom.bulkPriceChangeType = document.getElementById('bulk-price-change-type');
+    admin.dom.bulkPriceValue = document.getElementById('bulk-price-value');
+    admin.dom.bulkStockStatus = document.getElementById('bulk-stock-status');
+    admin.dom.saveBulkEditBtn = document.getElementById('saveBulkEditBtn');
+
     // Modal Elements
     admin.dom.categoryModal = document.getElementById('categoryModal');
     admin.dom.productModal = document.getElementById('productModal');
     admin.dom.categoryForm = document.getElementById('categoryForm');
     admin.dom.productForm = document.getElementById('productForm');
     admin.dom.ingredientsContainer = document.getElementById('ingredientsContainer');
+    
+    // دکمه افزودن ماده اولیه در مودال محصول
+    admin.dom.addProductIngredientBtn = document.getElementById('addIngredientBtn');
 
-    // --- NEW ELEMENTS ADDED ---
     admin.dom.mainCategoryFields = document.getElementById('mainCategoryFields');
     admin.dom.uploadImageBtn = document.getElementById('uploadImageBtn');
     admin.dom.categoryImageUpload = document.getElementById('categoryImageUpload');
@@ -58,8 +83,6 @@
     // Media Tab
     admin.dom.imageUpload = document.getElementById('imageUpload');
     admin.dom.image = document.getElementById('image');
-
-    // در بخش Product Modal Elements اضافه کنید:
     admin.dom.productUploadImageBtn = document.getElementById('productUploadImageBtn');
 
     // Inventory Tab
@@ -75,7 +98,6 @@
     // Product Modal Buttons
     admin.dom.deleteProductBtn = document.getElementById('deleteProductBtn');
     admin.dom.saveProductBtn = document.getElementById('saveProductBtn');
-    admin.dom.addIngredientBtn = document.getElementById('addIngredientBtn');
 
     // Navigation Elements
     admin.dom.previewBtn = document.getElementById('previewBtn');
@@ -92,9 +114,7 @@
     admin.dom.addIngredientForm = document.getElementById('addIngredientForm');
     admin.dom.confirmAddIngredientBtn = document.getElementById('confirmAddIngredientBtn');
 
-    // Inventory Buttons
-    admin.dom.addIngredientBtn = document.getElementById('add-ingredient-btn');
-
-
+    // دکمه افزودن ماده اولیه در بخش Inventory
+    admin.dom.addInventoryIngredientBtn = document.getElementById('add-ingredient-btn');
 
 })(window.SimoonAdmin);

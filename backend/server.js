@@ -362,10 +362,16 @@ app.post('/api/admin/categories', authenticateUser, async (req, res) => {
 });
 
 // API to create a new custom subcategory
+// API to create a new custom subcategory
 app.post('/api/admin/subcategories', authenticateUser, async (req, res) => {
     try {
-        const { name, parent_category_id } = req.body; // فرانت‌اند اکنون parent_category_id را ارسال می‌کند
+        const { name, parent_category_id } = req.body;
         const restaurantId = req.user.restaurantId;
+
+        // اعتبارسنجی داده‌های ورودی
+        if (!name || !parent_category_id) {
+            return res.status(400).json({ message: 'Name and parent category ID are required.' });
+        }
 
         const { rows } = await db.query(
             'INSERT INTO categories (name, type, parent_category_id, restaurant_id) VALUES ($1, $2, $3, $4) RETURNING *',
@@ -374,7 +380,7 @@ app.post('/api/admin/subcategories', authenticateUser, async (req, res) => {
         res.status(201).json(rows[0]);
     } catch (err) {
         console.error('Error creating subcategory:', err.message);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Server error', error: err.message });
     }
 });
 

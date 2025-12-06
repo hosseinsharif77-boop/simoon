@@ -1,5 +1,5 @@
 /**
- * Simoon Cafe Admin Panel - Event Handlers (نسخه اصلاح شده و نهایی)
+ * Simoon Cafe Admin Panel - Event Handlers (Final Version)
  */
 (function(admin) {
     'use strict';
@@ -49,13 +49,20 @@
         }
         
         // --- رویدادهای مربوط به فرم محصول ---
-        if (admin.dom.addIngredientBtn) {
-            admin.dom.addIngredientBtn.addEventListener('click', () => {
+        if (admin.dom.addProductIngredientBtn) {
+            admin.dom.addProductIngredientBtn.addEventListener('click', () => {
+                console.log('Add Ingredient button clicked in product modal');
                 admin.addIngredientRow();
             });
         }
         
-        // --- NEW EVENT LISTENERS FOR IMAGE UPLOAD ---
+        // --- رویدادهای مربوط به بخش Inventory ---
+        if (admin.dom.addInventoryIngredientBtn) {
+            admin.dom.addInventoryIngredientBtn.addEventListener('click', admin.inventory.handleAddIngredientClick);
+            console.log('Add Ingredient button clicked in Inventory modal');
+        }
+        
+        // --- EVENT LISTENERS FOR IMAGE UPLOAD ---
         if (admin.dom.uploadImageBtn && admin.dom.categoryImageUpload) {
             admin.dom.uploadImageBtn.addEventListener('click', () => {
                 admin.dom.categoryImageUpload.click();
@@ -66,51 +73,7 @@
             admin.dom.categoryImageUpload.addEventListener('change', admin.handleImageUpload);
         }
 
-        // --- رویدادهای غیرفعال (Passive) برای بهبود عملکرد در دستگاه‌های لمسی ---
-        document.addEventListener('touchstart', function() {}, { passive: true });
-        document.addEventListener('touchmove', function() {}, { passive: true });
-        
-        // --- رویدادهای ابزار دیباگ ---
-        const logLayoutBtn = document.getElementById('log-layout-btn');
-        if (logLayoutBtn) {
-            logLayoutBtn.addEventListener('click', admin.logLayoutStructure);
-        }
-        
-        // --- مدیریت رویدادهای مودال (بسیار مهم برای رفع خطای دسترسی) ---
-        // این رویدادها باید پس از بارگذاری کامل DOM تنظیم شوند.
-        // از آنجایی که این تابع (setupEventListeners) معمولاً از app.js پس از لود DOM فراخوانی می‌شود،
-        // نیازی به تودرتو کردن در addEventListener('DOMContentLoaded') نیست.
-
-        const categoryModalEl = document.getElementById('categoryModal');
-        const productModalEl = document.getElementById('productModal');
-
-        // مدیریت رویداد 'hide.bs.modal' برای مودال دسته‌بندی
-        // این رویداد دقیقاً قبل از اینکه مودال مخفی شود اجرا می‌شود
-        if (categoryModalEl) {
-            categoryModalEl.addEventListener('hide.bs.modal', function () {
-                console.log('EVENT-HANDLERS: Category modal is about to hide. Removing focus from its children.');
-                const activeElement = document.activeElement;
-                // اگر المان فعال داخل مودال دسته‌بندی است، فوکوس آن را بردار تا خطای دسترسی رخ ندهد
-                if (activeElement && categoryModalEl.contains(activeElement)) {
-                    activeElement.blur();
-                }
-            });
-        }
-
-        // مدیریت رویداد 'hide.bs.modal' برای مودال محصول
-        if (productModalEl) {
-            productModalEl.addEventListener('hide.bs.modal', function () {
-                console.log('EVENT-HANDLERS: Product modal is about to hide. Removing focus from its children.');
-                const activeElement = document.activeElement;
-                // اگر المان فعال داخل مودال محصول است، فوکوس آن را بردار
-                if (activeElement && productModalEl.contains(activeElement)) {
-                    activeElement.blur();
-                }
-            });
-        }
-
         // --- Event Listeners for Product Modal ---
-        // Add event listener for category dropdown to update subcategories
         if (admin.dom.category) {
             admin.dom.category.addEventListener('change', function() {
                 const selectedCategory = this.value;
@@ -118,7 +81,6 @@
             });
         }
         
-        // Add event listener for image upload button
         const productUploadImageBtn = document.getElementById('productUploadImageBtn');
         const productImageUpload = document.getElementById('imageUpload');
         const productImageInput = document.getElementById('image');
@@ -131,40 +93,10 @@
             productImageUpload.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (file) {
-                    // Here you would typically upload the file to a server
-                    // For now, we'll just show the file name
                     const fileName = file.name;
                     productImageInput.value = `File: ${fileName}`;
-                    
-                    // If you want to preview the image, you can create a temporary URL
                     const reader = new FileReader();
                     reader.onload = function(e) {
-                        // You could display a preview here if needed
-                        console.log('Product image selected:', e.target.result);
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-        }
-
-        // Add event listener for image upload button
-        if (admin.dom.productUploadImageBtn && admin.dom.imageUpload) {
-            admin.dom.productUploadImageBtn.addEventListener('click', function() {
-                admin.dom.imageUpload.click();
-            });
-            
-            admin.dom.imageUpload.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    // Here you would typically upload the file to a server
-                    // For now, we'll just show the file name
-                    const fileName = file.name;
-                    admin.dom.image.value = `File: ${fileName}`;
-                    
-                    // If you want to preview the image, you can create a temporary URL
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        // You could display a preview here if needed
                         console.log('Product image selected:', e.target.result);
                     };
                     reader.readAsDataURL(file);
@@ -172,47 +104,49 @@
             });
         }
         
-        // در داخل تابع admin.setupEventListeners یا رویداد DOMContentLoaded
-
+        // --- NEW: Event Listener for Bulk Edit Save Button ---
+        const saveBulkEditBtn = document.getElementById('saveBulkEditBtn');
+        if (saveBulkEditBtn) {
+            saveBulkEditBtn.addEventListener('click', admin.saveBulkEdit);
+        }
+        
+        // --- Event Listeners for Inventory Modals ---
+        if (admin.dom.confirmAddIngredientBtn) {
+            admin.dom.confirmAddIngredientBtn.addEventListener('click', admin.inventory.handleAddIngredientFormSubmit);
+        }
+        
         // مدیریت کلیک روی لینک‌های ناوبری دسکتاپ و موبایل
         const handleNavigationClick = function(event) {
-            // حذف کلاس active از همه لینک‌ها
             admin.dom.navLinks.forEach(link => link.classList.remove('active'));
             admin.dom.mobileNavItems.forEach(item => item.classList.remove('active'));
 
-            // اضافه کردن کلاس active به لینک کلیک شده
             const clickedElement = event.currentTarget;
             clickedElement.classList.add('active');
 
-            // پیدا کردن لینک متناظر در موبایل یا دسکتاپ و فعال کردن آن
             const section = clickedElement.dataset.section;
             document.querySelector(`.mobile-bottom-nav-item[data-section="${section}"]`)?.classList.add('active');
             document.querySelector(`.nav-link[data-section="${section}"]`)?.classList.add('active');
 
-            // نمایش سکشن مربوطه و به‌روزرسانی عنوان
             if (section === 'categories') {
                 admin.showSection('categories');
                 admin.updateSectionTitle('Manage Categories & Products');
             } else if (section === 'inventory') {
                 admin.showSection('inventory');
                 admin.updateSectionTitle('Inventory Management');
-                // مقداردهی اولیه بخش انبار (اختیاری)
                 if (typeof admin.inventory.init === 'function') {
                     admin.inventory.init();
                 }
             }
-            // می‌توانید برای سکشن‌های دیگر هم شرط اضافه کنید
         };
 
-        // اتصال رویداد به لینک‌های دسکتاپ
         admin.dom.navLinks.forEach(link => {
             link.addEventListener('click', handleNavigationClick);
         });
 
-        // اتصال رویداد به آیتم‌های موبایل
         admin.dom.mobileNavItems.forEach(item => {
             item.addEventListener('click', handleNavigationClick);
         });
+
         console.log('EVENT-HANDLERS: Event listeners setup complete.');
     };
 

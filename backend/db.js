@@ -50,6 +50,12 @@
  *    - هدف: یک دفترچه ثبت کامل برای تمام تغییرات موجودی (فروش، ورود دستی، ضایعات).
  *    - ستون‌های کلیدی: id (PK), restaurant_id (FK), ingredient_id (FK -> ingredients), change_type, quantity_change, reason.
  * 
+ * --- جداول اسلایدهای ویژه ---
+ * 
+ * 10. `special_slides`
+ *     - هدف: ذخیره اسلایدهای ویژه برای هر رستوران، مانند تبلیغات یا پیشنهادات ویژه.
+ *     - ستون‌های کلیدی: id (PK), title, description, image_url, restaurant_id (FK -> restaurants), created_at, updated_at.
+ *
  * --- نکات مهم ---
  * - تمام جداول (به جز `restaurants`) شامل ستون `restaurant_id` برای اطمینان از جداسازی کامل داده‌ها بین مستأجرها هستند.
  * - (FK) نشان‌دهنده کلید خارجی (Foreign Key) است.

@@ -54,31 +54,45 @@
 
     <main class="admin-main">
         <div class="container-fluid admin-container">
-            <!-- Main Category Tabs -->
+            <!-- Categories Section -->
             <div class="management-card" id="categories-section">
                 <div class="card-body">
                     <div class="single-column-layout">
-                        <div class="ribbon-container">
-                            <div class="ribbon-wrapper">
-                                <div class="categories-ribbon scrollable" id="mainTabsRibbon"></div>
-                                <div class="add-tab-item">
-                                    <button class="add-tab-btn" id="addMainTabBtn">
-                                        <i class="bi bi-plus"></i>
-                                    </button>
+                        <!-- === شروع کانتینر مشترک برای تمام تب‌ها === -->
+                        <div class="ribbons-wrapper">
+                            <!-- توضیحات بخش Categories -->
+                            <h4 class="section-title">Categories</h4>
+                            <p class="section-text">Manage your main product categories. Add, edit, or delete categories to organize your menu structure.</p>
+                            
+                            <div class="ribbon-container">
+                                <div class="ribbon-wrapper">
+                                    <div class="categories-ribbon scrollable" id="mainTabsRibbon"></div>
+                                    <div class="add-tab-item">
+                                        <button class="add-tab-btn" id="addMainTabBtn">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- توضیحات بخش Subcategories -->
+                            <h4 class="section-title">Subcategories</h4>
+                            <p class="section-text">Create subcategories within each main category for better organization of your products.</p>
+                            
+                            <div class="ribbon-container">
+                                <div class="ribbon-wrapper">
+                                    <div class="sub-categories-ribbon scrollable" id="subTabsRibbon"></div>
+                                    <div class="add-tab-item">
+                                        <button class="add-tab-btn" id="addSubTabBtn">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="ribbon-container">
-                            <div class="ribbon-wrapper">
-                                <div class="sub-categories-ribbon scrollable" id="subTabsRibbon"></div>
-                                <div class="add-tab-item">
-                                    <button class="add-tab-btn" id="addSubTabBtn">
-                                        <i class="bi bi-plus"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                                    <!-- special crusel -->
+                        <!-- === پایان کانتینر مشترک === -->
+
+                        <!-- special crusel -->
                         <div id="special-carousel-management" class="special-carousel-management" style="display: none;">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h5 class="mb-0">Manage Special Carousel</h5>
@@ -90,17 +104,125 @@
                                 <!-- اسلایدهای کاروسل در اینجا توسط جاوااسکریپت رندر می‌شوند -->
                             </div>
                         </div>
+
+                        <!-- توضیحات بخش Products -->
+                        <h4 class="section-title">Products</h4>
+                        <p class="section-text">Add and manage products within each subcategory. Set prices, stock levels, and product details.</p>
+
+                        <!-- NEW: Product Management Toolbar -->
+                        <div class="product-management-toolbar">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                        <input type="text" id="product-search-input" class="form-control" placeholder="Search products...">
+                                        <button class="btn btn-outline-secondary" id="clear-search-btn" type="button">
+                                            <i class="bi bi-x-circle"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 d-flex justify-content-end">
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-funnel"></i> Filter
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><h6 class="dropdown-header">Stock Status</h6></li>
+                                            <li><a class="dropdown-item stock-filter" href="#" data-stock="all">All Stock</a></li>
+                                            <li><a class="dropdown-item stock-filter" href="#" data-stock="in-stock">In Stock</a></li>
+                                            <li><a class="dropdown-item stock-filter" href="#" data-stock="low-stock">Low Stock</a></li>
+                                            <li><a class="dropdown-item stock-filter" href="#" data-stock="out-of-stock">Out of Stock</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><h6 class="dropdown-header">Sort By</h6></li>
+                                            <li><a class="dropdown-item sort-option" href="#" data-sort="name-asc">Name (A-Z)</a></li>
+                                            <li><a class="dropdown-item sort-option" href="#" data-sort="name-desc">Name (Z-A)</a></li>
+                                            <li><a class="dropdown-item sort-option" href="#" data-sort="price-asc">Price (Low to High)</a></li>
+                                            <li><a class="dropdown-item sort-option" href="#" data-sort="price-desc">Price (High to Low)</a></li>
+                                            <li><a class="dropdown-item sort-option" href="#" data-sort="stock-asc">Stock (Low to High)</a></li>
+                                            <li><a class="dropdown-item sort-option" href="#" data-sort="stock-desc">Stock (High to Low)</a></li>
+                                        </ul>
+                                        <button type="button" class="btn btn-success" id="export-products-btn">
+                                            <i class="bi bi-download"></i> Export
+                                        </button>
+                                        <button type="button" class="btn btn-primary" id="toggle-view-btn">
+                                            <i class="bi bi-grid"></i> Table View
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Bulk Actions Bar (Hidden by default) -->
+                            <div id="bulk-actions-bar" class="bulk-actions-bar" style="display: none;">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span id="selected-count">0</span> products selected
+                                        <button id="select-all-btn" class="btn btn-sm btn-outline-secondary ms-2">Select All</button>
+                                        <button id="deselect-all-btn" class="btn btn-sm btn-outline-secondary">Deselect All</button>
+                                    </div>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-sm btn-outline-primary bulk-action" data-action="edit">
+                                            <i class="bi bi-pencil"></i> Edit
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-success bulk-action" data-action="in-stock">
+                                            <i class="bi bi-check-circle"></i> In Stock
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-warning bulk-action" data-action="out-of-stock">
+                                            <i class="bi bi-x-circle"></i> Out of Stock
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger bulk-action" data-action="delete">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- NEW: Products Table (Hidden by default) -->
+                        <div class="table-responsive" id="products-table-container" style="display: none;">
+                            <table class="table table-dark table-hover" id="products-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" width="40">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="select-all-checkbox">
+                                            </div>
+                                        </th>
+                                        <th scope="col">Image</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Category</th>
+                                        <th scope="col">Price</th>
+                                        <th scope="col">Stock</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col" width="120">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="products-table-body">
+                                    <!-- Products will be populated here -->
+                                </tbody>
+                            </table>
+                            
+                            <!-- Pagination -->
+                            <nav aria-label="Products pagination" class="mt-3">
+                                <ul class="pagination justify-content-center" id="products-pagination">
+                                    <!-- Pagination will be populated here -->
+                                </ul>
+                            </nav>
+                        </div>
+                        
+                        <!-- contentArea (Grid View - Default) -->
                         <div id="contentArea"></div>
                     </div>
                 </div>
             </div>
 
-
-
             <!-- Inventory Section -->
             <div id="inventory-section" class="management-card" style="display: none;">
                 <div class="card-body">
                     <div class="single-column-layout">
+                        <!-- توضیحات بخش Inventory -->
+                        <h4 class="section-title">Inventory Management</h4>
+                        <p class="section-text">Track your ingredients, monitor stock levels, and manage inventory alerts to ensure smooth operations.</p>
+                        
                         <!-- Inventory Navigation Ribbon (فقط ۳ تب) -->
                         <div class="ribbon-container">
                             <div class="ribbon-wrapper">
@@ -194,87 +316,6 @@
                     </div>
                 </div>
             </div>
-
-<!-- مودال‌ها بدون تغییر -->
-
-            <!-- Stock Update Modal -->
-            <div class="modal fade" id="stockUpdateModal" tabindex="-1" aria-labelledby="stockUpdateModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="stockUpdateModalLabel">Update Stock</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="stockUpdateForm">
-                                <input type="hidden" id="stockIngredientId">
-                                <input type="hidden" id="stockUpdateType">
-                                <div class="mb-3">
-                                    <label for="stockIngredientName" class="form-label">Ingredient Name</label>
-                                    <input type="text" class="form-control" id="stockIngredientName" readonly>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="stockQuantity" class="form-label">Quantity</label>
-                                    <input type="number" step="0.01" class="form-control" id="stockQuantity" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="stockReason" class="form-label">Reason (Optional)</label>
-                                    <textarea class="form-control" id="stockReason" rows="2"></textarea>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="button" class="btn btn-primary" id="confirmStockUpdateBtn">Save Changes</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Add Ingredient Modal -->
-            <div class="modal fade" id="addIngredientModal" tabindex="-1" aria-labelledby="addIngredientModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addIngredientModalLabel">Add New Ingredient</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="addIngredientForm">
-                                <div class="mb-3">
-                                    <label for="newIngredientName" class="form-label">Ingredient Name</label>
-                                    <input type="text" class="form-control" id="newIngredientName" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="newIngredientUnit" class="form-label">Unit of Measurement</label>
-                                    <select class="form-select" id="newIngredientUnit" required>
-                                        <option value="">Select Unit</option>
-                                        <option value="grams">Grams</option>
-                                        <option value="kg">Kilograms</option>
-                                        <option value="ml">Milliliters</option>
-                                        <option value="liters">Liters</option>
-                                        <option value="pieces">Pieces</option>
-                                        <option value="tablespoon">Tablespoon</option>
-                                        <option value="cup">Cup</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="newIngredientStock" class="form-label">Initial Stock Quantity</label>
-                                    <input type="number" step="0.01" class="form-control" id="newIngredientStock" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="newIngredientMinStock" class="form-label">Minimum Stock Alert</label>
-                                    <input type="number" step="0.01" class="form-control" id="newIngredientMinStock" required>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="button" class="btn btn-primary" id="confirmAddIngredientBtn">Add Ingredient</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </main>
 
@@ -299,7 +340,7 @@
     </div>
 
     <!-- Modal for Adding/Editing Category -->
-    <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+    <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -348,7 +389,7 @@
     </div>
 
     <!-- Modal for Adding/Editing Product -->
-    <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+    <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel">
         <div class="modal-dialog modal-xl modal-fullscreen-md-down">
             <div class="modal-content">
                 <div class="modal-header">
@@ -449,8 +490,64 @@
         </div>
     </div>
 
+    <!-- Bulk Edit Modal -->
+    <div class="modal fade" id="bulkEditModal" tabindex="-1" aria-labelledby="bulkEditModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bulkEditModalLabel">Bulk Edit Products</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="bulkEditForm">
+                        <div class="mb-3">
+                            <label for="bulk-category" class="form-label">Category</label>
+                            <select id="bulk-category" class="form-select">
+                                <option value="">Keep current</option>
+                                <!-- Categories will be populated dynamically -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="bulk-subcategory" class="form-label">Subcategory</label>
+                            <select id="bulk-subcategory" class="form-select">
+                                <option value="">Keep current</option>
+                                <!-- Subcategories will be populated dynamically -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="bulk-price-change" class="form-label">Price Change</label>
+                            <div class="input-group">
+                                <select id="bulk-price-change-type" class="form-select">
+                                    <option value="no-change">No change</option>
+                                    <option value="fixed">Set to</option>
+                                    <option value="increase-percent">Increase by %</option>
+                                    <option value="decrease-percent">Decrease by %</option>
+                                    <option value="increase-amount">Increase by amount</option>
+                                    <option value="decrease-amount">Decrease by amount</option>
+                                </select>
+                                <input type="number" class="form-control" id="bulk-price-value" placeholder="Value">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="bulk-stock-status" class="form-label">Stock Status</label>
+                            <select id="bulk-stock-status" class="form-select">
+                                <option value="no-change">No change</option>
+                                <option value="in-stock">In Stock</option>
+                                <option value="out-of-stock">Out of Stock</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveBulkEditBtn">Apply Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Custom Confirmation Modal -->
-    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -467,8 +564,8 @@
         </div>
     </div>
 
-    <!-- Modal for Stock In/Out -->
-    <div class="modal fade" id="stockUpdateModal" tabindex="-1" aria-labelledby="stockUpdateModalLabel" aria-hidden="true">
+    <!-- Stock Update Modal -->
+    <div class="modal fade" id="stockUpdateModal" tabindex="-1" aria-labelledby="stockUpdateModalLabel" >
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -501,8 +598,8 @@
         </div>
     </div>
 
-    <!-- Modal for Adding a New Ingredient -->
-    <div class="modal fade" id="addIngredientModal" tabindex="-1" aria-labelledby="addIngredientModalLabel" aria-hidden="true">
+    <!-- Add Ingredient Modal -->
+    <div class="modal fade" id="addIngredientModal" tabindex="-1" aria-labelledby="addIngredientModalLabel" >
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -546,7 +643,7 @@
     </div>
 
     <!-- Modal for Adding/Editing Special Carousel Slide -->
-    <div class="modal fade" id="specialSlideModal" tabindex="-1" aria-labelledby="specialSlideModalLabel" aria-hidden="true">
+    <div class="modal fade" id="specialSlideModal" tabindex="-1" aria-labelledby="specialSlideModalLabel" >
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -585,10 +682,12 @@
     <!-- Custom JS -->
     <script src="js/config.js"></script>
     <script src="js/dom-elements.js"></script>
+    <script src="js/modal.js"></script>
     <script src="js/event-handlers.js"></script>
     <script src="js/utility-functions.js"></script>
     <script src="js/category-management.js"></script>
     <script src="js/product-management.js"></script>
+    <script src="js/products-table-management.js"></script>
     <script src="js/auto-layout-logger.js"></script>
     <script src="js/inventory-management.js"></script>
     <script src="js/special-carousel-management.js"></script>

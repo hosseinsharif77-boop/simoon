@@ -21,6 +21,7 @@
             stockLevel: null
         }
     };
+    admin.inventory.addIngredientModalManager = null;
 
     // --- API Functions ---
     admin.inventory.api = {
@@ -413,36 +414,74 @@
         }
     };
 
-    admin.inventory.handleAddIngredientClick = () => {
-        document.getElementById('addIngredientForm').reset();
-        const modal = new bootstrap.Modal(document.getElementById('addIngredientModal'));
-        modal.show();
+    admin.inventory.handleAddIngredientClick = function() {
+        console.log('Opening add ingredient modal');
+        
+        try {
+            // ایجاد یا دریافت مدیر مودال
+            if (!admin.inventory.addIngredientModalManager) {
+                admin.inventory.addIngredientModalManager = admin.createModalManager('addIngredientModal');
+            }
+            
+            // ریست کردن فرم
+            if (admin.dom.addIngredientForm) {
+                admin.dom.addIngredientForm.reset();
+            }
+            
+            // نمایش مودال
+            admin.inventory.addIngredientModalManager.show();
+            
+            console.log('Add ingredient modal opened successfully');
+        } catch (error) {
+            console.error('Error opening add ingredient modal:', error);
+            admin.showNotification('Error opening add ingredient modal', 'error');
+        }
     };
 
-    admin.inventory.handleAddIngredientFormSubmit = async (event) => {
+    admin.inventory.handleAddIngredientFormSubmit = async function(event) {
         event.preventDefault();
-        const submitBtn = document.getElementById('confirmAddIngredientBtn');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Adding...';
-
+        
         try {
+            if (!admin.inventory.addIngredientModalManager) {
+                console.error('Add ingredient modal manager not initialized');
+                return;
+            }
+            
+            const submitBtn = admin.dom.confirmAddIngredientBtn;
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Adding...';
+
             const name = document.getElementById('newIngredientName').value;
             const unit = document.getElementById('newIngredientUnit').value;
             const stock_quantity = parseFloat(document.getElementById('newIngredientStock').value);
             const min_stock_alert = parseFloat(document.getElementById('newIngredientMinStock').value);
 
+            if (!name) {
+                admin.showNotification('Ingredient name is required', 'error');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+                return;
+            }
+
             await admin.inventory.api.addIngredient(name, unit, stock_quantity, min_stock_alert);
 
-            bootstrap.Modal.getInstance(document.getElementById('addIngredientModal')).hide();
-            await admin.inventory.loadDataAndRender();
-
+            admin.showNotification('Ingredient added successfully!', 'success');
+            
+            admin.inventory.addIngredientModalManager.hide();
+            
+            // رفرش کردن لیست مواد اولیه
+            if (typeof admin.inventory.loadDataAndRender === 'function') {
+                await admin.inventory.loadDataAndRender();
+            }
         } catch (error) {
             console.error('Error adding ingredient:', error);
-            alert(`Error: ${error.message}`);
+            admin.showNotification(`Error: ${error.message}`, 'error');
         } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalText;
+            if (admin.dom.confirmAddIngredientBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
         }
     };
 
@@ -530,6 +569,15 @@
     
     admin.inventory.cleanup = () => {
         console.log('Inventory section cleaned up.');
+    };
+
+    admin.inventory.createModalManager = function(elementId, options = {}) {
+        if (!admin.ModalManager) {
+            console.error('ModalManager class not found. Make sure modal.js is loaded before inventory-management.js');
+            return null;
+        }
+        
+        return new admin.ModalManager(elementId, options);
     };
 
 })(window.SimoonAdmin);

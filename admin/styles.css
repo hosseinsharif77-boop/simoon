@@ -90,6 +90,29 @@ body {
     height: 100%;
 }
 
+/* ================================= SECTION DESCRIPTION STYLES ================================= */
+.section-description {
+    margin-bottom: 15px;
+    padding: 12px 15px;
+    background: linear-gradient(145deg, #1f2937, #253241);
+    border: 1px solid #374151;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.section-description h4 {
+    color: #fbbf24;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.section-description p {
+    color: #9ca3af;
+    font-size: 0.9rem;
+    margin-bottom: 0;
+}
+
 /* ================================= RIBBON TABS STYLES (REVISED & CLEANED) ================================= */
 /* This container creates the 3D frame effect */
 .ribbon-container {
@@ -1117,6 +1140,144 @@ body {
         font-size: 13px;
     }
 }
+/* ================================= FIX FOR SUB-CATEGORY RIBBON LAYOUT ================================= */
+.section-title {
+    color: #fbbf24;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    margin-top: 15px;
+    text-shadow: 0 0 10px rgba(251, 191, 36, 0.3); /* افکت درخشش */
+}
+
+/* ================================= PRODUCT MANAGEMENT TOOLBAR & TABLE STYLES ================================= */
+.product-management-toolbar {
+    margin-bottom: 20px;
+}
+
+.product-thumbnail {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.bulk-actions-bar {
+    background-color: rgba(251, 191, 36, 0.1);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    border-radius: 8px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    display: none; /* Hidden by default */
+    justify-content: space-between;
+    align-items: center;
+}
+
+.table-responsive {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table-dark {
+    --bs-table-bg: #1f2937;
+    --bs-table-striped-bg: #253241;
+    --bs-table-hover-bg: #2d3748;
+    --bs-table-border-color: #374151;
+    --bs-table-color: #f8f9fa;
+    --bs-table-striped-color: #f8f9fa;
+}
+
+.table-dark th {
+    border-color: #374151;
+    font-weight: 600;
+    color: #fbbf24;
+}
+
+.table-dark td {
+    border-color: #374151;
+}
+
+.pagination .page-link {
+    background-color: #374151;
+    border-color: #4b5563;
+    color: #f8f9fa;
+}
+
+.pagination .page-link:hover {
+    background-color: #4b5563;
+    border-color: #6b7280;
+    color: #f8f9fa;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #fbbf24;
+    border-color: #fbbf24;
+    color: #1a1a1a;
+}
+
+.empty-state {
+    padding: 40px 20px;
+    text-align: center;
+}
+
+/* ================================= MOBILE RESPONSIVE STYLES ================================= */
+@media (max-width: 768px) {
+    .product-management-toolbar .row {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .product-management-toolbar .col-md-6 {
+        width: 100%;
+    }
+    
+    .product-management-toolbar .btn-group {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+    
+    .product-thumbnail {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .bulk-actions-bar {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .bulk-actions-bar .btn-group {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .table-responsive {
+        font-size: 0.75rem;
+    }
+    
+    .btn-group .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+    
+    .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+/* This wrapper holds both main and sub-category ribbons
+.ribbons-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Creates space between the main and sub-category ribbons */
+    /* margin-bottom: 15px; /* Creates space between the ribbons and the content area below */
 
 /* ================================= RESPONSIVE DESIGN ================================= */
 @media (max-width: 1024px) {

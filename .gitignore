@@ -18,3 +18,8 @@ Thumbs.db  # برای Windows
 # پوشه لاگ‌ها
 logs
 *.log
+
+
+
+# فایل‌ها و پوشه‌های اضافه که نمی‌خواهید به گیت اضافه شوند
+frontend/js/database.docx

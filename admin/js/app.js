@@ -7,10 +7,9 @@
     document.addEventListener('DOMContentLoaded', async () => {
         console.log('🚀 Admin panel script loaded.');
         
-        // بررسی وجود توابع قبل از فراخوانی
         if (typeof admin.setupEventListeners !== 'function') {
             console.error('Fatal Error: admin.setupEventListeners is not a function. Check event-handlers.js');
-            return; // جلوگیری از اجرای ادامه کد
+            return; 
         }
         
         try {
@@ -30,7 +29,6 @@
                 console.warn('Warning: admin.fetchCategoriesAndSubcategories is not defined.');
             }
 
-            // 3. NEW: اسلایدهای کاروسل ویژه را بارگذاری کنید
             if (typeof admin.fetchSpecialSlides === 'function') {
                 await admin.fetchSpecialSlides();
             } else {
@@ -50,6 +48,13 @@
                     admin.selectMainCategory(admin.state.allCategories[0]);
                 }
             }
+
+            // 6. NEW: Initialize products table functionality
+            if (typeof admin.initProductsTable === 'function') {
+                admin.initProductsTable();
+            } else {
+                console.warn('Warning: admin.initProductsTable is not defined.');
+            }
             
         } catch (error) {
             console.error('An error occurred during initialization:', error);
@@ -62,18 +67,15 @@
      * @param {string} sectionName - نام سکشن (مثلاً 'categories', 'inventory')
      */
     admin.showSection = function(sectionName) {
-        // مخفی کردن همه سکشن‌ها
         admin.dom.categoriesSection.style.display = 'none';
         admin.dom.inventorySection.style.display = 'none';
         
-        // نمایش سکشن فعال
         if (sectionName === 'categories') {
             admin.dom.categoriesSection.style.display = 'block';
         } else if (sectionName === 'inventory') {
             admin.dom.inventorySection.style.display = 'block';
         }
         
-        // به‌روزرسانی عنوان هدر بر اساس سکشن فعال
         if (sectionName === 'categories') {
             admin.updateSectionTitle('Manage Categories & Products');
         } else if (sectionName === 'inventory') {
@@ -91,14 +93,13 @@
         }
     };
 
-    // --- NEW: Notification System ---
-    let alertIntervalId; // برای نگهداری ID تایمر
+    // --- Notification System ---
+    let alertIntervalId;
 
-    // تابع بررسی هشدارها
     admin.checkForLowStockAlerts = async () => {
         try {
             const response = await fetch('/api/inventory/low-stock-alerts');
-            if (!response.ok) return; // اگر خطایی داشت، فعلاً کاری نکن
+            if (!response.ok) return; 
             
             const alerts = await response.json();
 
@@ -110,19 +111,15 @@
         }
     };
 
-    // تابع نمایش هشدار به کاربر
     admin.displayLowStockAlert = (alerts) => {
-        // اگر قبلاً یک هشدار باز است، هشدار جدیدی نشان نده
         if (document.getElementById('stock-alert-notification')) {
             return;
         }
 
-        // ساخت لیست مواد برای نمایش در هشدار
         const alertItems = alerts.map(alert => 
             `<li>${alert.name}: ${alert.stock_quantity} ${alert.unit}</li>`
         ).join('');
 
-        // ساخت کانتینر هشدار
         const alertContainer = document.createElement('div');
         alertContainer.id = 'stock-alert-notification';
         alertContainer.className = 'alert alert-warning alert-dismissible fade show position-fixed';
@@ -136,10 +133,8 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         `;
 
-        // اضافه کردن هشدار به body
         document.body.appendChild(alertContainer);
 
-        // به طور خودکار بعد از ۱۰ ثانیه هشدار را مخفی کن
         setTimeout(() => {
             if (alertContainer.parentNode) {
                 alertContainer.remove();
@@ -147,13 +142,10 @@
         }, 10000);
     };
 
-    // تابع شروع بررسی دوره‌ای
     admin.startStockAlertPolling = () => {
-        // هر ۱۵ ثانیه یکبار هشدارها را چک کن
         alertIntervalId = setInterval(admin.checkForLowStockAlerts, 15000);
     };
 
-    // تابع توقف بررسی دوره‌ای
     admin.stopStockAlertPolling = () => {
         if (alertIntervalId) {
             clearInterval(alertIntervalId);

@@ -1,5 +1,5 @@
 /**
- * Simoon Cafe Admin Panel - Product Management (Updated for Tabbed Modal & Modal Fix)
+ * Simoon Cafe Admin Panel - Product Management (Updated for ID-based logic)
  */
 (function(admin) {
     'use strict';
@@ -20,15 +20,8 @@
             console.log('📊 Total products received:', data.length);
             
             // --- تغییر کلیدی در اینجا ---
-            // بک‌اند category_name و sub_category_name را ارسال می‌کند.
-            // ما آن‌ها را به پراپرتی‌هایی که بقیه کد انتظار دارد (category و sub_category) تبدیل می‌کنیم.
-            const transformedData = data.map(item => ({
-                ...item, // تمام پراپرتی‌های اصلی (id, price, category_id و ...) را نگه دار
-                category: item.category_name, // یک پراپرتی جدید به نام 'category' با مقدار نام دسته‌بندی بساز
-                sub_category: item.sub_category_name // یک پراپرتی جدید به نام 'sub_category' با مقدار نام زیردسته بساز
-            }));
-            
-            admin.state.products = transformedData;
+            // این بخش را حذف کنید. داده‌ها را همان‌طور که از سرور می‌آید نگه دارید.
+            admin.state.products = data; // مستقیماً داده‌های اصلی را ذخیره کنید
             console.log('✅ Global products variable updated. Total count:', admin.state.products.length);
 
             console.log('===== 🛒 [ADMIN] Product fetching complete =====\n\n');
@@ -39,6 +32,8 @@
     };
 
     admin.addIngredientRow = function(name = '', quantity = '', unit = 'grams') {
+        console.log('Adding new ingredient row with:', { name, quantity, unit });
+        
         const newRow = document.createElement('div');
         newRow.className = 'ingredient-row row mb-2';
         newRow.innerHTML = `
@@ -56,8 +51,18 @@
             </div>
             <div class="col-md-1"><button type="button" class="btn btn-danger btn-sm remove-ingredient-btn"><i class="bi bi-trash"></i></button></div>
         `;
+        
         admin.dom.ingredientsContainer.appendChild(newRow);
-        newRow.querySelector('.remove-ingredient-btn').addEventListener('click', () => admin.removeIngredientRow(newRow));
+        
+        // اضافه کردن event listener برای دکمه حذف
+        const removeBtn = newRow.querySelector('.remove-ingredient-btn');
+        if (removeBtn) {
+            removeBtn.addEventListener('click', () => {
+                admin.removeIngredientRow(newRow);
+            });
+        }
+        
+        console.log('New ingredient row added successfully');
     };
 
     admin.removeIngredientRow = function(row) {
@@ -70,8 +75,8 @@
 
     // --- Modal Management Functions ---
 
-    admin.openAddProductModal = function(category, subcategory) {
-        console.log(`PRODUCT-MANAGEMENT: Opening addProductModal for category: ${category}, subcategory: ${subcategory}`);
+    admin.openAddProductModal = function(categoryName, subcategoryName) {
+        console.log(`PRODUCT-MANAGEMENT: Opening addProductModal for category: ${categoryName}, subcategory: ${subcategoryName}`);
         const existingModal = bootstrap.Modal.getInstance(admin.dom.productModal);
         if (existingModal) existingModal.dispose();
 
@@ -92,16 +97,29 @@
         if (firstTab) firstTab.classList.add('active');
         if (firstTabPane) firstTabPane.classList.add('active', 'show');
 
+        // پیدا کردن ID دسته‌بندی از نام آن
+        const categoryObj = admin.state.allCategories.find(cat => cat.name === categoryName);
+        if (!categoryObj) {
+            console.error(`Category with name "${categoryName}" not found.`);
+            admin.showNotification(`Error: Category "${categoryName}" not found.`, 'error');
+            return;
+        }
+        const categoryId = categoryObj.id;
+
         // Set the category and subcategory correctly
-        admin.dom.category.value = category;
-        admin.updateSubcategoryDropdown(category);
+        admin.dom.category.value = categoryId;
+        admin.updateSubcategoryDropdown(categoryId);
         
         // Set subcategory if provided
-        if (subcategory) {
-            // Wait a bit for the dropdown to be populated
-            setTimeout(() => {
-                admin.dom.sub_category.value = subcategory;
-            }, 100);
+        if (subcategoryName) {
+            // پیدا کردن ID زیردسته از نام آن
+            const subcategories = admin.state.subcategoriesByCategory[categoryId] || [];
+            const subcategoryObj = subcategories.find(sub => sub.name === subcategoryName);
+            if (subcategoryObj) {
+                setTimeout(() => {
+                    admin.dom.sub_category.value = subcategoryObj.id;
+                }, 100);
+            }
         }
         
         admin.dom.ingredientsContainer.innerHTML = '';
@@ -142,21 +160,19 @@
             admin.dom.name.value = product.name;
             admin.dom.price.value = product.price;
             admin.dom.image.value = product.image || '';
-            admin.dom.category.value = product.category;
             
-            if (!admin.state.subcategoriesByCategory[product.category]) {
-                await admin.fetchCategoriesAndSubcategories();
-            }
+            // استفاده از IDهای مستقیم از پاسخ سرور
+            admin.dom.category.value = product.category_id;
             
-            // Update subcategory dropdown first
-            admin.updateSubcategoryDropdown(product.category);
+            // به‌روزرسانی dropdown زیردسته‌ها بر اساس ID دسته‌بندی
+            admin.updateSubcategoryDropdown(product.category_id);
             
-            // Then set the subcategory value after a short delay
+            // تنظیم مقدار dropdown زیردسته بر اساس ID
             setTimeout(() => {
-                admin.dom.sub_category.value = product.sub_category;
+                admin.dom.sub_category.value = product.sub_category_id;
             }, 100);
             
-            admin.dom.stock_quantity.value = product.stock_quantity;
+            admin.dom.stock_quantity.value = product.stock_quantity || 0;
             admin.dom.is_special.checked = product.is_special;
 
             admin.dom.ingredientsContainer.innerHTML = '';
@@ -178,22 +194,22 @@
         }
     };
 
-    admin.updateSubcategoryDropdown = function(selectedCategory) {
-        console.log(`--- Updating subcategory dropdown for category: ${selectedCategory} ---`);
+    admin.updateSubcategoryDropdown = function(selectedCategoryId) {
+        console.log(`--- Updating subcategory dropdown for category ID: ${selectedCategoryId} ---`);
         admin.dom.sub_category.innerHTML = '<option value="">Select...</option>';
-        const subcategories = admin.state.subcategoriesByCategory[selectedCategory] || [];
-        console.log(`Subcategories found for "${selectedCategory}":`, subcategories);
+        
+        // زیردسته‌ها را بر اساس ID دسته‌بندی والد فیلتر کنید
+        const subcategories = admin.state.subcategoriesByCategory[selectedCategoryId] || [];
+        console.log(`Subcategories found for parent ID "${selectedCategoryId}":`, subcategories);
 
         subcategories.forEach(sub => {
             const option = document.createElement('option');
-            option.value = sub;
-            option.textContent = sub.charAt(0).toUpperCase() + sub.slice(1);
+            option.value = sub.id; // value باید id باشد
+            option.textContent = sub.name.charAt(0).toUpperCase() + sub.name.slice(1);
             admin.dom.sub_category.appendChild(option);
         });
         console.log('✅ Subcategory dropdown updated.');
     };
-
-    // --- Save/Delete Functions with Modal Fix ---
 
     admin.saveProduct = async function() {
         const ingredientRows = document.querySelectorAll('.ingredient-row');
@@ -210,9 +226,10 @@
         const productData = {
             name: admin.dom.name.value,
             price: parseFloat(admin.dom.price.value),
-            category: admin.dom.category.value,
-            sub_category: admin.dom.sub_category.value,
-            stock_quantity: parseInt(admin.dom.stock_quantity.value),
+            // ارسال id به جای name
+            category_id: parseInt(admin.dom.category.value), 
+            sub_category_id: parseInt(admin.dom.sub_category.value) || null, // اگر انتخاب نشده null بفرست
+            stock_quantity: parseInt(admin.dom.stock_quantity.value) || 0,
             image: admin.dom.image.value,
             is_special: admin.dom.is_special.checked,
             ingredients: ingredients,
@@ -221,7 +238,7 @@
         };
         console.log('📝 Product data to save:', productData);
 
-        if (!productData.name || !productData.category || !productData.price) {
+        if (!productData.name || !productData.category_id || !productData.price) {
             console.warn('⚠️ Validation failed: required fields are empty.');
             admin.showNotification('Please fill in name, category, and price fields.', 'error');
             return;
@@ -231,32 +248,50 @@
             let response;
             if (admin.state.currentEditingId) {
                 console.log(`📡 Sending PUT request to edit product ${admin.state.currentEditingId}...`);
-                response = await fetch(`${admin.API_URL}/admin/menu/${admin.state.currentEditingId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(productData) });
+                response = await fetch(`${admin.API_URL}/admin/menu/${admin.state.currentEditingId}`, { 
+                    method: 'PUT', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify(productData) 
+                });
             } else {
                 console.log('📡 Sending POST request to add product...');
-                response = await fetch(`${admin.API_URL}/admin/menu`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(productData) });
+                response = await fetch(`${admin.API_URL}/admin/menu`, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify(productData) 
+                });
             }
             
             console.log('📨 Server response from saving product:', response.status, response.statusText);
 
             if (response.ok) {
                 console.log('PRODUCT-MANAGEMENT: Product saved successfully. Preparing to close modal.');
+                admin.showNotification(admin.state.currentEditingId ? 'Product successfully updated!' : 'Product successfully added!', 'success');
+                
+                const savedProduct = await response.json();
+                console.log('Saved product data:', savedProduct);
+
+                // --- شروع بخش کلیدی: به‌روزرسانی state محلی ---
+                if (admin.state.currentEditingId) {
+                    // ویرایش محصول موجود در state
+                    const index = admin.state.products.findIndex(p => p.id === admin.state.currentEditingId);
+                    if (index !== -1) {
+                        admin.state.products[index] = savedProduct;
+                    }
+                } else {
+                    // افزودن محصول جدید به state
+                    admin.state.products.push(savedProduct);
+                    console.log('Product added to state. New total count:', admin.state.products.length);
+                }
+                // --- پایان بخش کلیدی ---
+
                 const modal = bootstrap.Modal.getInstance(admin.dom.productModal);
                 if (modal) {
                     modal.hide();
-                    admin.dom.productModal.addEventListener('hidden.bs.modal', function () {
-                        console.log('PRODUCT-MANAGEMENT: Product modal is now fully hidden. Disposing instance and moving focus.');
-                        modal.dispose();
-                        document.querySelector('#addMainCategoryBtn')?.focus();
-                    }, { once: true });
                 }
                 
-                admin.showNotification(admin.state.currentEditingId ? 'Product successfully updated!' : 'Product successfully added!', 'success');
-                
-                await admin.fetchProducts();
-                await admin.fetchCategoriesAndSubcategories();
-                admin.renderMainTabs();
-                if (admin.state.activeMainCategory) admin.renderContentArea();
+                // رندر مجدد فقط محتوا، چون دسته‌بندی‌ها تغییر نکرده‌اند
+                admin.renderContentArea();
             } else {
                 const errorData = await response.json();
                 console.error('!!! ERROR saving product !!!', response.status, errorData);
@@ -294,22 +329,17 @@
                 console.log('✅ Product successfully deleted from server.');
                 admin.showNotification('Product successfully deleted!', 'success');
                 
-                // Close the modal after successful deletion
+                // --- شروع بخش کلیدی: به‌روزرسانی state محلی ---
+                admin.state.products = admin.state.products.filter(p => p.id !== id);
+                // --- پایان بخش کلیدی ---
+                
                 const modal = bootstrap.Modal.getInstance(admin.dom.productModal);
                 if (modal) {
                     modal.hide();
-                    admin.dom.productModal.addEventListener('hidden.bs.modal', function () {
-                        console.log('PRODUCT-MANAGEMENT: Product modal is now fully hidden after deletion. Disposing instance.');
-                        modal.dispose();
-                    }, { once: true });
                 }
                 
-                console.log('🔄 Starting to update lists in admin panel...');
-                await admin.fetchProducts();
-                if (admin.state.activeMainCategory) {
-                    admin.renderContentArea();
-                }
-                console.log('✅ Admin panel lists updated.');
+                // رندر مجدد فقط محتوا
+                admin.renderContentArea();
             } else {
                 const errorData = await response.json();
                 console.error('!!! ERROR deleting product !!!', response.status, errorData);
@@ -326,8 +356,8 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Add event listener for category dropdown to update subcategories
         admin.dom.category.addEventListener('change', function() {
-            const selectedCategory = this.value;
-            admin.updateSubcategoryDropdown(selectedCategory);
+            const selectedCategoryId = this.value;
+            admin.updateSubcategoryDropdown(selectedCategoryId);
         });
     });
 
