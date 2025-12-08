@@ -1,5 +1,5 @@
 /**
- * Simoon Cafe Admin Panel - Category Management (Updated for ID-based logic)
+ * Simoon Cafe Admin Panel - Category Management (Updated with i18n)
  */
 (function(admin) {
     'use strict';
@@ -13,7 +13,7 @@
             
             if (!customResponse.ok) {
                 const errorText = await customResponse.text();
-                throw new Error(`Server Error: ${customResponse.status} ${customResponse.statusText}. Response: ${errorText}`);
+                throw new Error(admin.i18n.t('server_error') + `: ${customResponse.status} ${customResponse.statusText}. Response: ${errorText}`);
             }
             
             const customData = await customResponse.json();
@@ -44,10 +44,10 @@
 
             // اضافه کردن تب Special در صورت وجود محصول ویژه
             const hasSpecialProducts = admin.state.products.some(p => p.is_special === true);
-            if (hasSpecialProducts && !admin.state.allCategories.some(cat => cat.name === 'Special')) {
-                admin.state.allCategories.push({ id: 'special', name: 'Special' }); // Use a unique ID for 'Special'
+            if (hasSpecialProducts && !admin.state.allCategories.some(cat => cat.name === admin.i18n.t('special'))) {
+                admin.state.allCategories.push({ id: 'special', name: admin.i18n.t('special') }); // Use a unique ID for 'Special'
             } else if (!hasSpecialProducts) {
-                admin.state.allCategories = admin.state.allCategories.filter(cat => cat.name !== 'Special');
+                admin.state.allCategories = admin.state.allCategories.filter(cat => cat.name !== admin.i18n.t('special'));
             }
             
             console.log('✅ All main categories:', admin.state.allCategories);
@@ -58,7 +58,7 @@
             console.log('===== 📁 [ADMIN] Category extraction complete =====\n\n');
         } catch (error) {
             console.error('!!! ERROR in fetchCategoriesAndSubcategories !!!', error.message);
-            admin.showNotification('Error fetching categories! See console for details.', 'error');
+            admin.showNotification(admin.i18n.t('error_fetching_categories'), 'error');
         }
     };
 
@@ -69,7 +69,7 @@
         
         admin.state.allCategories.forEach((categoryObj) => {
             if (!categoryObj || !categoryObj.name) {
-                console.warn('Skipping undefined category in renderMainTabs');
+                console.warn(admin.i18n.t('skipping_undefined_category'));
                 return;
             }
             const { id, name } = categoryObj;
@@ -77,7 +77,7 @@
             const tabItem = document.createElement('div');
             tabItem.className = `main-tab-item ${name === admin.state.activeMainCategory ? 'active' : ''}`;
             
-            if (name === 'Special') {
+            if (name === admin.i18n.t('special')) {
                 tabItem.classList.add('special-tab');
             }
             
@@ -86,8 +86,8 @@
             tabButton.setAttribute('data-category-id', id); // استفاده از id
             tabButton.setAttribute('data-category-name', name); // نام را هم برای نمایش نگه داریم
             
-            if (name === 'Special') {
-                tabButton.innerHTML = '<i class="bi bi-star-fill"></i> Special';
+            if (name === admin.i18n.t('special')) {
+                tabButton.innerHTML = `<i class="bi bi-star-fill"></i> ${admin.i18n.t('special')}`;
             } else {
                 tabButton.textContent = name.charAt(0).toUpperCase() + name.slice(1);
             }
@@ -95,20 +95,20 @@
             const actionsContainer = document.createElement('div');
             actionsContainer.className = 'tab-actions';
 
-            if (name !== 'Special') {
+            if (name !== admin.i18n.t('special')) {
                 const editButton = document.createElement('button');
                 editButton.className = 'edit-tab-btn';
                 editButton.setAttribute('data-category-id', id); // استفاده از id
-                editButton.setAttribute('data-category-name', name); // استفاده از name
+                editButton.setAttribute('data-category-name', name); // استفاده از نام
                 editButton.innerHTML = `<i class="bi bi-pencil"></i>`;
-                editButton.title = 'Edit Category';
+                editButton.title = admin.i18n.t('edit_category');
 
                 const deleteButton = document.createElement('button');
                 deleteButton.className = 'delete-tab-btn';
                 deleteButton.setAttribute('data-category-id', id); // استفاده از id
-                deleteButton.setAttribute('data-category-name', name); // استفاده از name
+                deleteButton.setAttribute('data-category-name', name); // استفاده از نام
                 deleteButton.innerHTML = `<i class="bi bi-trash"></i>`;
-                deleteButton.title = 'Delete Category';
+                deleteButton.title = admin.i18n.t('delete_category');
 
                 actionsContainer.appendChild(editButton);
                 actionsContainer.appendChild(deleteButton);
@@ -178,13 +178,13 @@
         console.log('--- Rendering content area (sub-tabs and products) ---');
         
         if (!admin.state.activeMainCategory) {
-            admin.dom.contentArea.innerHTML = '<div class="text-center text-muted p-4">Please select a category.</div>';
+            admin.dom.contentArea.innerHTML = `<div class="text-center text-muted p-4">${admin.i18n.t('please_select_category')}</div>`;
             const subTabsRibbon = document.getElementById('subTabsRibbon');
             if (subTabsRibbon) subTabsRibbon.innerHTML = '';
             return;
         }
         
-        if (admin.state.activeMainCategory === 'Special') {
+        if (admin.state.activeMainCategory === admin.i18n.t('special')) {
             admin.toggleSpecialCarouselManagement(true);
             admin.renderSpecialSlidesManagement();
             const subTabsRibbon = document.getElementById('subTabsRibbon');
@@ -202,14 +202,14 @@
         
         const subTabsRibbon = document.getElementById('subTabsRibbon');
         if (!subTabsRibbon) {
-            console.error("!!! [ERROR] #subTabsRibbon not found in the DOM. Check your HTML structure.");
+            console.error(admin.i18n.t('error_subtabs_ribbon_not_found'));
             return;
         }
         subTabsRibbon.innerHTML = '';
         
         subcategories.forEach((subcategoryObj) => {
             if (!subcategoryObj || !subcategoryObj.name) {
-                console.warn('Skipping invalid subcategory in renderContentArea', subcategoryObj);
+                console.warn(admin.i18n.t('skipping_invalid_subcategory'), subcategoryObj);
                 return;
             }
             const { id, name } = subcategoryObj;
@@ -220,7 +220,7 @@
             const subTabButton = document.createElement('button');
             subTabButton.className = `sub-tab-btn`;
             subTabButton.setAttribute('data-subcategory-id', id); // استفاده از id
-            subTabButton.setAttribute('data-subcategory-name', name); // استفاده از name
+            subTabButton.setAttribute('data-subcategory-name', name); // استفاده از نام
             subTabButton.textContent = name.charAt(0).toUpperCase() + name.slice(1);
             
             const actionsContainer = document.createElement('div');
@@ -229,16 +229,16 @@
             const editButton = document.createElement('button');
             editButton.className = 'edit-tab-btn';
             editButton.setAttribute('data-subcategory-id', id); // استفاده از id
-            editButton.setAttribute('data-subcategory-name', name); // استفاده از name
+            editButton.setAttribute('data-subcategory-name', name); // استفاده از نام
             editButton.innerHTML = `<i class="bi bi-pencil"></i>`;
-            editButton.title = 'Edit Subcategory';
+            editButton.title = admin.i18n.t('edit_subcategory');
 
             const deleteButton = document.createElement('button');
             deleteButton.className = 'delete-tab-btn';
             deleteButton.setAttribute('data-subcategory-id', id); // استفاده از id
-            deleteButton.setAttribute('data-subcategory-name', name); // استفاده از name
+            deleteButton.setAttribute('data-subcategory-name', name); // استفاده از نام
             deleteButton.innerHTML = `<i class="bi bi-trash"></i>`;
-            deleteButton.title = 'Delete Subcategory';
+            deleteButton.title = admin.i18n.t('delete_subcategory');
 
             actionsContainer.appendChild(editButton);
             actionsContainer.appendChild(deleteButton);
@@ -297,7 +297,7 @@
         let html = '<div class="row g-3">';
         
         if (specialProducts.length === 0) {
-            html += '<div class="col-12"><div class="alert alert-info text-center">No special products found. Mark products as special in their edit modal to see them here.</div></div>';
+            html += `<div class="col-12"><div class="alert alert-info text-center">${admin.i18n.t('no_special_products_found')}</div></div>`;
         } else {
             specialProducts.forEach(product => {
                 html += `
@@ -306,7 +306,7 @@
                             <div class="product-image-container">
                                 <img src="${product.image || 'https://picsum.photos/seed/product' + product.id + '/300/200.jpg'}" class="product-image" alt="${product.name}">
                                 <div class="special-badge">
-                                    <i class="bi bi-star-fill"></i> Special
+                                    <i class="bi bi-star-fill"></i> ${admin.i18n.t('special')}
                                 </div>
                                 <div class="product-actions">
                                     <button class="btn btn-sm btn-warning" onclick="event.stopPropagation(); SimoonAdmin.openEditProductModal(${product.id})"><i class="bi bi-pencil"></i></button>
@@ -320,7 +320,7 @@
                                     <span class="product-price">$${product.price}</span>
                                 </div>
                                 <div class="product-stock">
-                                    <small class="text-muted">Stock: ${product.stock_quantity || 0}</small>
+                                    <small class="text-muted">${admin.i18n.t('stock')}: ${product.stock_quantity || 0}</small>
                                 </div>
                             </div>
                         </div>
@@ -333,7 +333,7 @@
         return html;
     };
 
-    admin.selectSubCategory = function(subcategoryName) {
+    admin.selectSubcategory = function(subcategoryName) {
         console.log(`--- Selecting subcategory: ${subcategoryName} ---`);
         
         if (admin.state.activeSubCategory === subcategoryName) {
@@ -389,7 +389,7 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                 <div class="add-product-card" data-category-id="${activeCategoryId}" data-category-name="${admin.state.activeMainCategory}" data-subcategory-name="${admin.state.activeSubCategory || ''}">
                     <i class="bi bi-plus-circle-fill add-icon"></i>
-                    <div class="add-text">Add new product</div>
+                    <div class="add-text">${admin.i18n.t('add_new_product')}</div>
                 </div>
             </div>
         `;
@@ -418,7 +418,7 @@
                                 <span class="product-price">$${product.price}</span>
                             </div>
                             <div class="product-stock">
-                                <small class="text-muted">Stock: ${product.stock_quantity || 0}</small>
+                                <small class="text-muted">${admin.i18n.t('stock')}: ${product.stock_quantity || 0}</small>
                             </div>
                         </div>
                     </div>
@@ -433,18 +433,18 @@
 
     admin.populateCategoryDropdowns = function() {
         console.log('--- Populating category dropdowns ---');
-        admin.dom.category.innerHTML = '<option value="">Select...</option>';
+        admin.dom.category.innerHTML = `<option value="">${admin.i18n.t('select')}</option>`;
         admin.state.allCategories.forEach(cat => {
-            if (cat.name === 'Special' || !cat.name) return; // MODIFIED: Skip 'Special' category
+            if (cat.name === admin.i18n.t('special') || !cat.name) return; // MODIFIED: Skip 'Special' category
             const option = document.createElement('option');
             option.value = cat.id; // value باید id باشد
             option.textContent = cat.name.charAt(0).toUpperCase() + cat.name.slice(1);
             admin.dom.category.appendChild(option);
         });
 
-        admin.dom.parentCategory.innerHTML = '<option value="">Select main category...</option>';
+        admin.dom.parentCategory.innerHTML = `<option value="">${admin.i18n.t('select_main_category')}</option>`;
         admin.state.allCategories.forEach(cat => {
-            if (cat.name === 'Special' || !cat.name) return; // MODIFIED: Skip 'Special' category
+            if (cat.name === admin.i18n.t('special') || !cat.name) return; // MODIFIED: Skip 'Special' category
             const option = document.createElement('option');
             option.value = cat.id; // value باید id باشد
             option.textContent = cat.name.charAt(0).toUpperCase() + cat.name.slice(1);
@@ -460,7 +460,7 @@
         const tabButton = document.querySelector(`.main-tab-btn[data-category-name="${categoryName}"]`);
         const tabItem = tabButton ? tabButton.closest('.main-tab-item') : null;
         
-        if (!tabButton || !tabItem) return;
+        if (!tabItem || !tabItem) return;
         
         const currentText = tabButton.textContent.trim();
         
@@ -468,8 +468,8 @@
             <div class="inline-edit-container">
                 <input type="text" class="form-control" value="${currentText}">
                 <div class="tab-actions">
-                    <button class="inline-edit-action-btn save-btn" title="Save"><i class="bi bi-check-lg"></i></button>
-                    <button class="inline-edit-action-btn cancel-btn" title="Cancel"><i class="bi bi-x-lg"></i></button>
+                    <button class="inline-edit-action-btn save-btn" title="${admin.i18n.t('save')}"><i class="bi bi-check-lg"></i></button>
+                    <button class="inline-edit-action-btn cancel-btn" title="${admin.i18n.t('cancel')}"><i class="bi bi-x-lg"></i>
                 </div>
             </div>
         `;
@@ -522,7 +522,7 @@
                 }
                 
                 if (admin.state.subcategoriesByCategory[oldName]) {
-                    // این بخش نیازی به تغییر ندارد چون کلیدها ID هستند
+                    // این بخش نیازی به تغییر ندارد چون کلیدهای ID هستند
                     admin.state.subcategoriesByCategory[newName.trim()] = admin.state.subcategoriesByCategory[oldName];
                     delete admin.state.subcategoriesByCategory[oldName];
                 }
@@ -540,15 +540,15 @@
                     admin.renderContentArea();
                 }
                 
-                admin.showNotification(`Category "${oldName}" renamed to "${newName.trim()}" successfully!`, 'success');
+                admin.showNotification(`${admin.i18n.t('category')}: "${oldName}" ${admin.i18n.t('renamed_to')} "${newName.trim()}" ${admin.i18n.t('successfully')}!`, 'success');
             } else {
                 const errorData = await response.json();
-                admin.showNotification(`Error renaming category: ${errorData.message}`, 'error');
+                admin.showNotification(`${admin.i18n.t('error_renaming_category')}: ${errorData.message}`, 'error');
                 admin.cancelInlineEditCategory(oldName, oldName);
             }
         } catch (error) {
             console.error('Error renaming category:', error);
-            admin.showNotification('Error communicating with server!', 'error');
+            admin.showNotification(admin.i18n.t('error_communicating_with_server'), 'error');
             admin.cancelInlineEditCategory(oldName, oldName);
         }
     };
@@ -563,8 +563,8 @@
         const originalHtml = `
             <button class="main-tab-btn ${admin.state.activeMainCategory === categoryName ? 'active' : ''}" data-category-id="${id}" data-category-name="${categoryName}">${originalText}</button>
             <div class="tab-actions">
-                <button class="edit-tab-btn" data-category-id="${id}" data-category-name="${categoryName}" title="Edit Category"><i class="bi bi-pencil"></i></button>
-                <button class="delete-tab-btn" data-category-id="${id}" data-category-name="${categoryName}" title="Delete Category"><i class="bi bi-trash"></i></button>
+                <button class="edit-tab-btn" data-category-id="${id}" data-category-name="${categoryName}" title="${admin.i18n.t('edit_category')}"><i class="bi bi-pencil"></i></button>
+                <button class="delete-tab-btn" data-category-id="${id}" data-category-name="${categoryName}" title="${admin.i18n.t('delete_category')}"><i class="bi bi-trash"></i>
             </div>
         `;
         
@@ -578,7 +578,7 @@
         const tabButton = document.querySelector(`.sub-tab-btn[data-subcategory-name="${subcategoryName}"]`);
         const tabItem = tabButton ? tabButton.closest('.sub-tab-item') : null;
         
-        if (!tabButton || !tabItem) return;
+        if (!tabItem || !tabItem) return;
         
         const currentText = tabButton.textContent.trim();
         
@@ -586,8 +586,8 @@
             <div class="inline-edit-container">
                 <input type="text" class="form-control" value="${currentText}">
                 <div class="tab-actions">
-                    <button class="inline-edit-action-btn save-btn" title="Save"><i class="bi bi-check-lg"></i></button>
-                    <button class="inline-edit-action-btn cancel-btn" title="Cancel"><i class="bi bi-x-lg"></i></button>
+                    <button class="inline-edit-action-btn save-btn" title="${admin.i18n.t('save')}"><i class="bi bi-check-lg"></i></button>
+                    <button class="inline-edit-action-btn cancel-btn" title="${admin.i18n.t('cancel')}"><i class="bi bi-x-lg"></i>
                 </div>
             </div>
         `;
@@ -625,7 +625,7 @@
             const subcategoryObj = subcategories.find(sub => sub.name === oldName);
 
             if (!subcategoryObj || !subcategoryObj.id) {
-                admin.showNotification('Error: Could not find the ID of the subcategory to update.', 'error');
+                admin.showNotification(admin.i18n.t('error_cannot_find_subcategory_id'), 'error');
                 return;
             }
 
@@ -651,6 +651,9 @@
                     admin.state.activeSubCategory = newName.trim();
                 }
                 
+                admin.state.subcategoriesByCategory[parentCategoryObj.id] = subcategories.sort((a, b) => a.name.localeCompare(b.name));
+                admin.state.subcategoriesByCategory[parentCategoryObj.id].sort((a, b) => a.name.localeCompare(b.name));
+                
                 admin.state.products.forEach(product => {
                     if (product.sub_category_name === oldName) {
                         product.sub_category_name = newName.trim();
@@ -658,16 +661,16 @@
                 });
                 
                 admin.renderContentArea();
-                admin.showNotification(`Subcategory "${oldName}" renamed to "${newName.trim()}" successfully!`, 'success');
+                admin.showNotification(`${admin.i18n.t('subcategory')}: "${oldName}" ${admin.i18n.t('renamed_to')} "${newName.trim()}" ${admin.i18n.t('successfully')}!`, 'success');
             } else {
                 const errorData = await response.json();
-                admin.showNotification(`Error renaming subcategory: ${errorData.message}`, 'error');
-                admin.cancelInlineEditSubcategory(oldName, oldName);
+                admin.showNotification(`${admin.i18n.t('error_renaming_subcategory')}: ${errorData.message}`, 'error');
+                admin.cancelInlineEditSubcategory(subcategoryName, oldName);
             }
         } catch (error) {
             console.error('Error renaming subcategory:', error);
-            admin.showNotification('Error communicating with server!', 'error');
-            admin.cancelInlineEditSubcategory(oldName, oldName);
+            admin.showNotification(admin.i18n.t('error_communicating_with_server'), 'error');
+            admin.cancelInlineEditSubcategory(subcategoryName, oldName);
         }
     };
 
@@ -681,8 +684,8 @@
         const originalHtml = `
             <button class="sub-tab-btn ${admin.state.activeSubCategory === subcategoryName ? 'active' : ''}" data-subcategory-id="${id}" data-subcategory-name="${subcategoryName}">${originalText}</button>
             <div class="tab-actions">
-                <button class="edit-tab-btn" data-subcategory-id="${id}" data-subcategory-name="${subcategoryName}" title="Edit Subcategory"><i class="bi bi-pencil"></i></button>
-                <button class="delete-tab-btn" data-subcategory-id="${id}" data-subcategory-name="${subcategoryName}" title="Delete Subcategory"><i class="bi bi-trash"></i></button>
+                <button class="edit-tab-btn" data-subcategory-id="${id}" data-subcategory-name="${subcategoryName}" title="${admin.i18n.t('edit_subcategory')}"><i class="bi bi-pencil"></i></button>
+                <button class="delete-tab-btn" data-subcategory-id="${id}" data-subcategory-name="${subcategoryName}" title="${admin.i18n.t('delete_subcategory')}"><i class="bi bi-trash"></i>
             </div>
         `;
         
@@ -710,7 +713,7 @@
             </div>
             <div class="notification-content">
                 <div class="notification-message">${message}</div>
-                <button class="notification-ok-btn">OK</button>
+                <button class="notification-ok-btn">${admin.i18n.t('ok')}</button>
             </div>
         `;
         
@@ -762,13 +765,13 @@
         if (options.title) {
             confirmModalLabel.textContent = options.title;
         } else {
-            confirmModalLabel.textContent = 'Confirm Action';
+            confirmModalLabel.textContent = admin.i18n.t('confirm_action');
         }
         
         if (options.okText) {
             newConfirmOkBtn.textContent = options.okText;
         } else {
-            newConfirmOkBtn.textContent = 'Delete';
+            newConfirmOkBtn.textContent = admin.i18n.t('delete');
         }
         
         if (options.okClass) {
@@ -801,7 +804,7 @@
 
         admin.state.currentEditingId = null;
         admin.state.currentEditingType = 'category';
-        admin.dom.categoryModalLabel.innerText = 'Add new category';
+        admin.dom.categoryModalLabel.innerText = admin.i18n.t('add_new_category');
         admin.dom.categoryForm.reset();
         admin.dom.categoryType.value = 'category';
         admin.dom.mainCategoryFields.style.display = 'block';
@@ -818,19 +821,17 @@
 
         admin.state.currentEditingId = null;
         admin.state.currentEditingType = 'subcategory';
-        admin.dom.categoryModalLabel.innerText = 'Add new subcategory';
+        admin.dom.categoryModalLabel.innerText = admin.i18n.t('add_new_subcategory');
         admin.dom.categoryForm.reset();
         admin.dom.categoryType.value = 'subcategory';
-        admin.dom.mainCategoryFields.style.display = 'none';
+        
+        const parentCategoryObj = admin.state.allCategories.find(cat => cat.name === parentCategory);
+        if (parentCategoryObj) {
+            admin.dom.parentCategory.value = parentCategoryObj.id;
+        }
+        
         admin.dom.parentCategoryDiv.style.display = 'block';
         admin.populateCategoryDropdowns();
-        
-        if (parentCategory) {
-            const parentCategoryObj = admin.state.allCategories.find(cat => cat.name === parentCategory);
-            if (parentCategoryObj) {
-                admin.dom.parentCategory.value = parentCategoryObj.id;
-            }
-        }
         
         admin.dom.deleteCategoryBtn.style.display = 'none';
         
@@ -844,10 +845,11 @@
 
         admin.state.currentEditingId = categoryName;
         admin.state.currentEditingType = 'category';
-        admin.dom.categoryModalLabel.innerText = 'Edit Category';
+        admin.dom.categoryModalLabel.innerText = admin.i18n.t('edit_category');
         admin.dom.categoryForm.reset();
         admin.dom.categoryName.value = categoryName;
         admin.dom.categoryType.value = 'category';
+        admin.dom.mainCategoryFields.style.display = 'block';
         admin.dom.parentCategoryDiv.style.display = 'none';
         admin.dom.deleteCategoryBtn.style.display = 'block';
         
@@ -861,14 +863,14 @@
 
         admin.state.currentEditingId = subcategoryName;
         admin.state.currentEditingType = 'subcategory';
-        admin.dom.categoryModalLabel.innerText = 'Edit Subcategory';
+        admin.dom.categoryModalLabel.innerText = admin.i18n.t('edit_subcategory');
         admin.dom.categoryForm.reset();
         admin.dom.categoryName.value = subcategoryName;
         admin.dom.categoryType.value = 'subcategory';
         
         const parentCategoryObj = admin.state.allCategories.find(cat => cat.name === parentCategory);
-        if(parentCategoryObj) {
-            admin.dom.parentCategory.value = parentCategoryObj.id;
+        if (parentCategoryObj) {
+            admin.dom.parentCategory.value = parentCategory.id;
         }
 
         admin.dom.parentCategoryDiv.style.display = 'block';
@@ -877,38 +879,38 @@
         const modal = new bootstrap.Modal(admin.dom.categoryModal);
         modal.show();
     };
-    
+
     admin.confirmDeleteCategory = function(categoryName) {
         admin.showConfirmDialog(
-            `Are you sure you want to delete category "${categoryName}"? This will also delete all subcategories and products in this category.`,
+            `${admin.i18n.t('confirm_delete_category')}" "${categoryName}"? ${admin.i18n('delete_category_description')}`,
             () => admin.deleteCategory(categoryName),
-            { title: 'Delete Category', okText: 'Delete', okClass: 'btn-danger' }
+            { title: admin.i18n.t('delete_category'), okText: admin.i18n.t('delete'), okClass: 'btn-danger' }
         );
     };
 
     admin.confirmDeleteSubcategory = function(parentCategory, subcategoryName) {
-        console.log(`--- [DELETE] Confirming delete for subcategory: "${subcategoryName}" in category "${parentCategory}" ---`);
+        console.log(`--- [DELETE] Confirming delete for subcategory: "${subcategoryName}" in category: "${parentCategory}" ---`);
         
         const parentCategoryObj = admin.state.allCategories.find(cat => cat.name === parentCategory);
         if(!parentCategoryObj) {
-            admin.showNotification('Parent category not found!', 'error');
+            admin.showNotification(admin.i18n.t('parent_category_not_found'), 'error');
             return;
         }
         const subcategories = admin.state.subcategoriesByCategory[parentCategoryObj.id] || [];
         const subcategoryToDelete = subcategories.find(sub => sub.name === subcategoryName);
 
         if (!subcategoryToDelete || !subcategoryToDelete.id) {
-            admin.showNotification('Error: Could not find ID of the subcategory to delete.', 'error');
+            admin.showNotification(admin.i18n.t('subcategory_not_found'), 'error');
             console.error(`[DELETE] Subcategory ID not found for: "${subcategoryName}"`);
             return;
         }
 
         admin.showConfirmDialog(
-            `Are you sure you want to delete subcategory "${subcategoryName}"? This will also delete all products in this subcategory.`,
+            `${admin.i18n('confirm_delete_subcategory')}" "${subcategoryName}"? ${admin.i18n('delete_subcategory_description')}`,
             () => {
                 admin.deleteSubcategory(parentCategory, subcategoryToDelete.id);
             },
-            { title: 'Delete Subcategory', okText: 'Delete', okClass: 'btn-danger' }
+            { title: admin.i18n('delete_subcategory'), okText: admin.i18n('delete'), okClass: 'btn-danger' }
         );
     };
 
@@ -920,7 +922,7 @@
         const categoryDescriptionValue = admin.dom.categoryDescription.value.trim();
         
         if (!categoryNameValue) {
-            admin.showNotification('Category name cannot be empty.', 'error');
+            admin.showNotification(admin.i18n('category_name_required'), 'error');
             return;
         }
         
@@ -936,7 +938,7 @@
                 const isDuplicate = existingSubcategories.some(sub => sub.name.toLowerCase() === categoryNameValue.toLowerCase());
                 
                 if (isDuplicate) {
-                    admin.showNotification(`Error: A subcategory with the name "${categoryNameValue}" already exists.`, 'error');
+                    admin.showNotification(admin.i18n('subcategory_already_exists'), 'error');
                     return;
                 }
                 
@@ -948,13 +950,12 @@
             } 
             else if (admin.state.currentEditingId && categoryTypeValue === 'subcategory') {
                 console.log('--- [SAVE CATEGORY] Logic: EDITING EXISTING SUBCATEGORY ---');
-                
                 const parentCategoryObj = admin.state.allCategories.find(cat => cat.id === parentCategoryValue);
                 const subcategories = admin.state.subcategoriesByCategory[parentCategoryValue] || [];
                 const subcategoryObj = subcategories.find(sub => sub.name === admin.state.currentEditingId);
 
                 if (!subcategoryObj || !subcategoryObj.id) {
-                    admin.showNotification('Error: Could not find the ID of the subcategory to update.', 'error');
+                    admin.showNotification(admin.i18n('could_not_find_subcategory_id'), 'error');
                     return;
                 }
 
@@ -963,7 +964,7 @@
                 );
                 
                 if (isDuplicate) {
-                    admin.showNotification(`Error: A subcategory with the name "${categoryNameValue}" already exists.`, 'error');
+                    admin.showNotification(admin.i18n('subcategory_already_exists'), 'error');
                     return;
                 }
 
@@ -972,8 +973,7 @@
                     name: categoryNameValue,
                     parent_category_id: parentCategoryValue
                 };
-            }
-            else {
+            } else {
                 console.log('--- [SAVE CATEGORY] Logic: Creating/Editing MAIN CATEGORY ---');
                 url = admin.state.currentEditingId 
                     ? `${admin.API_URL}/admin/categories/${admin.state.currentEditingId}` 
@@ -997,9 +997,9 @@
             const data = await response.json();
 
             if (response.ok) {
-                const typeText = categoryTypeValue === 'category' ? 'Category' : 'Subcategory';
-                const actionText = admin.state.currentEditingId ? 'updated' : 'added';
-                admin.showNotification(`${typeText} "${categoryNameValue}" has been successfully ${actionText}.`, 'success');
+                const typeText = categoryTypeValue === 'category' ? admin.i18n.t('category') : admin.i18n.t('subcategory');
+                const actionText = admin.state.currentEditingId ? admin.i18n.t('updated') : admin.i18n.t('added');
+                admin.showNotification(`${typeText} "${categoryNameValue}" ${admin.i18n.t('has_been')} ${actionText}.`, 'success');
                 
                 if (!admin.state.currentEditingId && categoryTypeValue === 'subcategory') {
                     if (!admin.state.subcategoriesByCategory[parentCategoryValue]) {
@@ -1009,21 +1009,19 @@
                     admin.state.subcategoriesByCategory[parentCategoryValue].sort((a, b) => a.name.localeCompare(b.name));
                     admin.renderContentArea();
                 } else {
-                    admin.dom.categoryModal.addEventListener('hidden.bs.modal', async function () {
+                    admin.dom.categoryModal.addEventListener('hidden.bs.modal', async () => {
                         await admin.fetchCategoriesAndSubcategories();
                         admin.renderMainTabs();
                         
                         if (!admin.state.currentEditingId && categoryTypeValue === 'category') {
                             admin.selectMainCategory(categoryNameValue);
                         } 
-                        else if (!admin.state.currentEditingId && categoryTypeValue === 'subcategory') {
+                        else if (!admin.state.currentEditingId && categoryType === 'subcategory') {
                             const parentCategoryObj = admin.state.allCategories.find(cat => cat.id === parentCategoryValue);
-                            if(parentCategoryObj) {
+                            if (parentCategoryObj) {
                                 admin.selectMainCategory(parentCategoryObj.name);
                             }
                         }
-                        
-                        if (admin.state.activeMainCategory) admin.renderContentArea();
                         
                         try { 
                             await fetch(`${admin.API_URL}/notify-category-update`, { 
@@ -1046,11 +1044,11 @@
                 }
             } else {
                 console.error(`!!! ERROR ${admin.state.currentEditingId ? 'updating' : 'saving'} ${categoryTypeValue} !!!`, data.message);
-                admin.showNotification(data.message || `Error ${admin.state.currentEditingId ? 'updating' : 'adding'} ${categoryTypeValue}!`, 'error');
+                admin.showNotification(data.message || `Error ${admin.state.currentEditingId ? 'updating' : 'saving'} ${categoryValue}!`, 'error');
             }
         } catch (error) {
             console.error('!!! ERROR in saveCategory !!!', error.message);
-            admin.showNotification('Error communicating with server!', 'error');
+            admin.showNotification(admin.i18n.t('error_communicating_with_server'), 'error');
         }
     };
 
@@ -1065,7 +1063,7 @@
             });
             
             if (response.ok) {
-                admin.showNotification(`Category "${categoryToDelete}" and all its data have been deleted.`, 'success');
+                admin.showNotification(`${admin.i18n.t('category_deleted_and_data_deleted')}`, 'success');
                 
                 const deletedIndex = admin.state.allCategories.findIndex(cat => cat.name === categoryToDelete);
                 admin.state.allCategories = admin.state.allCategories.filter(cat => cat.name !== categoryToDelete);
@@ -1089,22 +1087,22 @@
                 if (categoryToSelect) {
                     admin.selectMainCategory(categoryToSelect);
                 } else if (admin.state.activeMainCategory === null) {
-                    admin.dom.contentArea.innerHTML = '<div class="text-center text-muted p-4">No categories available. Add a new one to get started.</div>';
+                    admin.dom.contentArea.innerHTML = `<div class="text-center text-muted p-4">${admin.i18n('no_categories_available')}</div>`;
                 }
             } else {
                 const errorData = await response.json();
-                admin.showNotification(`Error deleting category: ${errorData.message}`, 'error');
+                admin.showNotification(admin.i18n.t('error_deleting_category'), 'error');
             }
         } catch (error) {
             console.error('!!! ERROR in deleteCategory !!!', error.message);
-            admin.showNotification('Error communicating with server!', 'error');
+            admin.showNotification(admin.i18n.t('error_communicating_with_server'), 'error');
         }
     };
 
     admin.deleteSubcategory = async function(parentCategory, subcategoryId) {
         const parentCategoryObj = admin.state.allCategories.find(cat => cat.name === parentCategory);
         if(!parentCategoryObj) {
-            admin.showNotification('Parent category not found!', 'error');
+            admin.showNotification(admin.i18n.t('parent_category_not_found'), 'error');
             return;
         }
 
@@ -1114,18 +1112,18 @@
             
             if (!subcategoryExists) {
                 console.error(`Subcategory with ID ${subcategoryId} not found in local state`);
-                admin.showNotification(`Subcategory not found in local state. Refreshing data...`, 'warning');
+                admin.showNotification(admin.i18n('subcategory_not_found'), 'warning');
                 await admin.fetchCategoriesAndSubcategories();
                 return;
             }
             
             const response = await fetch(`${admin.API_URL}/admin/subcategories/${subcategoryId}`, { 
-                method: 'DELETE', 
+                method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' }
             });
             
             if (response.ok) {
-                admin.showNotification(`Subcategory has been successfully deleted.`, 'success');
+                admin.showNotification(admin.i18n('subcategory_deleted_successfully'), 'success');
                 
                 admin.state.subcategoriesByCategory[parentCategoryObj.id] = subcategories.filter(sub => sub.id !== subcategoryId);
                 admin.state.products = admin.state.products.filter(p => p.sub_category_id !== subcategoryId);
@@ -1138,7 +1136,7 @@
                 
             } else {
                 const errorData = await response.json();
-                admin.showNotification(`Error deleting subcategory: ${errorData.message}`, 'error');
+                admin.showNotification(admin.i18n('error_deleting_subcategory'), 'error');
                 
                 if (response.status === 404) {
                     console.log('Subcategory not found on server. Refreshing data...');
@@ -1147,7 +1145,7 @@
             }
         } catch (error) {
             console.error('!!! ERROR in deleteSubcategory !!!', error.message);
-            admin.showNotification('Error communicating with server!', 'error');
+            admin.showNotification(admin.i18n('error_communicating_with_server'), 'error');
         }
     };
 

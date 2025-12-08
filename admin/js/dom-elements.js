@@ -1,5 +1,5 @@
 /**
- * Simoon Cafe Admin Panel - DOM Elements
+ * Simoon Cafe Admin Panel - DOM Elements (Final Version)
  */
 (function(admin) {
     'use strict';
@@ -18,8 +18,13 @@
     // Sections
     admin.dom.categoriesSection = document.getElementById('categories-section');
     admin.dom.inventorySection = document.getElementById('inventory-section');
+    
+    // --- NEW: Orders & Settings Sections ---
+    admin.dom.ordersSection = document.getElementById('orders-section');
+    admin.dom.settingsSection = document.getElementById('settings-section');
+    // --- End NEW ---
 
-    // --- NEW: Products Table Elements ---
+    // --- Products Table Elements (unchanged) ---
     admin.dom.productsTableContainer = document.getElementById('products-table-container');
     admin.dom.productsTable = document.getElementById('products-table');
     admin.dom.productsTableBody = document.getElementById('products-table-body');
@@ -44,9 +49,45 @@
     admin.dom.bulkStockStatus = document.getElementById('bulk-stock-status');
     admin.dom.saveBulkEditBtn = document.getElementById('saveBulkEditBtn');
 
+    // --- NEW: Orders Section Elements ---
+    admin.dom.ordersTabsRibbon = document.getElementById('ordersTabsRibbon');
+    admin.dom.ordersContentArea = document.getElementById('ordersContentArea');
+    admin.dom.orderSearchInput = document.getElementById('order-search-input');
+    admin.dom.clearOrderSearchBtn = document.getElementById('clear-order-search-btn');
+    admin.dom.exportOrdersBtn = document.getElementById('export-orders-btn');
+    // --- End NEW ---
+
+    // --- NEW: Settings Section Elements ---
+    admin.dom.settingsNavLinks = document.querySelectorAll('.settings-nav-link');
+    admin.dom.settingsContents = document.querySelectorAll('.settings-content');
+    admin.dom.generalSettingsForm = document.getElementById('general-settings-form');
+    admin.dom.paymentSettingsForm = document.getElementById('payment-settings-form');
+    admin.dom.notificationsSettingsForm = document.getElementById('notifications-settings-form');
+    admin.dom.enableStripeCheckbox = document.getElementById('enable-stripe');
+    admin.dom.stripeSettingsDiv = document.getElementById('stripe-settings');
+    admin.dom.usersTableBody = document.getElementById('users-table-body');
+    admin.dom.addUserBtn = document.getElementById('add-user-btn');
+    // --- End NEW ---
+
     // Modal Elements
     admin.dom.categoryModal = document.getElementById('categoryModal');
     admin.dom.productModal = document.getElementById('productModal');
+    admin.dom.confirmModal = document.getElementById('confirmModal');
+    admin.dom.bulkEditModal = document.getElementById('bulkEditModal');
+    admin.dom.stockUpdateModal = document.getElementById('stockUpdateModal');
+    admin.dom.addIngredientModal = document.getElementById('addIngredientModal');
+    admin.dom.specialSlideModal = document.getElementById('specialSlideModal');
+
+    // --- NEW: Orders & Settings Modals ---
+    admin.dom.orderDetailsModal = document.getElementById('orderDetailsModal');
+    admin.dom.orderDetailsModalBody = document.getElementById('orderDetailsModalBody');
+    admin.dom.updateOrderStatusBtn = document.getElementById('updateOrderStatusBtn');
+    // Note: userSettingsModal is used to avoid ID conflict
+    admin.dom.userSettingsModal = document.getElementById('userSettingsModal');
+    admin.dom.userSettingsForm = document.getElementById('userSettingsForm');
+    // --- End NEW ---
+
+    // --- Modal Forms (Updated with new IDs) ---
     admin.dom.categoryForm = document.getElementById('categoryForm');
     admin.dom.productForm = document.getElementById('productForm');
     admin.dom.ingredientsContainer = document.getElementById('ingredientsContainer');
@@ -81,7 +122,6 @@
     admin.dom.description = document.getElementById('description');
 
     // Media Tab
-    admin.dom.imageUpload = document.getElementById('imageUpload');
     admin.dom.image = document.getElementById('image');
     admin.dom.productUploadImageBtn = document.getElementById('productUploadImageBtn');
 

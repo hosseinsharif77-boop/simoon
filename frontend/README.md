@@ -60,17 +60,32 @@ simoon/
 ├── 📁 admin/
 │   ├── 📁 js/
 │   │   ├── 📄 app.js
+│   │   ├── 📄 category-management.js               
+│   │   ├── 📄 config.js
+│   │   ├── 📄 customers-management.js
+│   │   ├── 📄 dashboard-management.js
 │   │   ├── 📄 dom-elements.js
 │   │   ├── 📄 event-handlers.js
-│   │   ├── 📄 utility-functions.js
-│   │   ├── 📄 config.js
+│   │   ├── 📄 i18n.js
 │   │   ├── 📄 inventory-management.js
-│   │   ├── 📄 category-management.js               
-│   │   └── 📄 product-management.js              
+│   │   ├── 📄 modal.js 
+│   │   ├── 📄 orders-management.js
+│   │   ├── 📄 product-management.js  
+│   │   ├── 📄 products-table-management.js 
+│   │   ├── 📄 reports-management.js
+│   │   ├── 📄 settings-management.js   
+│   │   ├── 📄 special-carousel-management.js 
+│   │   ├── 📄 staff-management.js
+│   │   └── 📄 utility-functions.js
+│   │       
 │   │
+│   ├── 📁 translations
+│   │        ├── fa.json
+│   │        ├── en.json
+│   │        └── ar.json
 │   │
 │   ├── 📄 styles.css          
-│   └── 📄 Index.html   
+│   └── 📄 Index.html
 │ 
 ├── 📁 backend/                   # اپلیکیشن بک‌اند (Node.js API)
 │   ├── 📄 db.js                  # منطق اتصال به پایگاه داده با استفاده از کتابخانه 'pg'

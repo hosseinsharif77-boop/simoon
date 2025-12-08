@@ -1,5 +1,5 @@
 /**
- * Simoon Cafe Admin Panel - Inventory Management (Redesigned)
+ * Simoon Cafe Admin Panel - Inventory Management (Redesigned with i18n)
  */
 // js/inventory-management.js
 (function(admin) {
@@ -27,13 +27,13 @@
     admin.inventory.api = {
         fetchIngredients: async () => {
             const response = await fetch(`${admin.API_URL}/inventory/ingredients`);
-            if (!response.ok) throw new Error('Failed to fetch ingredients');
+            if (!response.ok) throw new Error(admin.i18n.t('failed_to_fetch_ingredients'));
             return response.json();
         },
 
         fetchLowStockAlerts: async () => {
             const response = await fetch(`${admin.API_URL}/inventory/low-stock-alerts`);
-            if (!response.ok) throw new Error('Failed to fetch low stock alerts');
+            if (!response.ok) throw new Error(admin.i18n.t('failed_to_fetch_low_stock_alerts'));
             return response.json();
         },
 
@@ -45,7 +45,7 @@
             });
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || 'Failed to update stock');
+                throw new Error(errorData.message || admin.i18n.t('failed_to_update_stock'));
             }
             return response.json();
         },
@@ -58,14 +58,14 @@
             });
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || 'Failed to add ingredient');
+                throw new Error(errorData.message || admin.i18n.t('failed_to_add_ingredient'));
             }
             return response.json();
         },
 
         fetchProductStocks: async () => {
             const response = await fetch(`${admin.API_URL}/inventory/product-stock`);
-            if (!response.ok) throw new Error('Failed to fetch product stocks');
+            if (!response.ok) throw new Error(admin.i18n.t('failed_to_fetch_product_stocks'));
             return response.json();
         },
 
@@ -77,7 +77,7 @@
             if (filters.limit) url += `limit=${filters.limit}&`;
             
             const response = await fetch(url);
-            if (!response.ok) throw new Error('Failed to fetch inventory logs');
+            if (!response.ok) throw new Error(admin.i18n.t('failed_to_fetch_inventory_logs'));
             return response.json();
         }
     };
@@ -88,13 +88,21 @@
         document.querySelectorAll('#inventoryTabsRibbon .main-tab-item').forEach(tab => {
             tab.classList.remove('active');
         });
-        document.querySelector(`#inventoryTabsRibbon .main-tab-item[data-section="${section}"]`).classList.add('active');
+        
+        const activeTab = document.querySelector(`#inventoryTabsRibbon .main-tab-item[data-section="${section}"]`);
+        if (activeTab) {
+            activeTab.classList.add('active');
+        }
         
         // Update active content
         document.querySelectorAll('.inventory-content').forEach(content => {
             content.classList.remove('active');
         });
-        document.getElementById(`${section}-content`).classList.add('active');
+        
+        const activeContent = document.getElementById(`${section}-content`);
+        if (activeContent) {
+            activeContent.classList.add('active');
+        }
         
         // Update state
         admin.inventory.state.activeSection = section;
@@ -106,7 +114,7 @@
         if (!container) return;
 
         if (admin.inventory.state.ingredients.length === 0) {
-            container.innerHTML = '<p class="text-muted text-center p-4">هیچ ماده اولیه‌ای یافت نشد.</p>';
+            container.innerHTML = `<p class="text-muted text-center p-4">${admin.i18n.t('no_ingredients_found')}</p>`;
             return;
         }
 
@@ -121,13 +129,13 @@
                 <table class="table table-striped table-hover align-middle inventory-table">
                     <thead class="table-dark">
                         <tr>
-                            <th>نام ماده اولیه</th>
-                            <th>واحد</th>
-                            <th>موجودی فعلی</th>
-                            <th>حداقل موجودی هشدار</th>
-                            <th>وضعیت</th>
-                            <th>محصولات متأثر</th> <!-- ستون جدید -->
-                            <th>عملیات</th>
+                            <th>${admin.i18n.t('ingredient_name')}</th>
+                            <th>${admin.i18n.t('unit')}</th>
+                            <th>${admin.i18n.t('current_stock')}</th>
+                            <th>${admin.i18n.t('min_stock_alert')}</th>
+                            <th>${admin.i18n.t('status')}</th>
+                            <th>${admin.i18n.t('affected_products')}</th>
+                            <th>${admin.i18n.t('actions')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -154,7 +162,7 @@
                             });
 
                             const affectedProductsText = affectedProducts.length > 0 
-                                ? `${affectedProducts.length} محصول (${totalUnproducible} ناموجود)` 
+                                ? `${affectedProducts.length} ${admin.i18n.t('products')} (${totalUnproducible} ${admin.i18n.t('unavailable')})` 
                                 : '-';
                                 
                             return `
@@ -176,16 +184,16 @@
                                     </td>
                                     <td class="text-center">
                                         ${totalUnproducible > 0 
-                                            ? `<span class="badge bg-danger">${totalUnproducible} محصول ناموجود</span>` 
+                                            ? `<span class="badge bg-danger">${totalUnproducible} ${admin.i18n.t('unavailable_products')}</span>` 
                                             : affectedProductsText
                                         }
                                     </td>
                                     <td>
                                         <div class="btn-group" role="group">
-                                            <button class="btn btn-sm btn-success stock-in-btn" data-id="${ing.id}" data-name="${ing.name}" title="ورود موجودی">
+                                            <button class="btn btn-sm btn-success stock-in-btn" data-id="${ing.id}" data-name="${ing.name}" title="${admin.i18n.t('stock_in')}">
                                                 <i class="bi bi-plus-circle"></i>
                                             </button>
-                                            <button class="btn btn-sm btn-danger stock-out-btn" data-id="${ing.id}" data-name="${ing.name}" title="خروج موجودی">
+                                            <button class="btn btn-sm btn-danger stock-out-btn" data-id="${ing.id}" data-name="${ing.name}" title="${admin.i18n.t('stock_out')}">
                                                 <i class="bi bi-dash-circle"></i>
                                             </button>
                                         </div>
@@ -211,7 +219,7 @@
         const alerts = admin.inventory.state.lowStockAlerts;
 
         if (alerts.length === 0) {
-            container.innerHTML = '<p class="text-muted text-center p-4">No ingredients with low stock found. <i class="bi bi-check-circle-fill text-success"></i></p>';
+            container.innerHTML = `<p class="text-muted text-center p-4">${admin.i18n.t('no_low_stock_alerts')} <i class="bi bi-check-circle-fill text-success"></i></p>`;
             return;
         }
 
@@ -220,11 +228,11 @@
                 <table class="table table-striped table-hover align-middle inventory-table">
                     <thead class="table-dark">
                         <tr>
-                            <th>Ingredient Name</th>
-                            <th>Current Stock</th>
-                            <th>Min. Allowed</th>
-                            <th>Shortage</th>
-                            <th>Actions</th>
+                            <th>${admin.i18n.t('ingredient_name')}</th>
+                            <th>${admin.i18n.t('current_stock')}</th>
+                            <th>${admin.i18n.t('min_allowed')}</th>
+                            <th>${admin.i18n.t('shortage')}</th>
+                            <th>${admin.i18n.t('actions')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -237,8 +245,8 @@
                                     <td>${alert.min_stock_alert} ${alert.unit}</td>
                                     <td class="text-danger fw-bold">${shortage} ${alert.unit}</td>
                                     <td>
-                                        <button class="btn btn-sm btn-success stock-in-btn" data-id="${alert.id}" data-name="${alert.name}" title="Restock">
-                                            <i class="bi bi-plus-circle"></i> Restock
+                                        <button class="btn btn-sm btn-success stock-in-btn" data-id="${alert.id}" data-name="${alert.name}" title="${admin.i18n.t('restock')}">
+                                            <i class="bi bi-plus-circle"></i> ${admin.i18n.t('restock')}
                                         </button>
                                     </td>
                                 </tr>
@@ -260,7 +268,7 @@
         if (!container) return;
 
         if (admin.inventory.state.productStocks.length === 0) {
-            container.innerHTML = '<p class="text-muted text-center p-4">No products found for stock calculation.</p>';
+            container.innerHTML = `<p class="text-muted text-center p-4">${admin.i18n.t('no_products_for_stock_calculation')}</p>`;
             return;
         }
 
@@ -269,10 +277,10 @@
                 <table class="table table-striped table-hover align-middle inventory-table">
                     <thead class="table-dark">
                         <tr>
-                            <th>Product Name</th>
-                            <th>Category</th>
-                            <th>Max Producible</th>
-                            <th>Production Status</th>
+                            <th>${admin.i18n.t('product_name')}</th>
+                            <th>${admin.i18n.t('category')}</th>
+                            <th>${admin.i18n.t('max_producible')}</th>
+                            <th>${admin.i18n.t('production_status')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -280,13 +288,13 @@
                             const canProduce = product.producible_quantity > 0;
                             const statusClass = canProduce ? 'success' : 'danger';
                             const statusIcon = canProduce ? 'bi-check-circle-fill' : 'bi-x-circle-fill';
-                            const statusText = canProduce ? 'Producible' : 'Insufficient Stock';
+                            const statusText = canProduce ? admin.i18n.t('producible') : admin.i18n.t('insufficient_stock');
                             
                             return `
                                 <tr>
                                     <td><strong>${product.product_name}</strong></td>
                                     <td>${product.category || '-'}</td>
-                                    <td>${product.producible_quantity} units</td>
+                                    <td>${product.producible_quantity} ${admin.i18n.t('units')}</td>
                                     <td class="text-${statusClass}">
                                         <i class="bi ${statusIcon}"></i> ${statusText}
                                     </td>
@@ -305,7 +313,7 @@
         if (!container) return;
 
         if (admin.inventory.state.inventoryLogs.length === 0) {
-            container.innerHTML = '<p class="text-muted text-center p-4">No operation logs found.</p>';
+            container.innerHTML = `<p class="text-muted text-center p-4">${admin.i18n.t('no_operation_logs')}</p>`;
             return;
         }
 
@@ -314,12 +322,12 @@
                 <table class="table table-striped table-hover align-middle inventory-table">
                     <thead class="table-dark">
                         <tr>
-                            <th>Date & Time</th>
-                            <th>Ingredient</th>
-                            <th>Related Product</th>
-                            <th>Operation Type</th>
-                            <th>Quantity Change</th>
-                            <th>Reason</th>
+                            <th>${admin.i18n.t('date_time')}</th>
+                            <th>${admin.i18n.t('ingredient')}</th>
+                            <th>${admin.i18n.t('related_product')}</th>
+                            <th>${admin.i18n.t('operation_type')}</th>
+                            <th>${admin.i18n.t('quantity_change')}</th>
+                            <th>${admin.i18n.t('reason')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -328,8 +336,8 @@
                                               log.change_type === 'manual_out' ? 'danger' : 'primary';
                             const typeIcon = log.change_type === 'manual_in' ? 'bi-box-arrow-in-down' : 
                                              log.change_type === 'manual_out' ? 'bi-box-arrow-up' : 'bi-cart-check';
-                            const typeText = log.change_type === 'manual_in' ? 'Manual In' : 
-                                            log.change_type === 'manual_out' ? 'Manual Out' : 'Sale';
+                            const typeText = log.change_type === 'manual_in' ? admin.i18n.t('manual_in') : 
+                                            log.change_type === 'manual_out' ? admin.i18n.t('manual_out') : admin.i18n.t('sale');
                             
                             return `
                                 <tr>
@@ -354,12 +362,12 @@
     // --- Chart Functions ---
     admin.inventory.initCharts = () => {
         // Initialize charts here if needed
-        console.log("Charts can be initialized here with a library like Chart.js");
+        console.log(admin.i18n.t('charts_can_be_initialized'));
     };
 
     admin.inventory.updateCharts = () => {
         // Update charts with new data here
-        console.log("Charts can be updated here with new data.");
+        console.log(admin.i18n.t('charts_can_be_updated'));
     };
 
     // --- Event Handlers ---
@@ -376,7 +384,7 @@
         document.getElementById('stockReason').value = '';
 
         const modalTitle = document.getElementById('stockUpdateModalLabel');
-        modalTitle.textContent = `${type === 'in' ? 'Stock In' : 'Stock Out'}: ${ingredientName}`;
+        modalTitle.textContent = `${type === 'in' ? admin.i18n.t('stock_in') : admin.i18n.t('stock_out')}: ${ingredientName}`;
 
         const modal = new bootstrap.Modal(document.getElementById('stockUpdateModal'));
         modal.show();
@@ -387,7 +395,7 @@
         const submitBtn = document.getElementById('confirmStockUpdateBtn');
         const originalText = submitBtn.innerHTML;
         submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Saving...';
+        submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status"></span>${admin.i18n.t('saving')}...`;
 
         try {
             const ingredientId = document.getElementById('stockIngredientId').value;
@@ -396,7 +404,7 @@
             const reason = document.getElementById('stockReason').value;
 
             if (!quantity || quantity <= 0) {
-                throw new Error("Invalid quantity entered.");
+                throw new Error(admin.i18n.t('invalid_quantity'));
             }
 
             const quantityChange = type === 'in' ? quantity : -quantity;
@@ -406,8 +414,8 @@
             await admin.inventory.loadDataAndRender();
 
         } catch (error) {
-            console.error('Error updating stock:', error);
-            alert(`Error: ${error.message}`);
+            console.error(admin.i18n.t('error_updating_stock'), error);
+            alert(`${admin.i18n.t('error')}: ${error.message}`);
         } finally {
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalText;
@@ -415,7 +423,7 @@
     };
 
     admin.inventory.handleAddIngredientClick = function() {
-        console.log('Opening add ingredient modal');
+        console.log(admin.i18n.t('opening_add_ingredient_modal'));
         
         try {
             // ایجاد یا دریافت مدیر مودال
@@ -431,10 +439,10 @@
             // نمایش مودال
             admin.inventory.addIngredientModalManager.show();
             
-            console.log('Add ingredient modal opened successfully');
+            console.log(admin.i18n.t('add_ingredient_modal_opened_successfully'));
         } catch (error) {
-            console.error('Error opening add ingredient modal:', error);
-            admin.showNotification('Error opening add ingredient modal', 'error');
+            console.error(admin.i18n.t('error_opening_add_ingredient_modal'), error);
+            admin.showNotification(admin.i18n.t('error_opening_add_ingredient_modal'), 'error');
         }
     };
 
@@ -443,14 +451,14 @@
         
         try {
             if (!admin.inventory.addIngredientModalManager) {
-                console.error('Add ingredient modal manager not initialized');
+                console.error(admin.i18n.t('add_ingredient_modal_manager_not_initialized'));
                 return;
             }
             
             const submitBtn = admin.dom.confirmAddIngredientBtn;
             const originalText = submitBtn.innerHTML;
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Adding...';
+            submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status"></span>${admin.i18n.t('adding')}...`;
 
             const name = document.getElementById('newIngredientName').value;
             const unit = document.getElementById('newIngredientUnit').value;
@@ -458,7 +466,7 @@
             const min_stock_alert = parseFloat(document.getElementById('newIngredientMinStock').value);
 
             if (!name) {
-                admin.showNotification('Ingredient name is required', 'error');
+                admin.showNotification(admin.i18n.t('ingredient_name_required'), 'error');
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalText;
                 return;
@@ -466,7 +474,7 @@
 
             await admin.inventory.api.addIngredient(name, unit, stock_quantity, min_stock_alert);
 
-            admin.showNotification('Ingredient added successfully!', 'success');
+            admin.showNotification(admin.i18n.t('ingredient_added_successfully'), 'success');
             
             admin.inventory.addIngredientModalManager.hide();
             
@@ -475,8 +483,8 @@
                 await admin.inventory.loadDataAndRender();
             }
         } catch (error) {
-            console.error('Error adding ingredient:', error);
-            admin.showNotification(`Error: ${error.message}`, 'error');
+            console.error(admin.i18n.t('error_adding_ingredient'), error);
+            admin.showNotification(`${admin.i18n.t('error')}: ${error.message}`, 'error');
         } finally {
             if (admin.dom.confirmAddIngredientBtn) {
                 submitBtn.disabled = false;
@@ -535,15 +543,15 @@
             admin.inventory.updateCharts();
 
         } catch (error) {
-            console.error('Error loading inventory data:', error);
-            const errorMsg = `<p class="text-danger text-center p-4">Error loading data: ${error.message}</p>`;
+            console.error(admin.i18n.t('error_loading_inventory_data'), error);
+            const errorMsg = `<p class="text-danger text-center p-4">${admin.i18n.t('error_loading_data')}: ${error.message}</p>`;
             document.getElementById('ingredients-table-container').innerHTML = errorMsg;
         }
     };
 
     // --- Initialization ---
     admin.inventory.init = () => {
-        console.log('Inventory section initialized.');
+        console.log(admin.i18n.t('inventory_section_initialized'));
 
         // Set up navigation event listeners
         document.querySelectorAll('#inventoryTabsRibbon .main-tab-item').forEach(tab => {
@@ -568,12 +576,12 @@
     };
     
     admin.inventory.cleanup = () => {
-        console.log('Inventory section cleaned up.');
+        console.log(admin.i18n.t('inventory_section_cleaned_up'));
     };
 
     admin.inventory.createModalManager = function(elementId, options = {}) {
         if (!admin.ModalManager) {
-            console.error('ModalManager class not found. Make sure modal.js is loaded before inventory-management.js');
+            console.error(admin.i18n.t('modal_manager_class_not_found'));
             return null;
         }
         

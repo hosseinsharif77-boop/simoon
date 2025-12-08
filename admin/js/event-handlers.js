@@ -59,7 +59,7 @@
         // --- رویدادهای مربوط به بخش Inventory ---
         if (admin.dom.addInventoryIngredientBtn) {
             admin.dom.addInventoryIngredientBtn.addEventListener('click', admin.inventory.handleAddIngredientClick);
-            console.log('Add Ingredient button clicked in Inventory modal');
+            console.log('Add Ingredient button clicked in Inventory section');
         }
         
         // --- EVENT LISTENERS FOR IMAGE UPLOAD ---
@@ -115,37 +115,93 @@
             admin.dom.confirmAddIngredientBtn.addEventListener('click', admin.inventory.handleAddIngredientFormSubmit);
         }
         
-        // مدیریت کلیک روی لینک‌های ناوبری دسکتاپ و موبایل
+        // --- مدیریت کلیک روی لینک‌های ناوبری دسکتاپ و موبایل ---
         const handleNavigationClick = function(event) {
-            admin.dom.navLinks.forEach(link => link.classList.remove('active'));
-            admin.dom.mobileNavItems.forEach(item => item.classList.remove('active'));
-
+            // Remove active class from all links
+            document.querySelectorAll('.nav-link, .mobile-bottom-nav-item').forEach(link => link.classList.remove('active'));
+            
+            // Add active class to clicked element
             const clickedElement = event.currentTarget;
             clickedElement.classList.add('active');
 
             const section = clickedElement.dataset.section;
-            document.querySelector(`.mobile-bottom-nav-item[data-section="${section}"]`)?.classList.add('active');
-            document.querySelector(`.nav-link[data-section="${section}"]`)?.classList.add('active');
-
-            if (section === 'categories') {
-                admin.showSection('categories');
-                admin.updateSectionTitle('Manage Categories & Products');
-            } else if (section === 'inventory') {
-                admin.showSection('inventory');
-                admin.updateSectionTitle('Inventory Management');
-                if (typeof admin.inventory.init === 'function') {
-                    admin.inventory.init();
-                }
-            }
+            admin.showSection(section);
         };
 
-        admin.dom.navLinks.forEach(link => {
+        // Attach to desktop and mobile nav links
+        document.querySelectorAll('.nav-link[data-section]').forEach(link => {
             link.addEventListener('click', handleNavigationClick);
         });
 
-        admin.dom.mobileNavItems.forEach(item => {
+        document.querySelectorAll('.mobile-bottom-nav-item[data-section]').forEach(item => {
             item.addEventListener('click', handleNavigationClick);
         });
+
+        // --- NEW: Orders Section Event Listeners ---
+        if (admin.dom.ordersTabsRibbon) {
+            admin.dom.ordersTabsRibbon.addEventListener('click', (e) => {
+                const tabItem = e.target.closest('.main-tab-item');
+                if (!tabItem) return;
+
+                document.querySelectorAll('#ordersTabsRibbon .main-tab-item').forEach(item => item.classList.remove('active'));
+                tabItem.classList.add('active');
+
+                // This function should be defined in orders-management.js
+                if (typeof admin.orders.renderOrders === 'function') {
+                    admin.orders.renderOrders(tabItem.dataset.ordersTab);
+                }
+            });
+        }
+
+        if (admin.dom.orderSearchInput) {
+            admin.dom.orderSearchInput.addEventListener('input', (e) => {
+                if (typeof admin.orders.filterOrders === 'function') {
+                    admin.orders.filterOrders(e.target.value);
+                }
+            });
+        }
+
+        if (admin.dom.clearOrderSearchBtn) {
+            admin.dom.clearOrderSearchBtn.addEventListener('click', () => {
+                admin.dom.orderSearchInput.value = '';
+                if (typeof admin.orders.filterOrders === 'function') {
+                    admin.orders.filterOrders('');
+                }
+            });
+        }
+
+        if (admin.dom.updateOrderStatusBtn) {
+            admin.dom.updateOrderStatusBtn.addEventListener('click', () => {
+                if (typeof admin.orders.updateOrderStatus === 'function') {
+                    admin.orders.updateOrderStatus();
+                }
+            });
+        }
+        // --- End Orders ---
+
+        // --- NEW: Settings Section Event Listeners ---
+        if (admin.dom.settingsNavLinks) {
+            admin.dom.settingsNavLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const tabName = link.dataset.settingsTab;
+                    
+                    // This function should be defined in settings-management.js
+                    if (typeof admin.settings.showSettingsTab === 'function') {
+                        admin.settings.showSettingsTab(tabName);
+                    }
+                });
+            });
+        }
+
+        if (admin.dom.addUserBtn) {
+            admin.dom.addUserBtn.addEventListener('click', () => {
+                if (typeof admin.settings.openUserModal === 'function') {
+                    admin.settings.openUserModal(); // For adding a new user
+                }
+            });
+        }
+        // --- End Settings ---
 
         console.log('EVENT-HANDLERS: Event listeners setup complete.');
     };

@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">پنل آشپزخانه - Simoon Cafe</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- Custom CSS -->
+    <style>
+        /* ================================= GLOBAL STYLES ================================= */
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #1a1a1a; 
+            color: #f0f0f0; 
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            transition: direction 0.3s ease;
+        }
+
+        /* Language Selector */
+        .language-selector {
+            position: fixed;
+            top: 75px;
+            left: 20px;
+            z-index: 50;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .lang-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid #374151;
+            background-color: #1f2937;
+            color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        .lang-btn:hover {
+            background-color: #374151;
+            transform: scale(1.1);
+        }
+        
+        .lang-btn.active {
+            background-color: #fbbf24;
+            color: #1a1a1a;
+            border-color: #fbbf24;
+        }
+
+        /* Custom Scrollbar Styles */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #1f2937; }
+        ::-webkit-scrollbar-thumb { background-color: #4b5563; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background-color: #6b7280; }
+
+        /* ================================= HEADER & NAVIGATION ================================= */
+        .kds-header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 40;
+            background: linear-gradient(to bottom, rgba(26, 26, 26, 0.98), rgba(26, 26, 26, 0.95));
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(55, 65, 81, 0.3);
+            padding: 8px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .kds-main {
+            padding-top: 75px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+        .kds-header-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 20px;
+            position: relative;
+        }
+        .kds-title {
+            position: absolute;
+            right: 20px;
+            color: #fbbf24;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
+        }
+        .kds-clock {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #f0f0f0;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        /* ================================= DESKTOP LAYOUT ================================= */
+        .kds-top-row {
+            display: flex;
+            gap: 15px;
+            padding: 0 20px;
+            margin-bottom: 15px;
+        }
+        .kds-workflow-container {
+            display: flex;
+            gap: 15px;
+            padding: 0 20px;
+            flex-grow: 1;
+            overflow: hidden;
+            padding-bottom: 20px;
+            min-height: 0;
+        }
+        .kds-column {
+            flex: 1;
+            height: 100%;
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            min-height: 0;
+        }
+        .kds-column-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #374151;
+            flex-shrink: 0;
+        }
+        .kds-column-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fbbf24;
+        }
+        .kds-orders-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-right: 5px;
+            min-height: 0;
+        }
+
+        /* ================================= TAB CONTENT (Mobile) ================================= */
+        .kds-tab-content {
+            display: none;
+            flex-direction: column;
+            flex-grow: 1;
+            padding: 0 20px 20px 20px;
+            min-height: 0;
+        }
+        .kds-tab-content.active {
+            display: flex;
+        }
+
+        /* ================================= TOP ROW STATS CARDS ================================= */
+        .stats-card {
+            background: linear-gradient(145deg, #1f2937, #253241);
+            border: 1px solid #374151;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            flex: 1;
+        }
+        .stats-card h3 {
+            color: #9ca3af;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 0 0 10px 0;
+        }
+        .stats-card .stats-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #f0f0f0;
+            line-height: 1;
+        }
+        .stats-card.primary .stats-number { color: #fbbf24; }
+        .stats-card.info .stats-number { color: #14b8a6; }
+        
+        /* ================================= PREP STATION CARD ================================= */
+        .prep-station-card {
+            background: linear-gradient(145deg, #1f2937, #253241);
+            border: 1px solid #374151;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            flex: 2;
+        }
+        .kds-prep-items-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .kds-prep-item {
+            background-color: rgba(55, 65, 81, 0.5);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .kds-prep-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .kds-prep-item-name {
+            font-size: 0.8rem;
+            color: #9ca3af;
+        }
+        .kds-prep-item-quantity {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fbbf24;
+        }
+        .kds-prep-item-icon {
+            color: #6b7280;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            position: relative;
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+        }
+        .kds-prep-item-icon::before {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: #6b7280;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
+        }
+        .kds-prep-item-icon i {
+            position: relative;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .kds-prep-item.expanded .kds-prep-item-icon::before {
+            width: 0;
+            height: 0;
+            border-radius: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 12px solid #6b7280;
+            background-color: transparent;
+        }
+        .kds-prep-item.expanded .kds-prep-item-icon i {
+            opacity: 1;
+        }
+        .kds-prep-item-orders {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+            background-color: rgba(31, 41, 55, 0.3);
+        }
+        .kds-prep-item.expanded .kds-prep-item-orders {
+            max-height: 500px;
+            transition: max-height 0.5s ease-in;
+        }
+        .kds-prep-item-order {
+            padding: 8px 15px;
+            font-size: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(55, 65, 81, 0.2);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .kds-prep-item-order:hover {
+            background-color: rgba(55, 65, 81, 0.6);
+        }
+        .kds-prep-item-order:last-child {
+            border-bottom: none;
+        }
+        .kds-prep-item-order-info {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .kds-prep-item-order-id {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+        .kds-prep-item-order-table {
+            color: #9ca3af;
+        }
+        .kds-prep-item-order-quantity {
+            background-color: #374151;
+            color: #f0f0f0;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+        }
+        .kds-prep-item-order-status {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+        .status-new {
+            background-color: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
+        .status-in-progress {
+            background-color: rgba(20, 184, 166, 0.2);
+            color: #14b8a6;
+        }
+
+        /* ================================= ORDER TICKET STYLES ================================= */
+        .order-ticket {
+            background: linear-gradient(145deg, #1f2937, #253241);
+            border: 1px solid #374151;
+            border-radius: 12px;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .order-ticket:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        .order-ticket.priority-high {
+            border-color: #dc2626;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+        }
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .order-id {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fbbf24;
+        }
+        .order-ticket.priority-high .order-id { color: #ef4444; }
+        .order-table {
+            font-size: 0.8rem;
+            color: #9ca3af;
+        }
+        .order-timer {
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 12px;
+            background-color: #374151;
+            color: #f0f0f0;
+        }
+        .order-timer.urgent {
+            background-color: #ef4444;
+            color: #f0f0f0;
+        }
+        .order-items {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .order-item {
+            display: flex;
+            flex-direction: column;
+            padding: 5px 0;
+            border-bottom: 1px solid #374151;
+        }
+        .order-item:last-child { border-bottom: none; }
+        .order-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .order-item-name {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .order-item-quantity {
+            background-color: #374151;
+            color: #f0f0f0;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+        }
+        .order-item-notes {
+            color: #f59e0b;
+            font-size: 0.7rem;
+            font-style: italic;
+            margin-top: 2px;
+        }
+        .order-actions {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+        }
+        .kds-action-btn {
+            width: 100%;
+            font-weight: 600;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            font-size: 1rem;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+        .kds-action-btn:active {
+            transform: scale(0.98);
+        }
+        .btn-primary { 
+            background-color: #1e3a4f;
+            color: #fbbf24;
+        }
+        .btn-primary:hover { background-color: #2a4a60; }
+        .btn-success { 
+            background-color: #1e3a4f;
+            color: #fbbf24;
+        }
+        .btn-success:hover { background-color: #2a4a60; }
+
+        /* ================================= ANIMATION FOR MOVING ORDER ================================= */
+        .order-ticket.flying {
+            position: fixed;
+            z-index: 1001;
+            pointer-events: none;
+            border-color: #14b8a6;
+            box-shadow: 0 10px 30px rgba(20, 184, 166, 0.6);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* ================================= READY ORDERS TICKET STYLES (Informational) ================================= */
+        .ready-order-ticket { 
+            background: linear-gradient(145deg, #253241, #1f2937); 
+            border: 1px solid #374151; 
+            border-radius: 8px; 
+            padding: 15px; 
+            margin-bottom: 15px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            cursor: default; /* Not clickable */
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .ready-order-info h4 { color: #14b8a6; margin: 0 0 5px 0; font-size: 1rem; font-weight: 600; }
+        .ready-order-info p { color: #9ca3af; margin: 0; font-size: 0.8rem; }
+        .ready-order-meta { font-size: 0.75rem; color: #6b7280; margin-top: 5px; }
+
+        /* ================================= MODAL STYLES ================================= */
+        .prep-order-modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(5px); }
+        .prep-modal-content { background-color: #1f2937; margin: 10% auto; padding: 20px; border: 1px solid #374151; border-radius: 12px; width: 90%; max-width: 500px; box-shadow: 0 8px 25px rgba(0,0,0,0.5); display: flex; flex-direction: column; }
+        .prep-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #374151; }
+        .prep-modal-title { color: #fbbf24; font-size: 1.5rem; font-weight: 700; }
+        .prep-modal-close { color: #9ca3af; font-size: 2rem; font-weight: bold; cursor: pointer; transition: color 0.2s ease; }
+        .prep-modal-close:hover { color: #f0f0f0; }
+        .prep-modal-body { flex-grow: 1; }
+        .prep-modal-order-info h4 { color: #14b8a6; margin: 0 0 15px 0; font-size: 1.2rem; font-weight: 600; text-align: center; }
+        .prep-modal-items-list { list-style: none; padding: 0; margin: 0; }
+        .prep-modal-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(55, 65, 81, 0.3); }
+        .prep-modal-item:last-child { border-bottom: none; }
+        .prep-modal-item-name { font-size: 1rem; font-weight: 500; }
+        .prep-modal-item-quantity { background-color: #374151; color: #f0f0f0; font-weight: 600; padding: 4px 8px; border-radius: 8px; font-size: 0.8rem; }
+        .prep-modal-item-notes { color: #f59e0b; font-size: 0.8rem; font-style: italic; margin-top: 5px; width: 100%; }
+
+        /* ================================= FLOATING ACTION BUTTON ================================= */
+        .floating-action-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background-color: #fbbf24;
+            color: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 999;
+            transition: all 0.3s ease;
+        }
+        .floating-action-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        /* ================================= RESPONSIVE DESIGN ================================= */
+        /* --- Hide mobile elements on desktop --- */
+        @media (min-width: 769px) {
+            .kds-mobile-tab-bar,
+            .kds-tab-content {
+                display: none !important;
+            }
+        }
+
+        /* --- Mobile Styles --- */
+        @media (max-width: 768px) {
+            /* --- Hide FAB on mobile --- */
+            .floating-action-btn {
+                display: none;
+            }
+
+            /* --- Show Mobile Tab Bar, Hide Desktop Layout --- */
+            .kds-mobile-tab-bar {
+                display: flex;
+            }
+            .kds-top-row, .kds-workflow-container {
+                display: none;
+            }
+            
+            /* --- Adjust Header for Mobile --- */
+            .kds-main {
+                padding-top: 75px;
+            }
+            .kds-title { font-size: 1.2rem; }
+            .kds-clock { font-size: 1.5rem; }
+
+            /* --- Style Tab Content for Mobile --- */
+            .kds-tab-content {
+                padding: 15px;
+            }
+            .kds-column {
+                padding: 10px;
+                border-radius: 0;
+                border: none;
+                box-shadow: none;
+            }
+            .kds-column-header {
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+            }
+            .kds-column-title {
+                font-size: 1.2rem;
+            }
+            .kds-orders-container {
+                gap: 15px;
+            }
+            
+            /* --- Style Order Tickets for Mobile --- */
+            .order-ticket {
+                padding: 15px;
+            }
+            .order-id { font-size: 1.2rem; }
+            .order-item-name { font-size: 1rem; }
+            .kds-action-btn { padding: 15px; font-size: 1.1rem; }
+
+            /* --- Style Prep Station for Mobile --- */
+            .kds-prep-item-header { padding: 15px; }
+            .kds-prep-item-name { font-size: 1rem; }
+            .kds-prep-item-order { padding: 12px 15px; font-size: 0.8rem; }
+        }
+        
+        /* ================================= MOBILE TAB BAR (SIMPLE STYLE) ================================= */
+        @media (max-width: 768px) {
+            .kds-mobile-tab-bar {
+                display: flex;
+                position: sticky;
+                top: 75px;
+                z-index: 30;
+                background-color: #1f2937;
+                border-bottom: 1px solid #374151;
+                padding: 10px 15px;
+                gap: 10px;
+            }
+            .kds-mobile-tab-item {
+                flex: 1;
+                border: 1px solid #374151;
+                border-radius: 8px;
+                overflow: hidden;
+                transition: all 0.2s ease;
+                background-color: rgba(55, 65, 81, 0.2);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            }
+            .kds-mobile-tab-item:hover {
+                border-color: #4b5563;
+                background-color: rgba(55, 65, 81, 0.4);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            }
+            .kds-mobile-tab-item.active {
+                border-color: #fbbf24;
+                background-color: rgba(251, 191, 36, 0.1);
+                box-shadow: 0 4px 8px rgba(251, 191, 36, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            }
+            .kds-tab-btn {
+                padding: 10px 5px;
+                border: none;
+                background: transparent;
+                color: #f0f0f0;
+                font-size: 0.8rem;
+                font-weight: 500;
+                text-align: center;
+                cursor: pointer;
+                width: 100%;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .kds-mobile-tab-item.active .kds-tab-btn {
+                color: #fbbf24;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- KDS Header -->
+    <header class="kds-header">
+        <div class="kds-header-content">
+            <h1 class="kds-title" data-translate="kitchen-title">آشپزخانه</h1>
+            <div class="kds-clock" id="kds-clock">00:00:00</div>
+        </div>
+    </header>
+
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <button class="lang-btn" data-lang="fa" title="فارسی">فا</button>
+        <button class="lang-btn" data-lang="ar" title="العربية">عر</button>
+        <button class="lang-btn" data-lang="en" title="English">EN</button>
+    </div>
+
+    <!-- Mobile Tab Bar -->
+    <div class="kds-mobile-tab-bar">
+        <div class="kds-mobile-tab-item active" data-tab="new-orders">
+            <button class="kds-tab-btn" data-translate="new-orders">سفارشات جدید</button>
+        </div>
+        <div class="kds-mobile-tab-item" data-tab="in-progress">
+            <button class="kds-tab-btn" data-translate="in-progress">در حال آماده‌سازی</button>
+        </div>
+        <div class="kds-mobile-tab-item" data-tab="prep-station">
+            <button class="kds-tab-btn" data-translate="shared-items">آیتم‌های مشترک</button>
+        </div>
+        <div class="kds-mobile-tab-item" data-tab="ready-orders">
+            <button class="kds-tab-btn" data-translate="ready-for-delivery">آماده برای تحویل</button>
+        </div>
+    </div>
+
+    <!-- KDS Main Content -->
+    <main class="kds-main">
+        <!-- Desktop Top Row for Stats -->
+        <div class="kds-top-row">
+            <div class="stats-card primary">
+                <h3 data-translate="new-orders">سفارشات جدید</h3>
+                <div class="stats-number" id="new-orders-stat">0</div>
+            </div>
+            <div class="stats-card info">
+                <h3 data-translate="in-progress">در حال آماده‌سازی</h3>
+                <div class="stats-number" id="in-progress-stat">0</div>
+            </div>
+        </div>
+
+        <!-- Desktop Workflow Container -->
+        <div class="kds-workflow-container">
+            <!-- New Orders Column -->
+            <div class="kds-column">
+                <div class="kds-column-header">
+                    <h2 class="kds-column-title" data-translate="new-orders">سفارشات جدید</h2>
+                </div>
+                <div class="kds-orders-container" id="new-orders-container">
+                    <!-- سفارشات جدید در اینجا با جاوااسکریپت اضافه می‌شوند -->
+                </div>
+            </div>
+
+            <!-- In Progress Column -->
+            <div class="kds-column">
+                <div class="kds-column-header">
+                    <h2 class="kds-column-title" data-translate="in-progress">در حال آماده‌سازی</h2>
+                </div>
+                <div class="kds-orders-container" id="in-progress-container">
+                    <!-- سفارشات در حال آماده‌سازی در اینجا با جاوااسکریپت اضافه می‌شوند -->
+                </div>
+            </div>
+
+            <!-- Prep Station Column -->
+            <div class="kds-column">
+                <div class="kds-column-header">
+                    <h2 class="kds-column-title" data-translate="shared-items">آیتم‌های مشترک</h2>
+                </div>
+                <div class="kds-orders-container">
+                    <div class="prep-station-card">
+                        <div class="kds-prep-items-container" id="prep-items-container">
+                            <!-- آیتم‌ها در اینجا با جاوااسکریپت رندر می‌شوند -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Tab Content -->
+        <div class="kds-tab-content active" id="tab-new-orders">
+            <div class="kds-column">
+                <div class="kds-column-header">
+                    <h2 class="kds-column-title" data-translate="new-orders">سفارشات جدید</h2>
+                </div>
+                <div class="kds-orders-container" id="new-orders-mobile-container">
+                    <!-- Content will be rendered here -->
+                </div>
+            </div>
+        </div>
+        <div class="kds-tab-content" id="tab-in-progress">
+            <div class="kds-column">
+                <div class="kds-column-header">
+                    <h2 class="kds-column-title" data-translate="in-progress">در حال آماده‌سازی</h2>
+                </div>
+                <div class="kds-orders-container" id="in-progress-mobile-container">
+                    <!-- Content will be rendered here -->
+                </div>
+            </div>
+        </div>
+        <div class="kds-tab-content" id="tab-prep-station">
+            <div class="kds-column">
+                <div class="kds-column-header">
+                    <h2 class="kds-column-title" data-translate="shared-items">آیتم‌های مشترک</h2>
+                </div>
+                <div class="kds-orders-container">
+                    <div class="prep-station-card">
+                        <div class="kds-prep-items-container" id="prep-items-mobile-container">
+                            <!-- Content will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="kds-tab-content" id="tab-ready-orders">
+            <div class="kds-column">
+                <div class="kds-column-header">
+                    <h2 class="kds-column-title" data-translate="ready-for-delivery">آماده برای تحویل</h2>
+                </div>
+                 <div class="kds-orders-container" id="ready-orders-mobile-container">
+                    <!-- Content will be rendered here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Prep Order Details Modal (for Shared Items) -->
+    <div id="prep-order-details-modal" class="prep-order-modal">
+        <div class="prep-modal-content">
+            <div class="prep-modal-header">
+                <h3 class="prep-modal-title" data-translate="order-details">جزئیات سفارش</h3>
+                <span class="prep-modal-close" id="prep-modal-close">&times;</span>
+            </div>
+            <div class="prep-modal-body" id="prep-modal-body">
+                <!-- Order details will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Ready Orders List Modal (for Desktop FAB) -->
+    <div id="ready-orders-list-modal" class="prep-order-modal">
+        <div class="prep-modal-content" style="max-width: 700px;">
+            <div class="prep-modal-header">
+                <h3 class="prep-modal-title" data-translate="orders-ready-for-delivery">سفارشات آماده برای تحویل</h3>
+                <span class="prep-modal-close" id="ready-list-modal-close">&times;</span>
+            </div>
+            <div class="prep-modal-body" id="ready-orders-list-modal-body" style="max-height: 60vh; overflow-y: auto;">
+                <!-- Ready order tickets will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Button (Desktop Only) -->
+    <div class="floating-action-btn" id="floating-action-btn" title="سفارشات آماده">
+        <i class="bi bi-check2-square"></i>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // ================================= TRANSLATIONS =================================
+            const translations = {
+                fa: {
+                    'page-title': 'پنل آشپزخانه - Simoon Cafe',
+                    'kitchen-title': 'آشپزخانه',
+                    'new-orders': 'سفارشات جدید',
+                    'in-progress': 'در حال آماده‌سازی',
+                    'shared-items': 'آیتم‌های مشترک',
+                    'ready-for-delivery': 'آماده برای تحویل',
+                    'order-details': 'جزئیات سفارش',
+                    'orders-ready-for-delivery': 'سفارشات آماده برای تحویل',
+                    'table': 'میز',
+                    'start': 'شروع',
+                    'ready': 'آماده شد',
+                    'order': 'سفارش',
+                    'no-ready-orders': 'هیچ سفارش آماده‌ای وجود ندارد.',
+                    'ready-at': 'آماده شده در',
+                    'without-mushrooms': 'بدون قارچ',
+                    'medium-cooked': 'پخته medium',
+                    'pasta-alfredo': 'پاستا آلفردو',
+                    'pepperoni-pizza': 'پیتزا پپرونی',
+                    'french-fries': 'سیب‌زمینی سرخ‌کرده',
+                    'caesar-salad': 'سالاد سزار',
+                    'classic-burger': 'برگر کلاسیک',
+                    'fish-steak': 'استیک ماهی',
+                    'lasagna': 'لازانیا',
+                    'chicken-sandwich': 'ساندویچ مرغ',
+                    'tomato-soup': 'سوپ گوجه',
+                    'garlic-bread': 'نان سیر',
+                    'other-food': 'نام غذا دیگر'
+                },
+                ar: {
+                    'page-title': 'لوحة المطبخ - Simoon Cafe',
+                    'kitchen-title': 'المطبخ',
+                    'new-orders': 'طلبات جديدة',
+                    'in-progress': 'قيد التحضير',
+                    'shared-items': 'العناصر المشتركة',
+                    'ready-for-delivery': 'جاهز للتسليم',
+                    'order-details': 'تفاصيل الطلب',
+                    'orders-ready-for-delivery': 'الطلبات الجاهزة للتسليم',
+                    'table': 'طاولة',
+                    'start': 'بدء',
+                    'ready': 'جاهز',
+                    'order': 'طلب',
+                    'no-ready-orders': 'لا توجد طلبات جاهزة حالياً.',
+                    'ready-at': 'تم التحضير في',
+                    'without-mushrooms': 'بدون فطر',
+                    'medium-cooked': 'مطهو متوسط',
+                    'pasta-alfredo': 'باستا ألفريدو',
+                    'pepperoni-pizza': 'بيتزا بيبروني',
+                    'french-fries': 'بطاطس مقلية',
+                    'caesar-salad': 'سلطة قيصر',
+                    'classic-burger': 'برجر كلاسيكي',
+                    'fish-steak': 'شريحة سمك',
+                    'lasagna': 'لازانيا',
+                    'chicken-sandwich': 'ساندويتش دجاج',
+                    'tomato-soup': 'شوربة طماطم',
+                    'garlic-bread': 'خبز ثوم',
+                    'other-food': 'طعام آخر'
+                },
+                en: {
+                    'page-title': 'Kitchen Panel - Simoon Cafe',
+                    'kitchen-title': 'Kitchen',
+                    'new-orders': 'New Orders',
+                    'in-progress': 'In Progress',
+                    'shared-items': 'Shared Items',
+                    'ready-for-delivery': 'Ready for Delivery',
+                    'order-details': 'Order Details',
+                    'orders-ready-for-delivery': 'Orders Ready for Delivery',
+                    'table': 'Table',
+                    'start': 'Start',
+                    'ready': 'Ready',
+                    'order': 'Order',
+                    'no-ready-orders': 'No ready orders available.',
+                    'ready-at': 'Ready at',
+                    'without-mushrooms': 'Without mushrooms',
+                    'medium-cooked': 'Medium cooked',
+                    'pasta-alfredo': 'Pasta Alfredo',
+                    'pepperoni-pizza': 'Pepperoni Pizza',
+                    'french-fries': 'French Fries',
+                    'caesar-salad': 'Caesar Salad',
+                    'classic-burger': 'Classic Burger',
+                    'fish-steak': 'Fish Steak',
+                    'lasagna': 'Lasagna',
+                    'chicken-sandwich': 'Chicken Sandwich',
+                    'tomato-soup': 'Tomato Soup',
+                    'garlic-bread': 'Garlic Bread',
+                    'other-food': 'Other Food'
+                }
+            };
+
+            // Current language
+            let currentLang = 'fa';
+
+            // ================================= CLOCK & TIMERS =================================
+            const kdsClock = document.getElementById('kds-clock');
+            function updateClock() {
+                const now = new Date();
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                kdsClock.textContent = `${hours}:${minutes}:${seconds}`;
+            }
+            setInterval(updateClock, 1000); updateClock();
+
+            // ================================= LANGUAGE SWITCHING =================================
+            const langButtons = document.querySelectorAll('.lang-btn');
+            
+            function setLanguage(lang) {
+                currentLang = lang;
+                document.documentElement.lang = lang;
+                document.documentElement.dir = (lang === 'en') ? 'ltr' : 'rtl';
+                
+                // Update page title
+                document.getElementById('page-title').textContent = translations[lang]['page-title'];
+                
+                // Update all elements with data-translate attribute
+                document.querySelectorAll('[data-translate]').forEach(element => {
+                    const key = element.getAttribute('data-translate');
+                    if (translations[lang][key]) {
+                        element.textContent = translations[lang][key];
+                    }
+                });
+                
+                // Update floating button title
+                floatingBtn.title = translations[lang]['orders-ready-for-delivery'];
+                
+                // Update active language button
+                langButtons.forEach(btn => {
+                    btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+                });
+                
+                // Re-render orders with new language
+                renderOrders();
+            }
+            
+            // Add click event to language buttons
+            langButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    setLanguage(button.getAttribute('data-lang'));
+                });
+            });
+
+            // ================================= DATA & STATE =================================
+            let orders = [
+                { id: 1, table: 5, items: [{ nameKey: 'pasta-alfredo', quantity: 2, notesKey: 'without-mushrooms' }], status: 'new', startTime: Date.now() - 5 * 60 * 1000 },
+                { id: 2, table: 3, items: [{ nameKey: 'pepperoni-pizza', quantity: 1 }], status: 'new', startTime: Date.now() - 2 * 60 * 1000 },
+                { id: 3, table: 7, items: [{ nameKey: 'french-fries', quantity: 3 }, { nameKey: 'caesar-salad', quantity: 1 }], status: 'in-progress', startTime: Date.now() - 10 * 60 * 1000 },
+                { id: 4, table: 2, items: [{ nameKey: 'classic-burger', quantity: 2, notesKey: 'medium-cooked' }], status: 'ready', startTime: Date.now() - 20 * 60 * 1000 },
+                { id: 5, table: 1, items: [{ nameKey: 'fish-steak', quantity: 2 }], status: 'new', startTime: Date.now() - 1 * 60 * 1000, priority: 'high' },
+                { id: 6, table: 8, items: [{ nameKey: 'lasagna', quantity: 1 }], status: 'new', startTime: Date.now() - 3 * 60 * 1000 },
+                { id: 7, table: 4, items: [{ nameKey: 'chicken-sandwich', quantity: 2 }], status: 'in-progress', startTime: Date.now() - 7 * 60 * 1000 },
+                { id: 8, table: 9, items: [{ nameKey: 'tomato-soup', quantity: 1 }, { nameKey: 'garlic-bread', quantity: 2 }], status: 'new', startTime: Date.now() - 4 * 60 * 1000 },
+            ];
+
+            // برای حفظ وضعیت باز/بسته آیتم‌ها
+            let expandedItems = new Set();
+
+            // ================================= DOM ELEMENTS =================================
+            // *** اصلاح مهم: این بخش باید قبل از توابعی که از این متغیرها استفاده می‌کنند، تعریف شود. ***
+            const newOrdersContainer = document.getElementById('new-orders-container');
+            const inProgressContainer = document.getElementById('in-progress-container');
+            const prepItemsContainer = document.getElementById('prep-items-container');
+            const newOrdersStat = document.getElementById('new-orders-stat');
+            const inProgressStat = document.getElementById('in-progress-stat');
+
+            // Mobile Containers
+            const newOrdersMobileContainer = document.getElementById('new-orders-mobile-container');
+            const inProgressMobileContainer = document.getElementById('in-progress-mobile-container');
+            const prepItemsMobileContainer = document.getElementById('prep-items-mobile-container');
+            const readyOrdersMobileContainer = document.getElementById('ready-orders-mobile-container');
+            
+            // Tab elements
+            const tabButtons = document.querySelectorAll('.kds-mobile-tab-item');
+            const tabContents = document.querySelectorAll('.kds-tab-content');
+
+            // Modal Elements
+            const prepOrderDetailsModal = document.getElementById('prep-order-details-modal');
+            const prepModalClose = document.getElementById('prep-modal-close');
+            const prepModalBody = document.getElementById('prep-modal-body');
+
+            // Ready Orders List Modal (Desktop)
+            const readyOrdersListModal = document.getElementById('ready-orders-list-modal');
+            const readyListModalClose = document.getElementById('ready-list-modal-close');
+            const readyOrdersListModalBody = document.getElementById('ready-orders-list-modal-body');
+
+            // Floating Button
+            const floatingBtn = document.getElementById('floating-action-btn');
+
+
+            // ================================= RENDER FUNCTIONS =================================
+            function renderOrders() {
+                // Clear all containers
+                newOrdersContainer.innerHTML = ''; inProgressContainer.innerHTML = '';
+                newOrdersMobileContainer.innerHTML = ''; inProgressMobileContainer.innerHTML = '';
+                prepItemsMobileContainer.innerHTML = ''; readyOrdersMobileContainer.innerHTML = '';
+
+                let newCount = 0, inProgressCountValue = 0;
+
+                const sortedOrders = [...orders].sort((a, b) => {
+                    if (a.priority === 'high' && b.priority !== 'high') return -1;
+                    if (a.priority !== 'high' && b.priority === 'high') return 1;
+                    return a.startTime - b.startTime;
+                });
+
+                sortedOrders.forEach(order => {
+                    if (order.status === 'new') {
+                        newOrdersContainer.appendChild(createOrderTicket(order));
+                        newOrdersMobileContainer.appendChild(createOrderTicket(order));
+                        newCount++;
+                    }
+                    else if (order.status === 'in-progress') {
+                        inProgressContainer.appendChild(createOrderTicket(order));
+                        inProgressMobileContainer.appendChild(createOrderTicket(order));
+                        inProgressCountValue++;
+                    }
+                    else if (order.status === 'ready') {
+                        // Render only in mobile tab
+                        readyOrdersMobileContainer.appendChild(createReadyOrderTicket(order));
+                    }
+                });
+
+                // Update stats in the top row
+                newOrdersStat.textContent = newCount;
+                inProgressStat.textContent = inProgressCountValue;
+                
+                renderPrepStation();
+            }
+
+            function createOrderTicket(order) {
+                const ticket = document.createElement('div'); ticket.className = 'order-ticket'; ticket.dataset.orderId = order.id;
+                if (order.priority === 'high') ticket.classList.add('priority-high');
+                const header = document.createElement('div'); header.className = 'order-header';
+                header.innerHTML = `<span class="order-id">#${order.id}</span><span class="order-table">${translations[currentLang]['table']} ${order.table}</span><span class="order-timer" id="timer-${order.id}">00:00</span>`;
+                ticket.appendChild(header);
+                const itemsList = document.createElement('ul'); itemsList.className = 'order-items';
+                order.items.forEach(item => {
+                    const itemLi = document.createElement('li'); itemLi.className = 'order-item';
+                    const itemHeader = document.createElement('div'); itemHeader.className = 'order-item-header';
+                    const itemName = translations[currentLang][item.nameKey] || item.nameKey;
+                    itemHeader.innerHTML = `<span class="order-item-name">${itemName}</span><span class="order-item-quantity">${item.quantity}x</span>`;
+                    itemLi.appendChild(itemHeader);
+                    if (item.notesKey) { 
+                        const notesSpan = document.createElement('div'); 
+                        notesSpan.className = 'order-item-notes'; 
+                        const notesText = translations[currentLang][item.notesKey] || item.notesKey;
+                        notesSpan.textContent = notesText; 
+                        itemLi.appendChild(notesSpan); 
+                    }
+                    itemsList.appendChild(itemLi);
+                });
+                ticket.appendChild(itemsList);
+                const actionsContainer = document.createElement('div'); actionsContainer.className = 'order-actions';
+                if (order.status === 'new') {
+                    const startBtn = document.createElement('button'); startBtn.className = 'kds-action-btn btn-primary';
+                    startBtn.innerHTML = `<i class="bi bi-play-fill"></i> ${translations[currentLang]['start']}`;
+                    startBtn.onclick = () => updateOrderStatus(order.id, 'in-progress'); actionsContainer.appendChild(startBtn);
+                } else if (order.status === 'in-progress') {
+                    const readyBtn = document.createElement('button'); readyBtn.className = 'kds-action-btn btn-success';
+                    readyBtn.innerHTML = `<i class="bi bi-check-lg"></i> ${translations[currentLang]['ready']}`;
+                    readyBtn.onclick = () => updateOrderStatus(order.id, 'ready'); actionsContainer.appendChild(readyBtn);
+                }
+                ticket.appendChild(actionsContainer);
+                return ticket;
+            }
+
+            // This function is used for mobile "Ready Orders" tab (informational)
+            function createReadyOrderTicket(order) {
+                const ticket = document.createElement('div'); 
+                ticket.className = 'ready-order-ticket';
+                
+                const info = document.createElement('div'); 
+                info.className = 'ready-order-info';
+                const itemsText = order.items.map(item => {
+                    const itemName = translations[currentLang][item.nameKey] || item.nameKey;
+                    return `${item.quantity}x ${itemName}`;
+                }).join(', ');
+                
+                info.innerHTML = `<h4>${translations[currentLang]['order']} #${order.id} - ${translations[currentLang]['table']} ${order.table}</h4><p>${itemsText}</p><div class="ready-order-meta">${translations[currentLang]['ready-at']} ${new Date(order.startTime).toLocaleTimeString()}</div>`;
+                ticket.appendChild(info); 
+                
+                return ticket;
+            }
+            
+            function updateOrderStatus(orderId, newStatus) {
+                const order = orders.find(o => o.id === orderId); if (!order) return;
+                
+                if (newStatus === 'ready') {
+                    // --- انیمیشن پرواز به سمت دکمه شناور ---
+                    const sourceTicket = document.querySelector(`.order-ticket[data-order-id="${orderId}"]`);
+                    if (sourceTicket && floatingBtn) {
+                        const flyingTicket = sourceTicket.cloneNode(true);
+                        flyingTicket.classList.add('flying');
+                        const sourceRect = sourceTicket.getBoundingClientRect();
+                        flyingTicket.style.position = 'fixed';
+                        flyingTicket.style.top = `${sourceRect.top}px`;
+                        flyingTicket.style.left = `${sourceRect.left}px`;
+                        flyingTicket.style.width = `${sourceRect.width}px`;
+                        flyingTicket.style.height = `${sourceRect.height}px`;
+                        flyingTicket.style.zIndex = '1000';
+                        document.body.appendChild(flyingTicket);
+                        
+                        const btnRect = floatingBtn.getBoundingClientRect();
+                        const destinationX = btnRect.left + btnRect.width / 2;
+                        const destinationY = btnRect.top + btnRect.height / 2;
+
+                        setTimeout(() => {
+                            flyingTicket.style.transition = 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                            flyingTicket.style.top = `${destinationY - sourceRect.height / 2}px`;
+                            flyingTicket.style.left = `${destinationX - sourceRect.width / 2}px`;
+                            flyingTicket.style.transform = 'scale(0.1) rotate(15deg)';
+                            flyingTicket.style.opacity = '0';
+                        }, 20);
+                        
+                        setTimeout(() => {
+                            if (document.body.contains(flyingTicket)) { document.body.removeChild(flyingTicket); }
+                            order.status = newStatus;
+                            renderOrders();
+                        }, 820);
+                    } else {
+                        order.status = newStatus; renderOrders();
+                    }
+                } else {
+                    order.status = newStatus; renderOrders();
+                }
+            }
+
+            function renderPrepStation() {
+                prepItemsContainer.innerHTML = ''; prepItemsMobileContainer.innerHTML = '';
+                const itemCounts = {};
+                orders.filter(o => o.status !== 'ready').forEach(order => {
+                    order.items.forEach(item => { 
+                        const itemName = translations[currentLang][item.nameKey] || item.nameKey;
+                        itemCounts[itemName] = (itemCounts[itemName] || 0) + item.quantity; 
+                    });
+                });
+
+                for (const itemName in itemCounts) { 
+                    if (itemCounts[itemName] > 1) {
+                        const createPrepItem = (container) => {
+                             const prepItem = document.createElement('div'); 
+                            prepItem.className = 'kds-prep-item';
+                            prepItem.dataset.itemName = itemName;
+                            
+                            if (expandedItems.has(itemName)) { prepItem.classList.add('expanded'); }
+                            
+                            const header = document.createElement('div'); header.className = 'kds-prep-item-header';
+                            header.innerHTML = `<span class="kds-prep-item-name">${itemName}</span><div><span class="kds-prep-item-quantity">${itemCounts[itemName]}x</span><div class="kds-prep-item-icon"><i class="bi bi-chevron-down"></i></div></div>`;
+                            prepItem.appendChild(header);
+                            
+                            const ordersContainer = document.createElement('div'); ordersContainer.className = 'kds-prep-item-orders';
+                            
+                            const relatedOrders = orders.filter(order => order.status !== 'ready' && order.items.some(item => {
+                                const name = translations[currentLang][item.nameKey] || item.nameKey;
+                                return name === itemName;
+                            }));
+                            
+                            relatedOrders.forEach(order => {
+                                const specificItem = order.items.find(item => {
+                                    const name = translations[currentLang][item.nameKey] || item.nameKey;
+                                    return name === itemName;
+                                });
+                                const orderDiv = document.createElement('div'); orderDiv.className = 'kds-prep-item-order';
+                                const statusClass = order.status === 'new' ? 'status-new' : 'status-in-progress';
+                                const statusText = order.status === 'new' ? 
+                                    (currentLang === 'fa' ? 'جدید' : currentLang === 'ar' ? 'جديد' : 'New') : 
+                                    (currentLang === 'fa' ? 'در حال آماده‌سازی' : currentLang === 'ar' ? 'قيد التحضير' : 'In Progress');
+                                orderDiv.innerHTML = `<div class="kds-prep-item-order-info"><span class="kds-prep-item-order-id">${translations[currentLang]['order']} #${order.id}</span><span class="kds-prep-item-order-table">${translations[currentLang]['table']} ${order.table}</span></div><div class="kds-prep-item-order-info"><span class="kds-prep-item-order-quantity">${specificItem.quantity}x</span><span class="kds-prep-item-order-status ${statusClass}">${statusText}</span></div>`;
+                                orderDiv.addEventListener('click', () => openPrepOrderDetailsModal(order));
+                                ordersContainer.appendChild(orderDiv);
+                            });
+                            
+                            prepItem.appendChild(ordersContainer);
+                            header.addEventListener('click', () => {
+                                prepItem.classList.toggle('expanded');
+                                if (prepItem.classList.contains('expanded')) { expandedItems.add(itemName); } else { expandedItems.delete(itemName); }
+                            });
+                            container.appendChild(prepItem);
+                        };
+                        createPrepItem(prepItemsContainer);
+                        createPrepItem(prepItemsMobileContainer);
+                    }
+                }
+            }
+
+            // ================================= MODAL LOGIC =================================
+            function openPrepOrderDetailsModal(order) {
+                const itemsHtml = order.items.map(item => {
+                    const itemName = translations[currentLang][item.nameKey] || item.nameKey;
+                    const notesHtml = item.notesKey ? 
+                        `<div class="prep-modal-item-notes">${translations[currentLang][item.notesKey] || item.notesKey}</div>` : '';
+                    return `<li><span class="prep-modal-item-name">${itemName}</span><span class="prep-modal-item-quantity">${item.quantity}x</span>${notesHtml}</li>`;
+                }).join('');
+                
+                prepModalBody.innerHTML = `
+                    <div class="prep-modal-order-info">
+                        <h4>${translations[currentLang]['order']} #${order.id} - ${translations[currentLang]['table']} ${order.table}</h4>
+                        <ul class="prep-modal-items-list">
+                            ${itemsHtml}
+                        </ul>
+                    </div>
+                `;
+                const modalActionsContainer = document.createElement('div'); modalActionsContainer.className = 'order-actions'; modalActionsContainer.style.marginTop = '20px';
+                if (order.status === 'new') {
+                    const startBtn = document.createElement('button'); startBtn.className = 'kds-action-btn btn-primary'; 
+                    startBtn.innerHTML = `<i class="bi bi-play-fill"></i> ${translations[currentLang]['start']}`; 
+                    startBtn.onclick = () => { updateOrderStatus(order.id, 'in-progress'); prepOrderDetailsModal.style.display = 'none'; }; 
+                    modalActionsContainer.appendChild(startBtn);
+                } else if (order.status === 'in-progress') {
+                    const readyBtn = document.createElement('button'); readyBtn.className = 'kds-action-btn btn-success'; 
+                    readyBtn.innerHTML = `<i class="bi bi-check-lg"></i> ${translations[currentLang]['ready']}`; 
+                    readyBtn.onclick = () => { updateOrderStatus(order.id, 'ready'); prepOrderDetailsModal.style.display = 'none'; }; 
+                    modalActionsContainer.appendChild(readyBtn);
+                }
+                prepModalBody.appendChild(modalActionsContainer);
+                prepOrderDetailsModal.style.display = 'block';
+            }
+            
+            // Desktop: Open list of ready orders modal (informational)
+            function openReadyOrdersListModal() {
+                readyOrdersListModalBody.innerHTML = ''; // Clear previous content
+                const readyOrders = orders.filter(order => order.status === 'ready');
+                if (readyOrders.length === 0) {
+                    readyOrdersListModalBody.innerHTML = `<p style="text-align:center; color: #9ca3af;">${translations[currentLang]['no-ready-orders']}</p>`;
+                } else {
+                    readyOrders.forEach(order => {
+                        const ticket = document.createElement('div'); 
+                        ticket.className = 'ready-order-ticket';
+                        
+                        const info = document.createElement('div'); 
+                        info.className = 'ready-order-info';
+                        const itemsText = order.items.map(item => {
+                            const itemName = translations[currentLang][item.nameKey] || item.nameKey;
+                            return `${item.quantity}x ${itemName}`;
+                        }).join(', ');
+                        
+                        info.innerHTML = `<h4>${translations[currentLang]['order']} #${order.id} - ${translations[currentLang]['table']} ${order.table}</h4><p>${itemsText}</p><div class="ready-order-meta">${translations[currentLang]['ready-at']} ${new Date(order.startTime).toLocaleTimeString()}</div>`;
+                        ticket.appendChild(info); 
+
+                        readyOrdersListModalBody.appendChild(ticket);
+                    });
+                }
+                readyOrdersListModal.style.display = 'block';
+            }
+
+            prepModalClose.onclick = () => { prepOrderDetailsModal.style.display = 'none'; };
+            readyListModalClose.onclick = () => { readyOrdersListModal.style.display = 'none'; };
+            
+            window.onclick = (event) => { 
+                if (event.target == prepOrderDetailsModal) { prepOrderDetailsModal.style.display = 'none'; } 
+                if (event.target == readyOrdersListModal) { readyOrdersListModal.style.display = 'none'; } 
+            };
+
+            // ================================= TIMER LOGIC =================================
+            function updateTimers() {
+                orders.forEach(order => {
+                    const timerElement = document.getElementById(`timer-${order.id}`); if (!timerElement) return;
+                    const elapsed = Date.now() - order.startTime; const minutes = Math.floor(elapsed / 60000); const seconds = Math.floor((elapsed % 60000) / 1000);
+                    timerElement.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                    timerElement.classList.toggle('urgent', minutes >= 15);
+                });
+            }
+            setInterval(updateTimers, 1000);
+
+            // ================================= TAB SWITCHING LOGIC =================================
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetTab = button.getAttribute('data-tab');
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    button.classList.add('active');
+                    document.getElementById(`tab-${targetTab}`).classList.add('active');
+                });
+            });
+
+            // ================================= FAB CLICK LOGIC =================================
+            floatingBtn.addEventListener('click', openReadyOrdersListModal);
+
+            // ================================= SIMULATE NEW ORDER =================================
+            function simulateNewOrder() {
+                const foodItems = ['french-fries', 'other-food'];
+                const randomFood = foodItems[Math.floor(Math.random() * foodItems.length)];
+                const newOrder = { 
+                    id: orders.length > 0 ? Math.max(...orders.map(o => o.id)) + 1 : 1, 
+                    table: Math.floor(Math.random() * 10) + 1, 
+                    items: [{ nameKey: randomFood, quantity: Math.floor(Math.random() * 3) + 1 }], 
+                    status: 'new', 
+                    startTime: Date.now(), 
+                    priority: Math.random() > 0.8 ? 'high' : null 
+                };
+                orders.push(newOrder); 
+                renderOrders();
+            }
+            setInterval(simulateNewOrder, 25000);
+            
+            // ================================= INITIAL RENDER =================================
+            // این فراخوانی اولیه، زبان را روی فارسی تنظیم کرده و رابط کاربری را برای بار اول رندر می‌کند.
+            setLanguage('fa'); 
+        });
+    </script>
+</body>
+</html>

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Simoon Cafe</title>
+    <title data-i18n="admin_panel_title">Admin Panel - Simoon Cafe</title>
     
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,14 +25,14 @@
             <div class="container-fluid">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="brand-center">
-                        <h2 id="section-title" class="h5 text-muteds mt-1">Manage Categories & Products</h2>
+                        <h2 id="section-title" class="h5 text-muteds mt-1" data-i18n="dashboard">Dashboard</h2>
                     </div>
-                    <div class="d-flex">
+                    <div class="d-flex">                        
                         <button class="btn btn-outline-secondary me-2" type="button" id="previewBtn">
-                            <i class="bi bi-eye"></i> Preview
+                            <i class="bi bi-eye"></i> <span data-i18n="preview">Preview</span>
                         </button>
                         <button class="btn btn-outline-secondary" type="button" id="logoutBtn">
-                            <i class="bi bi-box-arrow-left"></i> Logout
+                            <i class="bi bi-box-arrow-left"></i> <span data-i18n="logout">Logout</span>
                         </button>
                     </div>
                 </div>
@@ -43,10 +43,14 @@
         <nav class="admin-nav">
             <div class="container-fluid">
                 <div class="d-flex justify-content-center flex-wrap gap-6 md:gap-10 text-lg font-medium">
-                    <button class="nav-link active" data-section="categories">Categories</button>
-                    <button class="nav-link" data-section="inventory">Inventory</button>
-                    <button class="nav-link" data-section="orders">Orders</button>
-                    <button class="nav-link" data-section="settings">Settings</button>
+                    <button class="nav-link active" data-section="dashboard" data-i18n="dashboard">Dashboard</button>
+                    <button class="nav-link" data-section="categories" data-i18n="categories">Categories</button>
+                    <button class="nav-link" data-section="inventory" data-i18n="inventory">Inventory</button>
+                    <button class="nav-link" data-section="orders" data-i18n="orders">Orders</button>
+                    <button class="nav-link" data-section="customers" data-i18n="customers">Customers</button>
+                    <button class="nav-link" data-section="reports" data-i18n="reports">Reports</button>
+                    <button class="nav-link" data-section="staff" data-i18n="staff">Staff</button>
+                    <button class="nav-link" data-section="settings" data-i18n="settings">Settings</button>
                 </div>
             </div>
         </nav>
@@ -54,21 +58,146 @@
 
     <main class="admin-main">
         <div class="container-fluid admin-container">
+            
+            <!-- === ۱. بخش داشبورد مدیریتی (جدید) === -->
+            <div id="dashboard-section" class="management-card">
+                <div class="card-body">
+                    <div class="single-column-layout">
+                        <!-- KPI Cards -->
+                        <div class="row mb-4">
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <div class="card kpi-card text-center">
+                                    <div class="card-body">
+                                        <h5 class="card-title" data-i18n="todays_sales">Today's Sales</h5>
+                                        <p class="card-text kpi-value" id="today-sales">$0</p>
+                                        <p class="card-text kpi-change positive" id="today-sales-change"><i class="bi bi-arrow-up"></i> 0%</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <div class="card kpi-card text-center">
+                                    <div class="card-body">
+                                        <h5 class="card-title" data-i18n="todays_orders">Today's Orders</h5>
+                                        <p class="card-text kpi-value" id="today-orders">0</p>
+                                        <p class="card-text kpi-change positive" id="orders-change"><i class="bi bi-arrow-up"></i> 0%</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <div class="card kpi-card text-center">
+                                    <div class="card-body">
+                                        <h5 class="card-title" data-i18n="avg_order_value">Avg. Order Value</h5>
+                                        <p class="card-text kpi-value" id="avg-order-value">$0</p>
+                                        <p class="card-text kpi-change negative" id="avg-change"><i class="bi bi-arrow-down"></i> 0%</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <div class="card kpi-card text-center">
+                                    <div class="card-body">
+                                        <h5 class="card-title" data-i18n="low_stock_items">Low Stock Items</h5>
+                                        <p class="card-text kpi-value" id="low-stock-count">0</p>
+                                        <p class="card-text kpi-change"><i class="bi bi-exclamation-triangle"></i> <span data-i18n="alert">Alert</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Charts Row -->
+                        <div class="row mb-4">
+                            <div class="col-md-8 mb-3">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title mb-0" data-i18n="sales_trend">Sales Trend (Last 30 Days)</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="sales-chart" height="100"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title mb-0" data-i18n="sales_by_category">Sales by Category</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="category-chart" height="200"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Access Row -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h5 class="card-title mb-0" data-i18n="latest_orders">Latest Orders</h5>
+                                        <button class="btn btn-sm btn-outline-primary" id="view-all-orders-btn" data-i18n="view_all">View All</button>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-dark table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th data-i18n="order_id">Order ID</th>
+                                                        <th data-i18n="customer">Customer</th>
+                                                        <th data-i18n="total">Total</th>
+                                                        <th data-i18n="status">Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="latest-orders-table">
+                                                    <!-- Latest orders will be populated here -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h5 class="card-title mb-0" data-i18n="low_stock_products">Low Stock Products</h5>
+                                        <button class="btn btn-sm btn-outline-warning" id="view-all-low-stock-btn" data-i18n="view_all">View All</button>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-dark table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th data-i18n="product">Product</th>
+                                                        <th data-i18n="stock">Stock</th>
+                                                        <th data-i18n="action">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="low-stock-table">
+                                                    <!-- Low stock products will be populated here -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Categories Section -->
-            <div class="management-card" id="categories-section">
+            <div class="management-card" id="categories-section" style="display: none;">
                 <div class="card-body">
                     <div class="single-column-layout">
                         <!-- === شروع کانتینر مشترک برای تمام تب‌ها === -->
                         <div class="ribbons-wrapper">
                             <!-- توضیحات بخش Categories -->
-                            <h4 class="section-title">Categories</h4>
-                            <p class="section-text">Manage your main product categories. Add, edit, or delete categories to organize your menu structure.</p>
+                            <h4 class="section-title" data-i18n="categories">Categories</h4>
+                            <p class="section-text" data-i18n="categories_description">Manage your main product categories. Add, edit, or delete categories to organize your menu structure.</p>
                             
                             <div class="ribbon-container">
                                 <div class="ribbon-wrapper">
                                     <div class="categories-ribbon scrollable" id="mainTabsRibbon"></div>
                                     <div class="add-tab-item">
-                                        <button class="add-tab-btn" id="addMainTabBtn">
+                                        <button class="add-tab-btn" id="addMainTabBtn" title="Add Category">
                                             <i class="bi bi-plus"></i>
                                         </button>
                                     </div>
@@ -76,14 +205,14 @@
                             </div>
                             
                             <!-- توضیحات بخش Subcategories -->
-                            <h4 class="section-title">Subcategories</h4>
-                            <p class="section-text">Create subcategories within each main category for better organization of your products.</p>
+                            <h4 class="section-title" data-i18n="subcategories">Subcategories</h4>
+                            <p class="section-text" data-i18n="subcategories_description">Create subcategories within each main category for better organization of your products.</p>
                             
                             <div class="ribbon-container">
                                 <div class="ribbon-wrapper">
                                     <div class="sub-categories-ribbon scrollable" id="subTabsRibbon"></div>
                                     <div class="add-tab-item">
-                                        <button class="add-tab-btn" id="addSubTabBtn">
+                                        <button class="add-tab-btn" id="addSubTabBtn" title="Add Subcategory">
                                             <i class="bi bi-plus"></i>
                                         </button>
                                     </div>
@@ -95,9 +224,9 @@
                         <!-- special crusel -->
                         <div id="special-carousel-management" class="special-carousel-management" style="display: none;">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="mb-0">Manage Special Carousel</h5>
+                                <h5 class="mb-0" data-i18n="manage_special_carousel">Manage Special Carousel</h5>
                                 <button id="add-special-slide-btn" class="btn btn-primary">
-                                    <i class="bi bi-plus-circle"></i> Add New Slide
+                                    <i class="bi bi-plus-circle"></i> <span data-i18n="add_new_slide">Add New Slide</span>
                                 </button>
                             </div>
                             <div id="special-slides-container" class="row g-3">
@@ -106,8 +235,8 @@
                         </div>
 
                         <!-- توضیحات بخش Products -->
-                        <h4 class="section-title">Products</h4>
-                        <p class="section-text">Add and manage products within each subcategory. Set prices, stock levels, and product details.</p>
+                        <h4 class="section-title" data-i18n="products">Products</h4>
+                        <p class="section-text" data-i18n="products_description">Add and manage products within each subcategory. Set prices, stock levels, and product details.</p>
 
                         <!-- NEW: Product Management Toolbar -->
                         <div class="product-management-toolbar">
@@ -115,7 +244,7 @@
                                 <div class="col-md-6">
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                        <input type="text" id="product-search-input" class="form-control" placeholder="Search products...">
+                                        <input type="text" id="product-search-input" class="form-control" data-i18n-placeholder="search_products" placeholder="Search products...">
                                         <button class="btn btn-outline-secondary" id="clear-search-btn" type="button">
                                             <i class="bi bi-x-circle"></i>
                                         </button>
@@ -124,28 +253,28 @@
                                 <div class="col-md-6 d-flex justify-content-end">
                                     <div class="btn-group" role="group">
                                         <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="bi bi-funnel"></i> Filter
+                                            <i class="bi bi-funnel"></i> <span data-i18n="filter">Filter</span>
                                         </button>
                                         <ul class="dropdown-menu">
-                                            <li><h6 class="dropdown-header">Stock Status</h6></li>
-                                            <li><a class="dropdown-item stock-filter" href="#" data-stock="all">All Stock</a></li>
-                                            <li><a class="dropdown-item stock-filter" href="#" data-stock="in-stock">In Stock</a></li>
-                                            <li><a class="dropdown-item stock-filter" href="#" data-stock="low-stock">Low Stock</a></li>
-                                            <li><a class="dropdown-item stock-filter" href="#" data-stock="out-of-stock">Out of Stock</a></li>
+                                            <li><h6 class="dropdown-header" data-i18n="stock_status">Stock Status</h6></li>
+                                            <li><a class="dropdown-item stock-filter" href="#" data-stock="all" data-i18n="all_stock">All Stock</a></li>
+                                            <li><a class="dropdown-item stock-filter" href="#" data-stock="in-stock" data-i18n="in_stock">In Stock</a></li>
+                                            <li><a class="dropdown-item stock-filter" href="#" data-stock="low-stock" data-i18n="low_stock">Low Stock</a></li>
+                                            <li><a class="dropdown-item stock-filter" href="#" data-stock="out-of-stock" data-i18n="out_of_stock">Out of Stock</a></li>
                                             <li><hr class="dropdown-divider"></li>
-                                            <li><h6 class="dropdown-header">Sort By</h6></li>
-                                            <li><a class="dropdown-item sort-option" href="#" data-sort="name-asc">Name (A-Z)</a></li>
-                                            <li><a class="dropdown-item sort-option" href="#" data-sort="name-desc">Name (Z-A)</a></li>
-                                            <li><a class="dropdown-item sort-option" href="#" data-sort="price-asc">Price (Low to High)</a></li>
-                                            <li><a class="dropdown-item sort-option" href="#" data-sort="price-desc">Price (High to Low)</a></li>
-                                            <li><a class="dropdown-item sort-option" href="#" data-sort="stock-asc">Stock (Low to High)</a></li>
-                                            <li><a class="dropdown-item sort-option" href="#" data-sort="stock-desc">Stock (High to Low)</a></li>
+                                            <li><h6 class="dropdown-header" data-i18n="sort_by">Sort By</h6></li>
+                                            <li><a class="dropdown-item sort-option" href="#" data-sort="name-asc" data-i18n="name_asc">Name (A-Z)</a></li>
+                                            <li><a class="dropdown-item sort-option" href="#" data-sort="name-desc" data-i18n="name_desc">Name (Z-A)</a></li>
+                                            <li><a class="dropdown-item sort-option" href="#" data-sort="price-asc" data-i18n="price_asc">Price (Low to High)</a></li>
+                                            <li><a class="dropdown-item sort-option" href="#" data-sort="price-desc" data-i18n="price_desc">Price (High to Low)</a></li>
+                                            <li><a class="dropdown-item sort-option" href="#" data-sort="stock-asc" data-i18n="stock_asc">Stock (Low to High)</a></li>
+                                            <li><a class="dropdown-item sort-option" href="#" data-sort="stock-desc" data-i18n="stock_desc">Stock (High to Low)</a></li>
                                         </ul>
                                         <button type="button" class="btn btn-success" id="export-products-btn">
-                                            <i class="bi bi-download"></i> Export
+                                            <i class="bi bi-download"></i> <span data-i18n="export">Export</span>
                                         </button>
                                         <button type="button" class="btn btn-primary" id="toggle-view-btn">
-                                            <i class="bi bi-grid"></i> Table View
+                                            <i class="bi bi-grid"></i> <span data-i18n="table_view">Table View</span>
                                         </button>
                                     </div>
                                 </div>
@@ -155,22 +284,22 @@
                             <div id="bulk-actions-bar" class="bulk-actions-bar" style="display: none;">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <span id="selected-count">0</span> products selected
-                                        <button id="select-all-btn" class="btn btn-sm btn-outline-secondary ms-2">Select All</button>
-                                        <button id="deselect-all-btn" class="btn btn-sm btn-outline-secondary">Deselect All</button>
+                                        <span id="selected-count">0</span> <span data-i18n="products_selected">products selected</span>
+                                        <button id="select-all-btn" class="btn btn-sm btn-outline-secondary ms-2" data-i18n="select_all">Select All</button>
+                                        <button id="deselect-all-btn" class="btn btn-sm btn-outline-secondary" data-i18n="deselect_all">Deselect All</button>
                                     </div>
                                     <div class="btn-group" role="group">
                                         <button type="button" class="btn btn-sm btn-outline-primary bulk-action" data-action="edit">
-                                            <i class="bi bi-pencil"></i> Edit
+                                            <i class="bi bi-pencil"></i> <span data-i18n="edit">Edit</span>
                                         </button>
                                         <button type="button" class="btn btn-sm btn-outline-success bulk-action" data-action="in-stock">
-                                            <i class="bi bi-check-circle"></i> In Stock
+                                            <i class="bi bi-check-circle"></i> <span data-i18n="in_stock">In Stock</span>
                                         </button>
                                         <button type="button" class="btn btn-sm btn-outline-warning bulk-action" data-action="out-of-stock">
-                                            <i class="bi bi-x-circle"></i> Out of Stock
+                                            <i class="bi bi-x-circle"></i> <span data-i18n="out_of_stock">Out of Stock</span>
                                         </button>
                                         <button type="button" class="btn btn-sm btn-outline-danger bulk-action" data-action="delete">
-                                            <i class="bi bi-trash"></i> Delete
+                                            <i class="bi bi-trash"></i> <span data-i18n="delete">Delete</span>
                                         </button>
                                     </div>
                                 </div>
@@ -187,13 +316,13 @@
                                                 <input class="form-check-input" type="checkbox" id="select-all-checkbox">
                                             </div>
                                         </th>
-                                        <th scope="col">Image</th>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Category</th>
-                                        <th scope="col">Price</th>
-                                        <th scope="col">Stock</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col" width="120">Actions</th>
+                                        <th scope="col" data-i18n="image">Image</th>
+                                        <th scope="col" data-i18n="name">Name</th>
+                                        <th scope="col" data-i18n="category">Category</th>
+                                        <th scope="col" data-i18n="price">Price</th>
+                                        <th scope="col" data-i18n="stock">Stock</th>
+                                        <th scope="col" data-i18n="status">Status</th>
+                                        <th scope="col" width="120" data-i18n="actions">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody id="products-table-body">
@@ -220,21 +349,21 @@
                 <div class="card-body">
                     <div class="single-column-layout">
                         <!-- توضیحات بخش Inventory -->
-                        <h4 class="section-title">Inventory Management</h4>
-                        <p class="section-text">Track your ingredients, monitor stock levels, and manage inventory alerts to ensure smooth operations.</p>
+                        <h4 class="section-title" data-i18n="inventory_management">Inventory Management</h4>
+                        <p class="section-text" data-i18n="inventory_description">Track your ingredients, monitor stock levels, and manage inventory alerts to ensure smooth operations.</p>
                         
                         <!-- Inventory Navigation Ribbon (فقط ۳ تب) -->
                         <div class="ribbon-container">
                             <div class="ribbon-wrapper">
                                 <div class="categories-ribbon scrollable" id="inventoryTabsRibbon">
                                     <div class="main-tab-item active" data-section="ingredients">
-                                        <button class="main-tab-btn">مواد اولیه</button>
+                                        <button class="main-tab-btn" data-i18n="ingredients">مواد اولیه</button>
                                     </div>
                                     <div class="main-tab-item" data-section="low-stock">
-                                        <button class="main-tab-btn">هشدارهای موجودی</button>
+                                        <button class="main-tab-btn" data-i18n="stock_alerts">هشدارهای موجودی</button>
                                     </div>
                                     <div class="main-tab-item" data-section="reports">
-                                        <button class="main-tab-btn">گزارشات تحلیلی</button>
+                                        <button class="main-tab-btn" data-i18n="analytical_reports">گزارشات تحلیلی</button>
                                     </div>
                                 </div>
                             </div>
@@ -247,10 +376,10 @@
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <div class="input-group" style="max-width: 300px;">
                                         <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                        <input type="text" id="search-ingredients" class="form-control" placeholder="جستجوی مواد اولیه...">
+                                        <input type="text" id="search-ingredients" class="form-control" data-i18n-placeholder="search_ingredients" placeholder="جستجوی مواد اولیه...">
                                     </div>
                                     <button id="add-ingredient-btn" class="btn btn-primary">
-                                        <i class="bi bi-plus-circle"></i> افزودن ماده اولیه
+                                        <i class="bi bi-plus-circle"></i> <span data-i18n="add_ingredient">افزودن ماده اولیه</span>
                                     </button>
                                 </div>
                                 <div id="ingredients-table-container">
@@ -264,7 +393,7 @@
                                     <div class="card-header">
                                         <h5 class="card-title mb-0">
                                             <i class="bi bi-exclamation-triangle-fill text-warning"></i> 
-                                            مواد اولیه با موجودی کم
+                                            <span data-i18n="low_stock_ingredients">مواد اولیه با موجودی کم</span>
                                         </h5>
                                     </div>
                                     <div class="card-body">
@@ -281,7 +410,7 @@
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <div class="input-group" style="max-width: 300px;">
                                         <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                        <input type="text" id="search-products" class="form-control" placeholder="جستجوی محصولات...">
+                                        <input type="text" id="search-products" class="form-control" data-i18n-placeholder="search_products" placeholder="جستجوی محصولات...">
                                     </div>
                                 </div>
 
@@ -289,7 +418,7 @@
                                     <div class="col-md-6">
                                         <div class="card">
                                             <div class="card-header">
-                                                <h5 class="card-title mb-0">سطح موجودی محصولات</h5>
+                                                <h5 class="card-title mb-0" data-i18n="product_stock_levels">سطح موجودی محصولات</h5>
                                             </div>
                                             <div class="card-body">
                                                 <div id="product-stock-table-container">
@@ -301,7 +430,7 @@
                                     <div class="col-md-6">
                                         <div class="card">
                                             <div class="card-header">
-                                                <h5 class="card-title mb-0">گزارش عملیات انبار</h5>
+                                                <h5 class="card-title mb-0" data-i18n="inventory_operation_reports">گزارش عملیات انبار</h5>
                                             </div>
                                             <div class="card-body">
                                                 <div id="inventory-logs-container">
@@ -316,26 +445,444 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Orders Section -->
+            <div id="orders-section" class="management-card" style="display: none;">
+                <div class="card-body">
+                    <div class="single-column-layout">
+                        <!-- توضیحات بخش Orders -->
+                        <h4 class="section-title" data-i18n="order_management">Order Management</h4>
+                        <p class="section-text" data-i18n="order_management_description">View and manage all customer orders. Track status, update details, and handle fulfillment.</p>
+                        
+                        <!-- Orders Navigation Ribbon -->
+                        <div class="ribbon-container">
+                            <div class="ribbon-wrapper">
+                                <div class="categories-ribbon scrollable" id="ordersTabsRibbon">
+                                    <div class="main-tab-item active" data-orders-tab="all">
+                                        <button class="main-tab-btn" data-i18n="all_orders">All Orders</button>
+                                    </div>
+                                    <div class="main-tab-item" data-orders-tab="pending">
+                                        <button class="main-tab-btn" data-i18n="pending">Pending</button>
+                                    </div>
+                                    <div class="main-tab-item" data-orders-tab="completed">
+                                        <button class="main-tab-btn" data-i18n="completed">Completed</button>
+                                    </div>
+                                    <div class="main-tab-item" data-orders-tab="cancelled">
+                                        <button class="main-tab-btn" data-i18n="cancelled">Cancelled</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Orders Toolbar -->
+                        <div class="orders-toolbar">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                        <input type="text" id="order-search-input" class="form-control" data-i18n-placeholder="search_orders" placeholder="Search by order ID or customer name...">
+                                        <button class="btn btn-outline-secondary" id="clear-order-search-btn" type="button">
+                                            <i class="bi bi-x-circle"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 d-flex justify-content-end">
+                                    <button type="button" class="btn btn-success" id="export-orders-btn">
+                                        <i class="bi bi-download"></i> <span data-i18n="export_csv">Export CSV</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Orders Content Area -->
+                        <div id="ordersContentArea">
+                            <!-- Orders will be dynamically loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- === ۵. بخش مدیریت مشتریان (جدید) === -->
+            <div id="customers-section" class="management-card" style="display: none;">
+                <div class="card-body">
+                    <div class="single-column-layout">
+                        <h4 class="section-title" data-i18n="customer_management">Customer Management</h4>
+                        <p class="section-text" data-i18n="customer_management_description">Manage your customer database and track their order history.</p>
+                        
+                        <!-- Customers Toolbar -->
+                        <div class="customers-toolbar">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                        <input type="text" id="customer-search-input" class="form-control" data-i18n-placeholder="search_customers" placeholder="Search customers...">
+                                        <button class="btn btn-outline-secondary" id="clear-customer-search-btn" type="button">
+                                            <i class="bi bi-x-circle"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 d-flex justify-content-end">
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-success" id="export-customers-btn">
+                                            <i class="bi bi-download"></i> <span data-i18n="export_csv">Export CSV</span>
+                                        </button>
+                                        <button type="button" class="btn btn-primary" id="add-customer-btn">
+                                            <i class="bi bi-plus-circle"></i> <span data-i18n="add_customer">Add Customer</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Customers Table -->
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover">
+                                <thead>
+                                    <tr>
+                                        <th data-i18n="name">Name</th>
+                                        <th data-i18n="email">Email</th>
+                                        <th data-i18n="phone">Phone</th>
+                                        <th data-i18n="total_orders">Total Orders</th>
+                                        <th data-i18n="total_spent">Total Spent</th>
+                                        <th data-i18n="loyalty_points">Loyalty Points</th>
+                                        <th data-i18n="actions">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="customers-table">
+                                    <!-- Customers will be populated here by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- === ۶. بخش گزارشات و تحلیل‌ها (جدید) === -->
+            <div id="reports-section" class="management-card" style="display: none;">
+                <div class="card-body">
+                    <div class="single-column-layout">
+                        <h4 class="section-title" data-i18n="reports_analytics">Reports & Analytics</h4>
+                        <p class="section-text" data-i18n="reports_analytics_description">Generate sales, product, and customer reports.</p>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0" data-i18n="generate_report">Generate Report</h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="report-form">
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <label for="report-type" class="form-label" data-i18n="report_type">Report Type</label>
+                                            <select id="report-type" class="form-select" required>
+                                                <option value="" data-i18n="select">Select...</option>
+                                                <option value="sales-daily" data-i18n="daily_sales">Daily Sales</option>
+                                                <option value="sales-weekly" data-i18n="weekly_sales">Weekly Sales</option>
+                                                <option value="sales-monthly" data-i18n="monthly_sales">Monthly Sales</option>
+                                                <option value="products-best" data-i18n="best_selling_products">Best-Selling Products</option>
+                                                <option value="products-worst" data-i18n="worst_selling_products">Worst-Selling Products</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="report-start-date" class="form-label" data-i18n="start_date">Start Date</label>
+                                            <input type="date" class="form-control" id="report-start-date" required>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="report-end-date" class="form-label" data-i18n="end_date">End Date</label>
+                                            <input type="date" class="form-control" id="report-end-date" required>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="btn-group" role="group">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="bi bi-file-earmark-text"></i> <span data-i18n="generate_report">Generate Report</span>
+                                                </button>
+                                                <button type="button" class="btn btn-success" id="download-report-btn" disabled>
+                                                    <i class="bi bi-download"></i> <span data-i18n="download_csv">Download CSV</span>
+                                                </button>
+                                                <button type="button" class="btn btn-danger" id="download-pdf-btn" disabled>
+                                                    <i class="bi bi-file-earmark-pdf"></i> <span data-i18n="download_pdf">Download PDF</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div id="report-output-area" class="mt-4">
+                            <!-- The generated report will be displayed here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- === ۷. بخش مدیریت کارکنان (جدید و پیشرفته) === -->
+            <div id="staff-section" class="management-card" style="display: none;">
+                <div class="card-body">
+                    <div class="single-column-layout">
+                        <h4 class="section-title" data-i18n="staff_management">Staff Management</h4>
+                        <p class="section-text" data-i18n="staff_management_description">Manage staff accounts, roles, and permissions.</p>
+                        
+                        <!-- Staff List -->
+                        <div class="card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0" data-i18n="staff_list">Staff List</h5>
+                                <button class="btn btn-primary" id="add-staff-btn">
+                                    <i class="bi bi-plus-circle"></i> <span data-i18n="add_staff">Add Staff</span>
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-dark table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th data-i18n="name">Name</th>
+                                                <th data-i18n="email">Email</th>
+                                                <th data-i18n="role">Role</th>
+                                                <th data-i18n="status">Status</th>
+                                                <th data-i18n="actions">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="staff-table">
+                                            <!-- Staff list will be populated here by JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Permissions & Scheduling -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title mb-0" data-i18n="role_permissions">Role Permissions</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p data-i18n="select_role_view_permissions">Select a role to view and edit permissions.</p>
+                                        <select id="role-select" class="form-select">
+                                            <option value="admin" data-i18n="admin">Admin</option>
+                                            <option value="manager" data-i18n="manager">Manager</option>
+                                            <option value="staff" data-i18n="staff">Staff</option>
+                                        </select>
+                                        <div id="permissions-container" class="mt-3">
+                                            <!-- Permissions will be loaded here -->
+                                        </div>
+                                        <button class="btn btn-sm btn-primary mt-2" id="save-permissions-btn" data-i18n="save_permissions">Save Permissions</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title mb-0" data-i18n="staff_scheduling">Staff Scheduling</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p data-i18n="select_staff_view_schedule">Select a staff member to view their schedule.</p>
+                                        <select id="staff-schedule-select" class="form-select">
+                                            <!-- Staff options will be populated here -->
+                                        </select>
+                                        <div id="schedule-container" class="mt-3">
+                                            <!-- Schedule will be displayed here -->
+                                        </div>
+                                        <button class="btn btn-sm btn-primary mt-2" id="save-schedule-btn" data-i18n="save_schedule">Save Schedule</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settings-section" class="management-card" style="display: none;">
+                <div class="card-body">
+                    <div class="settings-layout">
+                        <!-- Settings Sidebar -->
+                        <div class="settings-sidebar">
+                            <h5 class="settings-sidebar-title" data-i18n="settings">Settings</h5>
+                            <nav class="settings-nav">
+                                <a href="#" class="settings-nav-link active" data-settings-tab="general">
+                                    <i class="bi bi-gear-fill"></i> <span data-i18n="general">General</span>
+                                </a>
+                                <a href="#" class="settings-nav-link" data-settings-tab="payment">
+                                    <i class="bi bi-credit-card-fill"></i> <span data-i18n="payment">Payment</span>
+                                </a>
+                                <a href="#" class="settings-nav-link" data-settings-tab="notifications">
+                                    <i class="bi bi-bell-fill"></i> <span data-i18n="notifications">Notifications</span>
+                                </a>
+                                <a href="#" class="settings-nav-link" data-settings-tab="users">
+                                    <i class="bi bi-people-fill"></i> <span data-i18n="users">Users</span>
+                                </a>
+                            </nav>
+                        </div>
+
+                        <!-- Settings Content Area -->
+                        <div class="settings-content-area">
+                            <!-- General Settings -->
+                            <div id="general-settings" class="settings-content active">
+                                <h5 class="settings-content-title" data-i18n="general_settings">General Settings</h5>
+                                <form id="general-settings-form">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="restaurant-name" class="form-label" data-i18n="restaurant_name">Restaurant Name</label>
+                                            <input type="text" class="form-control" id="restaurant-name" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="restaurant-email" class="form-label" data-i18n="contact_email">Contact Email</label>
+                                            <input type="email" class="form-control" id="restaurant-email" required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="restaurant-address" class="form-label" data-i18n="address">Address</label>
+                                        <textarea class="form-control" id="restaurant-address" rows="3"></textarea>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="restaurant-phone" class="form-label" data-i18n="phone_number">Phone Number</label>
+                                            <input type="tel" class="form-control" id="restaurant-phone">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="restaurant-currency" class="form-label" data-i18n="currency">Currency</label>
+                                            <select class="form-select" id="restaurant-currency">
+                                                <option value="USD">USD ($)</option>
+                                                <option value="EUR">EUR (€)</option>
+                                                <option value="IRR">IRR (ریال)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary" data-i18n="save_changes">Save Changes</button>
+                                </form>
+                            </div>
+
+                            <!-- Payment Settings -->
+                            <div id="payment-settings" class="settings-content">
+                                <h5 class="settings-content-title" data-i18n="payment_gateway">Payment Gateway</h5>
+                                <form id="payment-settings-form">
+                                    <div class="mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="enable-cod">
+                                            <label class="form-check-label" for="enable-cod" data-i18n="enable_cod">Enable Cash on Delivery (COD)</label>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="enable-stripe">
+                                            <label class="form-check-label" for="enable-stripe" data-i18n="enable_stripe">Enable Stripe</label>
+                                        </div>
+                                    </div>
+                                    <div id="stripe-settings" style="display: none;">
+                                        <div class="mb-3">
+                                            <label for="stripe-publishable-key" class="form-label" data-i18n="stripe_publishable_key">Stripe Publishable Key</label>
+                                            <input type="text" class="form-control" id="stripe-publishable-key">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="stripe-secret-key" class="form-label" data-i18n="stripe_secret_key">Stripe Secret Key</label>
+                                            <input type="password" class="form-control" id="stripe-secret-key">
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary" data-i18n="save_changes">Save Changes</button>
+                                </form>
+                            </div>
+
+                            <!-- Notification Settings -->
+                            <div id="notifications-settings" class="settings-content">
+                                <h5 class="settings-content-title" data-i18n="notification_preferences">Notification Preferences</h5>
+                                <form id="notifications-settings-form">
+                                    <div class="mb-3">
+                                        <label class="form-label" data-i18n="new_order_notifications">New Order Notifications</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="notify-email" checked>
+                                            <label class="form-check-label" for="notify-email" data-i18n="send_email_notification">Send email notification</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="notify-sms">
+                                            <label class="form-check-label" for="notify-sms" data-i18n="send_sms_notification">Send SMS notification</label>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="admin-email" class="form-label" data-i18n="admin_notification_email">Admin Notification Email</label>
+                                        <input type="email" class="form-control" id="admin-email">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary" data-i18n="save_changes">Save Changes</button>
+                                </form>
+                            </div>
+
+                            <!-- Users Settings -->
+                            <div id="users-settings" class="settings-content">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="settings-content-title mb-0" data-i18n="user_management">User Management</h5>
+                                    <button class="btn btn-primary" id="add-user-btn">
+                                        <i class="bi bi-plus-circle"></i> <span data-i18n="add_new_user">Add New User</span>
+                                    </button>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-dark table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th data-i18n="name">Name</th>
+                                                <th data-i18n="email">Email</th>
+                                                <th data-i18n="role">Role</th>
+                                                <th data-i18n="status">Status</th>
+                                                <th data-i18n="actions">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="users-table-body">
+                                            <!-- Users will be dynamically loaded here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </main>
 
     <!-- Mobile Bottom Navigation -->
     <div class="mobile-bottom-nav">
-        <div class="mobile-bottom-nav-item active" data-section="categories">
-            <i class="bi bi-tags"></i>
-            <span>Categories</span>
-        </div>
-        <div class="mobile-bottom-nav-item" data-section="inventory">
-            <i class="bi bi-boxes"></i>
-            <span>Inventory</span>
+        <div class="mobile-bottom-nav-item active" data-section="dashboard">
+            <i class="bi bi-speedometer2"></i>
+            <span data-i18n="dashboard">Dashboard</span>
         </div>
         <div class="mobile-bottom-nav-item" data-section="orders">
             <i class="bi bi-receipt"></i>
-            <span>Orders</span>
+            <span data-i18n="orders">Orders</span>
         </div>
-        <div class="mobile-bottom-nav-item" data-section="settings">
-            <i class="bi bi-gear"></i>
-            <span>Settings</span>
+        <div class="mobile-bottom-nav-item" data-section="inventory">
+            <i class="bi bi-boxes"></i>
+            <span data-i18n="inventory">Inventory</span>
+        </div>
+        <!-- منوی کشویی برای گزینه‌های بیشتر -->
+        <div class="mobile-dropdown">
+            <button class="mobile-bottom-nav-item dropdown-toggle" id="more-menu-toggle">
+                <i class="bi bi-three-dots"></i>
+                <span data-i18n="more">More</span>
+            </button>
+            <div class="mobile-dropdown-menu" id="mobile-more-menu">
+                <div class="mobile-menu-item" data-section="categories">
+                    <i class="bi bi-grid-3x3-gap"></i>
+                    <span data-i18n="categories">Categories</span>
+                </div>
+                <div class="mobile-menu-item" data-section="customers">
+                    <i class="bi bi-people"></i>
+                    <span data-i18n="customers">Customers</span>
+                </div>
+                <div class="mobile-menu-item" data-section="reports">
+                    <i class="bi bi-graph-up"></i>
+                    <span data-i18n="reports">Reports</span>
+                </div>
+                <div class="mobile-menu-item" data-section="staff">
+                    <i class="bi bi-person-badge"></i>
+                    <span data-i18n="staff">Staff</span>
+                </div>
+                <div class="mobile-menu-item" data-section="settings">
+                    <i class="bi bi-gear"></i>
+                    <span data-i18n="settings">Settings</span>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -344,7 +891,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="categoryModalLabel">New Category</h5>
+                    <h5 class="modal-title" id="categoryModalLabel" data-i18n="new_category">New Category</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -352,37 +899,37 @@
                         <input type="hidden" id="categoryId">
                         <input type="hidden" id="categoryType">
                         <div class="mb-3">
-                            <label for="categoryName" class="form-label">Name</label>
+                            <label for="categoryName" class="form-label" data-i18n="name">Name</label>
                             <input type="text" class="form-control" id="categoryName" required>
                         </div>
                         <div id="mainCategoryFields">
                             <div class="mb-3">
-                                <label for="categoryImage" class="form-label">Image URL</label>
+                                <label for="categoryImage" class="form-label" data-i18n="image_url">Image URL</label>
                                 <div class="input-group">
-                                    <input type="url" class="form-control" id="categoryImage" placeholder="Enter image URL or upload">
+                                    <input type="url" class="form-control" id="categoryImage" data-i18n-placeholder="enter_image_url" placeholder="Enter image URL or upload">
                                     <input type="file" class="d-none" id="categoryImageUpload" accept="image/*">
                                     <button class="btn btn-outline-secondary" type="button" id="uploadImageBtn">
-                                        <i class="bi bi-upload"></i> Upload
+                                        <i class="bi bi-upload"></i> <span data-i18n="upload">Upload</span>
                                     </button>
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label for="categoryDescription" class="form-label">Description</label>
+                                <label for="categoryDescription" class="form-label" data-i18n="description">Description</label>
                                 <textarea class="form-control" id="categoryDescription" rows="3"></textarea>
                             </div>
                         </div>
                         <div class="mb-3" id="parentCategoryDiv" style="display: none;">
-                            <label for="parentCategory" class="form-label">Parent Category</label>
+                            <label for="parentCategory" class="form-label" data-i18n="parent_category">Parent Category</label>
                             <select id="parentCategory" class="form-select">
-                                <option value="">Select main category...</option>
+                                <option value="" data-i18n="select_main_category">Select main category...</option>
                             </select>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger" id="deleteCategoryBtn" style="display: none;">Delete</button>
-                    <button type="button" class="btn btn-primary" id="saveCategoryBtn">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="cancel">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="deleteCategoryBtn" style="display: none;" data-i18n="delete">Delete</button>
+                    <button type="button" class="btn btn-primary" id="saveCategoryBtn" data-i18n="save">Save</button>
                 </div>
             </div>
         </div>
@@ -393,7 +940,7 @@
         <div class="modal-dialog modal-xl modal-fullscreen-md-down">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="productModalLabel">New Product</h5>
+                    <h5 class="modal-title" id="productModalLabel" data-i18n="new_product">New Product</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -401,34 +948,34 @@
                         <input type="hidden" id="productId">
                         <ul class="nav nav-tabs" id="productTab" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="basic-tab" data-bs-toggle="tab" data-bs-target="#basic" type="button" role="tab">Info</button>
+                                <button class="nav-link active" id="basic-tab" data-bs-toggle="tab" data-bs-target="#basic" type="button" role="tab" data-i18n="info">Info</button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="inventory-tab" data-bs-toggle="tab" data-bs-target="#inventory" type="button" role="tab">Inventory</button>
+                                <button class="nav-link" id="inventory-tab" data-bs-toggle="tab" data-bs-target="#inventory" type="button" role="tab" data-i18n="inventory">Inventory</button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="seo-tab" data-bs-toggle="tab" data-bs-target="#seo" type="button" role="tab">Meta</button>
+                                <button class="nav-link" id="seo-tab" data-bs-toggle="tab" data-bs-target="#seo" type="button" role="tab" data-i18n="meta">Meta</button>
                             </li>
                         </ul>
                         <div class="tab-content" id="productTabContent">
                             <div class="tab-pane fade show active" id="basic" role="tabpanel">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label for="name" class="form-label">Product Name</label>
+                                        <label for="name" class="form-label" data-i18n="product_name">Product Name</label>
                                         <input type="text" class="form-control" id="name" required>
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label for="price" class="form-label">Price</label>
+                                        <label for="price" class="form-label" data-i18n="price">Price</label>
                                         <input type="number" class="form-control" id="price" required>
                                     </div>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="image" class="form-label">Product Image</label>
+                                    <label for="image" class="form-label" data-i18n="product_image">Product Image</label>
                                     <div class="input-group">
-                                        <input type="url" class="form-control" id="image" placeholder="Enter image URL or upload">
+                                        <input type="url" class="form-control" id="image" data-i18n-placeholder="enter_image_url" placeholder="Enter image URL or upload">
                                         <input type="file" class="d-none" id="imageUpload" accept="image/*">
                                         <button class="btn btn-outline-secondary" type="button" id="productUploadImageBtn">
-                                            <i class="bi bi-upload"></i> Upload
+                                            <i class="bi bi-upload"></i> <span data-i18n="upload">Upload</span>
                                         </button>
                                     </div>
                                 </div>
@@ -436,45 +983,45 @@
                             <div class="tab-pane fade" id="inventory" role="tabpanel">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label for="category" class="form-label">Main Category</label>
+                                        <label for="category" class="form-label" data-i18n="main_category">Main Category</label>
                                         <select id="category" class="form-select" required>
-                                            <option value="">Select...</option>
+                                            <option value="" data-i18n="select">Select...</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label for="sub_category" class="form-label">Subcategory</label>
+                                        <label for="sub_category" class="form-label" data-i18n="subcategory">Subcategory</label>
                                         <select id="sub_category" class="form-select" required>
-                                            <option value="">First select a main category</option>
+                                            <option value="" data-i18n="first_select_main_category">First select a main category</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label for="stock_quantity" class="form-label">Stock Quantity</label>
+                                        <label for="stock_quantity" class="form-label" data-i18n="stock_quantity">Stock Quantity</label>
                                         <input type="number" class="form-control" id="stock_quantity" required>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <div class="form-check mt-4">
                                             <input class="form-check-input" type="checkbox" id="is_special">
-                                            <label class="form-check-label" for="is_special">Is a special product</label>
+                                            <label class="form-check-label" for="is_special" data-i18n="is_special_product">Is a special product</label>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="ingredients" class="form-label">Ingredients</label>
+                                    <label for="ingredients" class="form-label" data-i18n="ingredients">Ingredients</label>
                                     <div id="ingredientsContainer"></div>
                                     <button type="button" class="btn btn-sm btn-outline-secondary mt-2" id="addIngredientBtn">
-                                        <i class="bi bi-plus"></i> Add Ingredient
+                                        <i class="bi bi-plus"></i> <span data-i18n="add_ingredient">Add Ingredient</span>
                                     </button>
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="seo" role="tabpanel">
                                 <div class="mb-3">
-                                    <label for="meta_title" class="form-label">Meta Title</label>
+                                    <label for="meta_title" class="form-label" data-i18n="meta_title">Meta Title</label>
                                     <input type="text" class="form-control" id="meta_title">
                                 </div>
                                 <div class="mb-3">
-                                    <label for="meta_description" class="form-label">Meta Description</label>
+                                    <label for="meta_description" class="form-label" data-i18n="meta_description">Meta Description</label>
                                     <textarea class="form-control" id="meta_description" rows="3"></textarea>
                                 </div>
                             </div>
@@ -482,9 +1029,9 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger" id="deleteProductBtn" style="display: none;">Delete</button>
-                    <button type="button" class="btn btn-primary" id="saveProductBtn">Save Product</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="cancel">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="deleteProductBtn" style="display: none;" data-i18n="delete">Delete</button>
+                    <button type="button" class="btn btn-primary" id="saveProductBtn" data-i18n="save_product">Save Product</button>
                 </div>
             </div>
         </div>
@@ -495,52 +1042,52 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="bulkEditModalLabel">Bulk Edit Products</h5>
+                    <h5 class="modal-title" id="bulkEditModalLabel" data-i18n="bulk_edit_products">Bulk Edit Products</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="bulkEditForm">
                         <div class="mb-3">
-                            <label for="bulk-category" class="form-label">Category</label>
+                            <label for="bulk-category" class="form-label" data-i18n="category">Category</label>
                             <select id="bulk-category" class="form-select">
-                                <option value="">Keep current</option>
+                                <option value="" data-i18n="keep_current">Keep current</option>
                                 <!-- Categories will be populated dynamically -->
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="bulk-subcategory" class="form-label">Subcategory</label>
+                            <label for="bulk-subcategory" class="form-label" data-i18n="subcategory">Subcategory</label>
                             <select id="bulk-subcategory" class="form-select">
-                                <option value="">Keep current</option>
+                                <option value="" data-i18n="keep_current">Keep current</option>
                                 <!-- Subcategories will be populated dynamically -->
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="bulk-price-change" class="form-label">Price Change</label>
+                            <label for="bulk-price-change" class="form-label" data-i18n="price_change">Price Change</label>
                             <div class="input-group">
                                 <select id="bulk-price-change-type" class="form-select">
-                                    <option value="no-change">No change</option>
-                                    <option value="fixed">Set to</option>
-                                    <option value="increase-percent">Increase by %</option>
-                                    <option value="decrease-percent">Decrease by %</option>
-                                    <option value="increase-amount">Increase by amount</option>
-                                    <option value="decrease-amount">Decrease by amount</option>
+                                    <option value="no-change" data-i18n="no_change">No change</option>
+                                    <option value="fixed" data-i18n="set_to">Set to</option>
+                                    <option value="increase-percent" data-i18n="increase_by_percent">Increase by %</option>
+                                    <option value="decrease-percent" data-i18n="decrease_by_percent">Decrease by %</option>
+                                    <option value="increase-amount" data-i18n="increase_by_amount">Increase by amount</option>
+                                    <option value="decrease-amount" data-i18n="decrease_by_amount">Decrease by amount</option>
                                 </select>
-                                <input type="number" class="form-control" id="bulk-price-value" placeholder="Value">
+                                <input type="number" class="form-control" id="bulk-price-value" data-i18n-placeholder="value" placeholder="Value">
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="bulk-stock-status" class="form-label">Stock Status</label>
+                            <label for="bulk-stock-status" class="form-label" data-i18n="stock_status">Stock Status</label>
                             <select id="bulk-stock-status" class="form-select">
-                                <option value="no-change">No change</option>
-                                <option value="in-stock">In Stock</option>
-                                <option value="out-of-stock">Out of Stock</option>
+                                <option value="no-change" data-i18n="no_change">No change</option>
+                                <option value="in-stock" data-i18n="in_stock">In Stock</option>
+                                <option value="out-of-stock" data-i18n="out_of_stock">Out of Stock</option>
                             </select>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="saveBulkEditBtn">Apply Changes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="cancel">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveBulkEditBtn" data-i18n="apply_changes">Apply Changes</button>
                 </div>
             </div>
         </div>
@@ -551,14 +1098,14 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="confirmModalLabel">Confirm Action</h5>
+                    <h5 class="modal-title" id="confirmModalLabel" data-i18n="confirm_action">Confirm Action</h5>
                 </div>
                 <div class="modal-body">
-                    <p id="confirmMessage">Are you sure you want to perform this action?</p>
+                    <p id="confirmMessage" data-i18n="are_you_sure">Are you sure you want to perform this action?</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" id="confirmCancelBtn">Cancel</button>
-                    <button type="button" class="btn btn-danger" id="confirmOkBtn">Delete</button>
+                    <button type="button" class="btn btn-secondary" id="confirmCancelBtn" data-i18n="cancel">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmOkBtn" data-i18n="delete">Delete</button>
                 </div>
             </div>
         </div>
@@ -569,7 +1116,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="stockUpdateModalLabel">Update Stock</h5>
+                    <h5 class="modal-title" id="stockUpdateModalLabel" data-i18n="update_stock">Update Stock</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -577,22 +1124,22 @@
                         <input type="hidden" id="stockIngredientId">
                         <input type="hidden" id="stockUpdateType">
                         <div class="mb-3">
-                            <label for="stockIngredientName" class="form-label">Ingredient</label>
+                            <label for="stockIngredientName" class="form-label" data-i18n="ingredient">Ingredient</label>
                             <input type="text" class="form-control" id="stockIngredientName" readonly>
                         </div>
                         <div class="mb-3">
-                            <label for="stockQuantity" class="form-label">Quantity</label>
+                            <label for="stockQuantity" class="form-label" data-i18n="quantity">Quantity</label>
                             <input type="number" step="0.01" class="form-control" id="stockQuantity" required>
                         </div>
                         <div class="mb-3">
-                            <label for="stockReason" class="form-label">Reason</label>
-                            <input type="text" class="form-control" id="stockReason" placeholder="e.g., New supply, spoilage" required>
+                            <label for="stockReason" class="form-label" data-i18n="reason">Reason</label>
+                            <input type="text" class="form-control" id="stockReason" data-i18n-placeholder="reason_placeholder" placeholder="e.g., New supply, spoilage" required>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="confirmStockUpdateBtn">Update Stock</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="cancel">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmStockUpdateBtn" data-i18n="update_stock">Update Stock</button>
                 </div>
             </div>
         </div>
@@ -603,40 +1150,40 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addIngredientModalLabel">Add New Ingredient</h5>
+                    <h5 class="modal-title" id="addIngredientModalLabel" data-i18n="add_new_ingredient">Add New Ingredient</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="addIngredientForm">
                         <div class="mb-3">
-                            <label for="newIngredientName" class="form-label">Name</label>
+                            <label for="newIngredientName" class="form-label" data-i18n="name">Name</label>
                             <input type="text" class="form-control" id="newIngredientName" required>
                         </div>
                         <div class="mb-3">
-                            <label for="newIngredientUnit" class="form-label">Unit</label>
+                            <label for="newIngredientUnit" class="form-label" data-i18n="unit">Unit</label>
                             <select class="form-select" id="newIngredientUnit" required>
-                                <option value="grams">Grams</option>
-                                <option value="kg">Kilograms</option>
-                                <option value="ml">Milliliters</option>
-                                <option value="liters">Liters</option>
-                                <option value="pieces">Pieces</option>
-                                <option value="tablespoon">Tablespoon</option>
-                                <option value="cup">Cup</option>
+                                <option value="grams" data-i18n="grams">Grams</option>
+                                <option value="kg" data-i18n="kilograms">Kilograms</option>
+                                <option value="ml" data-i18n="milliliters">Milliliters</option>
+                                <option value="liters" data-i18n="liters">Liters</option>
+                                <option value="pieces" data-i18n="pieces">Pieces</option>
+                                <option value="tablespoon" data-i18n="tablespoon">Tablespoon</option>
+                                <option value="cup" data-i18n="cup">Cup</option>
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="newIngredientStock" class="form-label">Initial Stock Quantity</label>
+                            <label for="newIngredientStock" class="form-label" data-i18n="initial_stock_quantity">Initial Stock Quantity</label>
                             <input type="number" step="0.01" class="form-control" id="newIngredientStock" value="0">
                         </div>
                         <div class="mb-3">
-                            <label for="newIngredientMinStock" class="form-label">Minimum Stock Alert</label>
+                            <label for="newIngredientMinStock" class="form-label" data-i18n="minimum_stock_alert">Minimum Stock Alert</label>
                             <input type="number" step="0.01" class="form-control" id="newIngredientMinStock" value="10">
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="confirmAddIngredientBtn">Add Ingredient</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="cancel">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmAddIngredientBtn" data-i18n="add_ingredient">Add Ingredient</button>
                 </div>
             </div>
         </div>
@@ -647,30 +1194,98 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="specialSlideModalLabel">Add New Carousel Slide</h5>
+                    <h5 class="modal-title" id="specialSlideModalLabel" data-i18n="add_new_carousel_slide">Add New Carousel Slide</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="specialSlideForm">
                         <input type="hidden" id="specialSlideId">
                         <div class="mb-3">
-                            <label for="specialSlideImageUrl" class="form-label">Image URL</label>
+                            <label for="specialSlideImageUrl" class="form-label" data-i18n="image_url">Image URL</label>
                             <input type="url" class="form-control" id="specialSlideImageUrl" required>
                         </div>
                         <div class="mb-3">
-                            <label for="specialSlideTitle" class="form-label">Title</label>
+                            <label for="specialSlideTitle" class="form-label" data-i18n="title">Title</label>
                             <input type="text" class="form-control" id="specialSlideTitle" required>
                         </div>
                         <div class="mb-3">
-                            <label for="specialSlideDescription" class="form-label">Description</label>
+                            <label for="specialSlideDescription" class="form-label" data-i18n="description">Description</label>
                             <textarea class="form-control" id="specialSlideDescription" rows="3" required></textarea>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger" id="deleteSpecialSlideBtn" style="display: none;">Delete</button>
-                    <button type="button" class="btn btn-primary" id="saveSpecialSlideBtn">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="cancel">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="deleteSpecialSlideBtn" style="display: none;" data-i18n="delete">Delete</button>
+                    <button type="button" class="btn btn-primary" id="saveSpecialSlideBtn" data-i18n="save">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-labelledby="orderDetailsModalLabel">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="orderDetailsModalLabel" data-i18n="order_details">Order Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="orderDetailsModalBody">
+                    <!-- Order details will be dynamically loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="close">Close</button>
+                    <button type="button" class="btn btn-primary" id="updateOrderStatusBtn" data-i18n="update_status">Update Status</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit User Modal (ID changed to avoid conflict) -->
+    <div class="modal fade" id="userSettingsModal" tabindex="-1" aria-labelledby="userSettingsModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userSettingsModalLabel" data-i18n="new_user">New User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="userSettingsForm">
+                        <input type="hidden" id="userSettingsId">
+                        <div class="mb-3">
+                            <label for="userSettingsName" class="form-label" data-i18n="name">Name</label>
+                            <input type="text" class="form-control" id="userSettingsName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="userSettingsEmail" class="form-label" data-i18n="email">Email</label>
+                            <input type="email" class="form-control" id="userSettingsEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="userSettingsPassword" class="form-label" data-i18n="password">Password</label>
+                            <input type="password" class="form-control" id="userSettingsPassword">
+                            <div class="form-text" data-i18n="leave_blank_keep_password">Leave blank to keep existing password.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="userSettingsRole" class="form-label" data-i18n="role">Role</label>
+                            <select class="form-select" id="userSettingsRole" required>
+                                <option value="admin" data-i18n="admin">Admin</option>
+                                <option value="manager" data-i18n="manager">Manager</option>
+                                <option value="staff" data-i18n="staff">Staff</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="userSettingsStatus" checked>
+                                <label class="form-check-label" for="userSettingsStatus" data-i18n="active">Active</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="cancel">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="deleteUserSettingsBtn" style="display: none;" data-i18n="delete">Delete</button>
+                    <button type="button" class="btn btn-primary" id="saveUserSettingsBtn" data-i18n="save_user">Save User</button>
                 </div>
             </div>
         </div>
@@ -679,6 +1294,9 @@
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     
+    <!-- Chart.js for Dashboard -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <!-- Custom JS -->
     <script src="js/config.js"></script>
     <script src="js/dom-elements.js"></script>
@@ -691,6 +1309,18 @@
     <script src="js/auto-layout-logger.js"></script>
     <script src="js/inventory-management.js"></script>
     <script src="js/special-carousel-management.js"></script>
+    <script src="js/orders-management.js"></script>
+    <script src="js/settings-management.js"></script>
+
+    <!-- New JS Files for new sections -->
+    <script src="js/dashboard-management.js"></script>
+    <script src="js/customers-management.js"></script>
+    <script src="js/reports-management.js"></script>
+    <script src="js/staff-management.js"></script>
+
+    <!-- i18n JS -->
+    <script src="js/i18n.js"></script>
+
     <script src="js/app.js"></script>
 </body>
 </html>
